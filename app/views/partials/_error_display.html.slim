@@ -1,0 +1,13 @@
+- object.errors.any?
+  .alert.alert-danger
+    button.close data-dismiss="alert" aria-label="Fechar"
+      span aria-hidden="true"
+        | x
+    h4.text-danger
+      i.fa.fa-exclamation-triangle
+      = " " + object.errors.count.to_s + " erro(s) encontrado(s)"
+    ul
+      - object.errors.each do |attr,msg|
+        li style="font-size: 14px;" = (!attr.blank? ? (object.class.human_attribute_name(attr) rescue attr.to_s.capitalize) : "") + " " + msg.gsub(/Documento file name/, "").html_safe
+  br
+  

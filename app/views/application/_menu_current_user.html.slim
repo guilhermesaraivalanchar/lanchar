@@ -1,0 +1,11 @@
+ul.dropdown-user
+  li
+    .menuzinho
+      i.fa.fa-user-o
+      = " #{current_user.nome}"
+  li role="separator" class="divider"
+  li
+    = link_to("<i class='ti-settings'></i> Alterar Senha".html_safe, edit_user_registration_path)
+  li role="separator" class="divider"
+  li
+    = link_to("<i class='fa fa-power-off'></i> Sair".html_safe, destroy_user_session_path, method: :delete )

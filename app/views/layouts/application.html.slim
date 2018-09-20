@@ -1,0 +1,63 @@
+doctype html
+html
+  head
+    title Portal BBA
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    = csrf_meta_tags
+
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' 
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  - if current_user
+    body.fix-header.fix-sidebar.card-no-border
+      .main-wrapper
+        header.topbar
+          nav.navbar.top-navbar.navbar-expand-md.navbar-light
+            .navbar-header
+              a.navbar-brand href="#{root_path}"
+                span
+                  img src="/images/logo.png" alt="homepage" class="dark-logo"
+                  img src="/images/logobba2.jpg" alt="homepage" class="light-logo"
+            .navbar-collapse
+              ul.navbar-nav.mr-auto.mt-md-0
+                li.nav-item
+                  a.nav-link.nav-toggler.hidden-md-up.text-muted.waves-effect.waves-dark href="javascript:void(0)"
+                    i.mdi.mdi-menu
+                li.nav-item
+                  a.nav-link.sidebartoggler.hidden-sm-down.text-muted.waves-effect.waves-dark href="javascript:void(0)"
+                    i.ti-menu
+              ul.navbar-nav.my-lg-0
+                li.nav-item.dropdown
+                  a.nav-link.dropdown-toggle.text-muted.waves-effect.waves-dark data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    i.mdi.mdi-message
+                    .notify
+                      span.heartbit
+                      span.point
+                  .dropdown-menu.dropdown-menu-right.mailbox.scale-up
+                    ul
+                      li oi
+                      li td bem
+                      li tchau
+                li.nav-item.dropdown
+                  a.nav-link.dropdown-toggle.text-muted.waves-effect.waves-dark data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    img src="/images/user.png" alt="user" class="profile-pic"
+                  .dropdown-menu.dropdown-menu-right.scape-up
+                    = render "menu_current_user.html.slim"
+
+        aside.left-sidebar
+          .slimScrollDiv style="position: relative; overflow:hidden; width: auto; height:  100%"
+            .scroll-sidebar style="overflow: hidden; width: auto; height: 100%;"
+              nav.sidebar-nav
+                = render "menu.html.slim"
+            .slimScrollBar
+            .slimScrollRail
+          .sidebar-footer
+
+        .page-wrapper style="min-height: 651px"
+          .container-fluid
+            = yield
+          footer.footer style="text-align: center"
+            = "developed by #{link_to "Impulso®", "http://www.impulsoti.com.br"}".html_safe
+
+  - if !current_user
+    body
+      = yield

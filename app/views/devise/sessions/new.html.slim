@@ -1,0 +1,24 @@
+section#wrapper
+  .login-register style="background-image:url(../imagens/fundo.jpg);" 
+    .login-box.card
+      .card-body
+        h3.box-title.m-b-20 Sign In
+        = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+          .form-group
+            .col-xs-12
+              = f.input :email, required: true, autofocus: true, label: "Email", input_html: { class: "form-control" }
+          .form-group
+            .col-xs-12
+              = f.input :password, required: true, autofocus: true, label: "Senha", input_html: { class: "form-control" }
+          .form-group
+            .d-flex.no-block.align-items-center
+              .checkbox.checkbox-primary.p-t-0
+                input#checkbox-signup type="checkbox" /
+                label for="checkbox-signup"  Remember me
+              .ml-auto
+                a#to-recover.text-muted href="javascript:void(0)" 
+                  i.fa.fa-lock.m-r-5
+                  | Forgot pwd?
+          .form-group.text-center.m-t-20
+            .col-xs-12
+              button.btn.btn-info.btn-lg.btn-block.text-uppercase.waves-effect.waves-light type="submit"  Log In
