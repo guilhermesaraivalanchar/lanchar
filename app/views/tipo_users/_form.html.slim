@@ -1,0 +1,30 @@
+= render :partial => "/partials/error_display", :locals => { :object => @tipo_user }
+
+.form-body
+  = simple_form_for @tipo_user do |f|
+    h4.box-title.m-t-10
+      | Dados do Tipo Usuário
+    hr
+    .clear
+    div.col-12
+      = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
+      br
+
+    .clear
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+      | Enviar
+    = link_to "Voltar", tipo_users_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
+
+
+javascript:
+  $('.dropify').dropify({
+    messages: {
+      'default': '',
+      'replace': 'Arraste a Imagem ou click aqui para trocar',
+      'remove':  'Remove',
+      'error':   'Ooops, Ocorreu um erro.'
+    },
+    error: {
+      'fileExtension': 'Formato do arquivo não permitido, Formatos permitidos: ({{ value }}).'
+    }
+  });

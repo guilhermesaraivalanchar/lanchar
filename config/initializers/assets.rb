@@ -22,3 +22,6 @@ config.assets.paths << Rails.root.join('vendor', 'assets', 'stylesheets', 'css')
 config.assets.paths << Rails.root.join('vendor', 'assets', 'stylesheets', 'scss')
 
 config.assets.precompile += %w( custom.js )
+config.assets.precompile += %w( users.js )
+config.assets.precompile += %w( produtos.js )
+config.assets.precompile += %w( tipo_users.js )

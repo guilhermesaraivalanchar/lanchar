@@ -1,0 +1,46 @@
+= render partial: "/partials/texto_cabecalho"
+h1 Produtos#index
+p Find me in app/views/produtos/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Data Export
+        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        = link_to "Novo Produto", new_produto_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Codigo
+                th Quantidade
+                th Status
+                th Ação
+            tbody
+              - @produtos.each do |produto|
+                tr
+                  td 
+                    = produto.nome
+                  td 
+                    = produto.codigo
+                  td 
+                    = produto.quantidade
+                  td
+                    = produto.status
+                  td
+                    = link_to "Editar", edit_produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    = link_to "Deletar", produto_path(produto), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{produto.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

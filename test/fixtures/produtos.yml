@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  codigo: 1
+  nome: MyString
+  cod_desconto: 1
+  quantidade: 1
+  status: MyString
+
+two:
+  codigo: 1
+  nome: MyString
+  cod_desconto: 1
+  quantidade: 1
+  status: MyString

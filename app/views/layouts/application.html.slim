@@ -1,12 +1,14 @@
 doctype html
 html
   head
-    title Portal BBA
+    title Lanchar
     meta name="viewport" content="width=device-width, initial-scale=1"
     = csrf_meta_tags
 
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' 
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag params[:controller] if ::Rails.application.assets.find_asset("#{params[:controller]}.js") && params[:controller] != "application" 
+    = content_for :head
   - if current_user
     body.fix-header.fix-sidebar.card-no-border
       .main-wrapper
@@ -14,9 +16,12 @@ html
           nav.navbar.top-navbar.navbar-expand-md.navbar-light
             .navbar-header
               a.navbar-brand href="#{root_path}"
+                b
+                  img.dark-logo alt="homepage" src="/imagens/logo-icon.png"
+                  img.light-logo alt="homepage" src="/imagens/logo-light-icon.png"
                 span
-                  img src="/images/logo.png" alt="homepage" class="dark-logo"
-                  img src="/images/logobba2.jpg" alt="homepage" class="light-logo"
+                  img.dark-logo alt="homepage" src="/imagens/logo-text.png"
+                  img.light-logo alt="homepage" src="/imagens/logo-light-text.png"
             .navbar-collapse
               ul.navbar-nav.mr-auto.mt-md-0
                 li.nav-item
@@ -39,7 +44,7 @@ html
                       li tchau
                 li.nav-item.dropdown
                   a.nav-link.dropdown-toggle.text-muted.waves-effect.waves-dark data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    img src="/images/user.png" alt="user" class="profile-pic"
+                    img src="#{current_user.imagem.url}" alt="user" class="profile-pic"
                   .dropdown-menu.dropdown-menu-right.scape-up
                     = render "menu_current_user.html.slim"
 

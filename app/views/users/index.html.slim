@@ -1,0 +1,87 @@
+= render partial: "/partials/texto_cabecalho"
+h1 Users#index
+p Find me in app/views/users/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Data Export
+        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        = link_to "Novo Usuário", new_user_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Matricula
+                th Tipo
+                th Cartão
+                th Ação
+            tbody
+              - @users.each do |user|
+                tr
+                  td 
+                    = user.nome
+                  td 
+                    = user.codigo
+                  td 
+                    = user.tipo_user.nome rescue ""
+                  td
+                    = user.cartao_id
+                  td
+                    = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" type="button" style="margin-right: 10px" Creditar
+                    = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+
+
+#modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title New message
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        form
+          .form-group
+            label.control-label for="recipient-name"  Quantidade:
+            input#recipient-name1.form-control type="text"
+      .modal-footer
+        div#botoes_modal
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px"  Close
+          button.btn.btn-primary type="button"  Send message
+        div#spiner_modal
+          svg class="circular" viewBox="25 25 50 50"
+            circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
+
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
+
+    $('[id^=creditar_]').click(function(){
+
+      console.log(this.id)
+      
+      elemento_referencia = this.id.split("_")
+
+      user_nome = this.getAttribute("nome_user")
+      user_id = elemento_referencia[1]
+
+      console.log(user_nome)
+      console.log(user_id)
+
+      $("#exampleModalLabel1").html("Creditar para "+user_nome);
+
+
+
+    })

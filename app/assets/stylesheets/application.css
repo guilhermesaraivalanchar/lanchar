@@ -10,26 +10,37 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
- *= require_self
  *= require bootstrap/css/bootstrap.min
  *= require bootstrap/css/bootstrap-grid.min
  *= require bootstrap/css/bootstrap-reboot.min
  *= require prism/prism.css
  *= require animate
- *= require spinners
  *= require style
  *= require form
  *= require colors/default
- *= require datatables/media/css/jquery.dataTables
  *= require select2/dist/css/select2.min
- *= require demo
  *= require bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker
  *= require bootstrap-datepicker
  *= require bootstrap-datetimepicker
+ *= require datatables/media/css/dataTables.bootstrap4
+ *= require dropify/dist/css/dropify.min
+ *= require icons/material-design-iconic-font/css/materialdesignicons.min
+ 
+
+
+
  */
  
- 
+.validate_invalid{
+	color: #d9534f;
+	border-color: #d9534f;
+}
+
+.validate_valid{
+	color: #5cb85c;
+	border-color: #5cb85c;
+}
+
 .menuzinho{
  color: #67757c;
  padding: 9px 15px;

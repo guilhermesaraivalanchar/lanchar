@@ -209,7 +209,7 @@ $(function () {
     // ============================================================== 
     // This is for the sparkline charts which is coming in the bradcrumb section
     // ==============================================================
-    $('#monthchart').sparkline([5, 6, 2, 9, 4, 7, 10, 12], {
+    $('#monthchart').sparkline([5, 6, 10, 9, 6, 7, 10, 12], {
             type: 'bar',
             height: '35',
             barWidth: '4',

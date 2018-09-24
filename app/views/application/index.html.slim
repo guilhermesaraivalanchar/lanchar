@@ -1,2 +1,154 @@
+<link href="../../css/chartist.min.css" rel="stylesheet">
+<link href="../../css/chartist-init.css" rel="stylesheet">
+<link href="../../css/chartist-plugin-tooltip.css" rel="stylesheet">
+<link href="../../css/c3.min.css" rel="stylesheet">
+
+
+= render partial: "/partials/texto_cabecalho"
+
 br
-= "OII"
+.row
+  .col-lg-3.col-md-6
+    .card
+      .card-body
+        .d-flex.flex-row
+          .round.round-lg.align-self-center.round-info
+            i.ti-wallet
+          .m-l-10.align-self-center
+            .d-flex.m-r-20.m-l-10
+              .chart-text.m-r-10
+                h6.m-b-0
+                  small Saldo Atual
+                h4.m-t-0.text-info $58,356
+              .spark-chart
+  .col-lg-3.col-md-6
+    .card
+      .card-body
+        .d-flex.flex-row
+          .round.round-lg.align-self-center.round-warning
+            i.mdi.mdi-cellphone-link
+          .m-l-10.align-self-center
+            .d-flex.m-r-20.m-l-10
+              .chart-text.m-r-10
+                h6.m-b-0
+                  small Saldo Atual
+                h4.m-t-0.text-info $58,356
+              .spark-chart
+                #monthchart
+  .col-lg-3.col-md-6
+    .card
+      .card-body
+        .d-flex.flex-row
+          .round.round-lg.align-self-center.round-primary
+            i.mdi.mdi-cart-outline
+          .m-l-10.align-self-center
+            h3.m-b-0.font-lgiht R$ 1795,00
+            h5.text-muted.m-b-0 Offline Revenue
+  .col-lg-3.col-md-6
+    .card
+      .card-body
+        .d-flex.flex-row
+          .round.round-lg.align-self-center.round-danger
+            i.mdi.mdi-bullseye
+          .m-l-10.align-self-center
+            h3.m-b-0.font-lgiht $687
+            h5.text-muted.m-b-0 Ad. Expense
+br
+.row
+  .col-lg-6.col-md-6
+    .card.card-inverse.card-primary
+      .card-body
+        .d-flex
+          .m-r-20.align-self-center
+            h1.text-white
+              i.ti-pie-chart
+          div
+            h3.card-title Bandwidth usage
+            h6.card-subtitle March  2017
+        div.row
+          .col-md-4.align-self-center
+            h2.font-light.text-white style="font-size: 50px" R$ 50
+          .col-md-8.p-t-10.p-b-20.align-self-center.hidden-md-down
+            .usage.chartist-chart style="height:65px" 
+  .col-lg-6.col-md-6
+    .card.card-inverse.card-success
+      .card-body
+        .d-flex
+          .m-r-20.align-self-center
+            h1.text-white
+              i.icon-cloud-download
+          div
+
+            h3.card-title Download count
+            h6.card-subtitle March  2017
+        .row
+          .col-4.align-self-center
+            h2.font-light.text-white 35487
+          .col-8.p-t-10.p-b-20.text-right
+            .spark-count style="height:65px" 
+
+<script type="text/javascript" src="../../javascripts/chartist.min.js"></script>
+<script type="text/javascript" src="../../javascripts/chartist-plugin-tooltip.min.js"></script>
+<script type="text/javascript" src="../../javascripts/d3.min.js"></script>
+<script type="text/javascript" src="../../javascripts/c3.min.js"></script>
+<script type="text/javascript" src="../../javascripts/jQuery.style.switcher.js"></script>
+
+
+javascript:
+  $(function () {
+      "use strict";
+
+      // ============================================================== 
+      // Badnwidth usage
+      // ============================================================== 
+      new Chartist.Line('.usage', {
+          labels: ['0', '4', '8', '12', '16', '20', '24', '30']
+          , series: [
+          [5, 0, 12, 1, 8, 3, 12, 15]
+
+        ]
+      }, {
+          high:10
+          , low: 0
+          , showArea: true
+          , fullWidth: true
+          , plugins: [
+          Chartist.plugins.tooltip()
+        ], // As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
+          axisY: {
+              onlyInteger: true
+              , offset: 20
+              , showLabel: false
+              , showGrid: false
+              , labelInterpolationFnc: function (value) {
+                  return (value / 1) + 'k';
+              }
+          }
+          , axisX: {
+              showLabel: false
+              , divisor: 1
+              , showGrid: false
+              , offset: 0
+          }
+      });
+      // ============================================================== 
+      // Download count
+      // ============================================================== 
+      var sparklineLogin = function () {
+          $('.spark-count').sparkline([4, 5, 0, 10, 9, 12, 4, 9, 4, 5, 3, 10, 9, 12, 10, 9, 12, 4, 9], {
+              type: 'bar'
+              , width: '100%'
+              , height: '70'
+              , barWidth: '2'
+              , resize: true
+              , barSpacing: '6'
+              , barColor: 'rgba(255, 255, 255, 0.3)'
+          });
+          
+      }
+      var sparkResize;
+      
+      sparklineLogin();
+      
+      
+  });

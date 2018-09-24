@@ -1,4 +1,14 @@
 .row.page-titles
-  .col-md-5.col-12.align-self-center
-    h3.text-themecolor.m-b-0.m-t-0
-      = texto
+  .user-img
+    img.img-circle alt="user" src="#{current_user.imagem.url}" width="80"
+    span.profile-status.online.pull-right
+  .mail-contnet.align-self-center style="margin-left: 10px"
+    h3.text-themecolor style="margin-left: 10px"
+      = current_user.nome
+    .d-flex.m-r-20.m-l-10
+      .chart-text.m-r-10
+        h6.m-b-0
+          small Saldo Atual
+        h4.m-t-0.text-info R$58,35
+      .spark-chart
+        #monthchart

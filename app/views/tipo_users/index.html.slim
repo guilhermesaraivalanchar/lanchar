@@ -1,0 +1,34 @@
+= render partial: "/partials/texto_cabecalho"
+h1 TipoUsers#index
+p Find me in app/views/tipo_users/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Data Export
+        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        = link_to "Novo tipo de usuário", new_tipo_user_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="90%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Ação
+            tbody
+              - @tipo_users.each do |tipo_user|
+                tr
+                  td 
+                    = tipo_user.nome
+                  td
+                    = link_to "Editar", edit_tipo_user_path(tipo_user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    = link_to "Deletar", tipo_user_path(tipo_user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{tipo_user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

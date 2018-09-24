@@ -1,0 +1,15 @@
+pt-BR:
+  activerecord:
+    models:
+      empresa: 
+        one: Empresa  #g
+        other: Empresas #g
+      perfil:
+        one: Perfil  #g
+        other: Perfis  #g
+
+      usuario:
+        one: Usuário  #g
+        other: Usuários  #g
+
+   

@@ -1,0 +1,34 @@
+= render :partial => "/partials/error_display", :locals => { :object => @user }
+
+.form-body
+  = simple_form_for @user do |f|
+    h4.box-title.m-t-10
+      | Dados do Usuário
+    hr
+    .clear
+    div.col-12
+      = f.input :imagem, as: :file, input_html: { nome_validacao: "Código", class: "dropify", "data-default-file": @user_imagem, "data-allowed-file-extensions": "png jpg jpeg" }
+      = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
+      = f.input :codigo, label: "Codigo", input_html: { nome_validacao: "Código" }
+      = f.input :tipo_user_id, as: :select, label: "Tipo de Usuário", prompt: "Selecione" , collection: @tipo_users, input_html: { nome_validacao: "Tipo Usuário" }
+      = f.input :cartao_id, label: "Cartão", input_html: { nome_validacao: "Código" }
+      br
+
+    .clear
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+      | Enviar
+    = link_to "Voltar", users_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
+
+
+javascript:
+  $('.dropify').dropify({
+    messages: {
+      'default': '',
+      'replace': 'Arraste a Imagem ou click aqui para trocar',
+      'remove':  'Remove',
+      'error':   'Ooops, Ocorreu um erro.'
+    },
+    error: {
+      'fileExtension': 'Formato do arquivo não permitido, Formatos permitidos: ({{ value }}).'
+    }
+  });

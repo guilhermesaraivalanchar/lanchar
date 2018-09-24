@@ -1,0 +1,677 @@
+---
+pt-BR:
+  true_bool: Sim
+  false_bool: Não
+  date:
+    abbr_day_names:
+    - Dom
+    - Seg
+    - Ter
+    - Qua
+    - Qui
+    - Sex
+    - Sáb
+    abbr_month_names:
+    -
+    - Jan
+    - Fev
+    - Mar
+    - Abr
+    - Mai
+    - Jun
+    - Jul
+    - Ago
+    - Set
+    - Out
+    - Nov
+    - Dez
+    day_names:
+    - Domingo
+    - Segunda-feira
+    - Terça-feira
+    - Quarta-feira
+    - Quinta-feira
+    - Sexta-feira
+    - Sábado
+    formats:
+      default: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+      short: "%d de %B"
+    month_names:
+    -
+    - Janeiro
+    - Fevereiro
+    - Março
+    - Abril
+    - Maio
+    - Junho
+    - Julho
+    - Agosto
+    - Setembro
+    - Outubro
+    - Novembro
+    - Dezembro
+    order:
+    - :day
+    - :month
+    - :year
+  datetime:
+    distance_in_words:
+      about_x_hours:
+        one: aproximadamente 1 hora
+        other: aproximadamente %{count} horas
+      about_x_months:
+        one: aproximadamente 1 mês
+        other: aproximadamente %{count} meses
+      about_x_years:
+        one: aproximadamente 1 ano
+        other: aproximadamente %{count} anos
+      almost_x_years:
+        one: quase 1 ano
+        other: quase %{count} anos
+      half_a_minute: meio minuto
+      less_than_x_minutes:
+        one: menos de um minuto
+        other: menos de %{count} minutos
+      less_than_x_seconds:
+        one: menos de 1 segundo
+        other: menos de %{count} segundos
+      over_x_years:
+        one: mais de 1 ano
+        other: mais de %{count} anos
+      x_days:
+        one: 1 dia
+        other: "%{count} dias"
+      x_minutes:
+        one: 1 minuto
+        other: "%{count} minutos"
+      x_months:
+        one: 1 mês
+        other: "%{count} meses"
+      x_seconds:
+        one: 1 segundo
+        other: "%{count} segundos"
+    prompts:
+      day: Dia
+      hour: Hora
+      minute: Minuto
+      month: Mês
+      second: Segundo
+      year: Ano
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      data_arrendatario: Essa usina possui já contrato nesse período.
+      percentual_credito: O somatório dos percentuais de crédito deve ser igual a 100%.
+      cliente_cnpjs: É necessário informar no mínimo um cnpj.
+      accepted: deve ser aceito
+      blank: não pode ficar em branco
+      present: deve ficar em branco
+      email: formato de e-mail inválido
+      confirmation: não é igual a %{attribute}
+      distribuidora_importacao: não possui importação disponível!
+      cliente_distribuidora_required: "Distribuidora/Cliente não encontrado(s)."
+      importacao_pdf: "Não foi possível extrair os dados. Favor verificar se o arquivo está no formato da distribuidora selecionada."
+      cep: CEP inválido
+      brazilian_zip_code: CEP inválido
+      empty: não pode ficar vazio
+      equal_to: deve ser igual a %{count}
+      even: deve ser par
+      exclusion: não está disponível
+      greater_than: deve ser maior que %{count}
+      greater_than_or_equal_to: deve ser maior ou igual a %{count}
+      inclusion: não está incluído na lista
+      invalid: não é válido
+      less_than: deve ser menor que %{count}
+      less_than_or_equal_to: deve ser menor ou igual a %{count}
+      model_invalid: 'A validação falhou: %{errors}'
+      not_a_number: não é um número
+      not_an_integer: não é um número inteiro
+      odd: deve ser ímpar
+      required: deve existir
+      taken: já está em uso
+      too_long:
+        one: 'é muito longo (máximo: 1 caracter)'
+        other: 'é muito longo (máximo: %{count} caracteres)'
+      too_short:
+        one: 'é muito curto (mínimo: 1 caracter)'
+        other: 'é muito curto (mínimo: %{count} caracteres)'
+      wrong_length:
+        one: não possui o tamanho esperado (1 caracter)
+        other: não possui o tamanho esperado (%{count} caracteres)
+      other_than: deve ser diferente de %{count}
+    template:
+      body: 'Por favor, verifique o(s) seguinte(s) campo(s):'
+      header:
+        one: 'Não foi possível gravar %{model}: 1 erro'
+        other: 'Não foi possível gravar %{model}: %{count} erros'
+  helpers:
+    select:
+      prompt: Por favor selecione
+    actions: "Ações"
+    submit:
+      create: "Criar %{model}"
+      submit: "Salvar %{model}"
+      update: "Atualizar %{model}"
+    titles:
+      new: "Novo %{model}"
+      new_a: "Nova %{model}"
+      edit: "Editar %{model}"
+      update: "Atualizar %{model}"
+      show: "Exibir"
+      destroy: "Excluir %{model}"
+      create: "Salvar %{model}"
+      detailing: "Detalhamento dos %{model}"
+      import_csv: "Importar CSV - %{model}"
+    links:
+      confirm: "Tem certeza de que deseja apagar o registro?"
+      remove_files: "Remover arquivos"
+      new: "Novo"
+      new_a: Nova
+      cancel: "Cancelar"
+      edit: "Editar"
+      edit_spaced: " Editar"
+      update: "Atualizar"
+      show: "Mostrar"
+      show_spaced: " Mostrar"
+      destroy: "Remover"
+      destroy_spaced: " Remover"
+      log_spaced: " Log"
+      create: "Salvar %{model}"
+      remove_spaced : " Remover %{model}"
+      add: "Adicionar %{model}"
+      generate: "Gerar %{model}"
+      detalhes: "Detalhes"
+      registrar: "Registrar"
+      finalizar: "Finalizar"
+      liberar_pa: "Liberar PA"
+      alterar_dbelgo: "Alterar Dbelgo"
+      liberar_restricao: "Liberar"
+      sem_acao: "Sem Açao"
+      agendar: "Agendar"
+      action:
+        new: "Novo"
+        new_a: Nova
+        cancel: "Cancelar"
+        edit: "Editar"
+        update: "Atualizar"
+        show: "Mostrar"
+        destroy: "Apagar"
+        create: "Salvar %{model}"
+  number:
+    currency:
+      format:
+        delimiter: "."
+        format: "%u %n"
+        precision: 2
+        separator: ","
+        significant: false
+        strip_insignificant_zeros: false
+        unit: R$
+    format:
+      delimiter: "."
+      precision: 3
+      separator: ","
+      significant: false
+      strip_insignificant_zeros: false
+    human:
+      decimal_units:
+        format: "%n %u"
+        units:
+          billion:
+            one: bilhão
+            other: bilhões
+          million:
+            one: milhão
+            other: milhões
+          quadrillion:
+            one: quatrilhão
+            other: quatrilhões
+          thousand: mil
+          trillion:
+            one: trilhão
+            other: trilhões
+          unit: ''
+      format:
+        delimiter: "."
+        precision: 2
+        significant: true
+        strip_insignificant_zeros: true
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: Byte
+            other: Bytes
+          gb: GB
+          kb: KB
+          mb: MB
+          tb: TB
+    percentage:
+      format:
+        delimiter: "."
+        format: "%n%"
+    precision:
+      format:
+        delimiter: "."
+  support:
+    array:
+      last_word_connector: " e "
+      two_words_connector: " e "
+      words_connector: ", "
+  time:
+    am: ''
+    formats:
+      default: "%a, %d de %B de %Y, %H:%M:%S %z"
+      long: "%d de %B de %Y, %H:%M"
+      short: "%d de %B, %H:%M"
+    pm: ''
+  
+  activerecord:
+    errors:
+      messages:
+        record_invalid: 'A validação falhou: %{errors}'
+        restrict_dependent_destroy:
+          has_one: Não é possível excluir o registro pois existe um %{record} dependente
+          has_many: Não é possível excluir o registro pois existem %{record} dependentes
+        importacao_duplicada: 'já possui conta importada com esse vencimento!' 
+        cnpj_raiz: 'possui raiz diferente do cadastro do cliente!'
+    models:
+      usuario: 
+        one: Usuário
+        other: Usuários
+      perfil:
+        one: Perfil
+        other: Perfis
+      cliente:
+        one: Cliente
+        other: Clientes
+      spe:
+        one: SPE
+        other: SPEs
+      fornecedor:
+        one: Fornecedor
+        other: Fornecedores
+      distribuidora:
+        one: Distribuidora
+        other: Distribuidoras
+      usina:
+        one: Usina
+        other: Usinas
+      unidade_consumidora:
+        one: Unidade Consumidora
+        other: Unidades Consumidoras
+      fornecimento_usina:
+        one: Fornecimento (Usina)
+        other: Fornecimentos (Usinas)
+      cliente_distribuidora_login:
+        one: Login
+        other: Logins
+      cliente_distribuidora:
+        one: Distribuidora
+        other: Distribuidoras
+      contato:
+        one: Contato
+        other: Contatos
+      conta:
+        one: Conta
+        other: Contas
+      fatura_discriminacao:
+        one: Fatura - Discriminação
+        other: Faturas - Discriminação
+      fatura_discriminacao_atributo:
+        one: Fatura - Atributo
+        other: Fatura - Atributos
+      endereco:
+        one: Endereço
+        other: Endereços
+      contrato:
+        one: Contrato
+        other: Contratos
+      arrendamento_contrato:
+        one: Contrato de Arrendamento
+        other: Contratos de Arrendamento
+      om_contrato:
+        one: Contrato de O&M
+        other: Contratos de O&M
+      esco_contrato:
+        one: Contrato de ESCO
+        other: Contratos de ESCO
+      pdf_contrato:
+        one: PDF do Contrato
+        other: PDF's do Contrato
+      usina_arrendatario:
+        one: Usina - Arrendatário
+        other: Usina - Arrendatários
+      arrendamento_contrato_unidade:
+        one: Unidade - Contrato de Arrendamento
+        other: Unidades - Contrato de Arrendamento
+      esco_contrato_unidade:
+        one: Unidade - Contrato de ESCO
+        other: Unidades - Contrato de ESCO
+      relatorio:
+        one: Relatório
+        other: Relatórios
+      motivo_oferta_frete:
+        one: Motivo
+        other: Motivos
+
+    attributes:
+      cerquilha: "#"
+      usuario:
+        current_sign_in_at: Sessão Atual em  #g
+        current_sign_in_ip: IP atual #g
+        custom_permissions: Permissões Personalizadas  #g
+        email: E-mail  #g
+        encrypted_password: Senha Criptografada  #g
+        last_sign_in_at: Último acesso em  #g
+        last_sign_in_ip: Último acesso ip  #g
+        nome: Nome  #g
+        perfil: Perfil  #g
+        remember_created_at: Lembrar criado dia  #g
+        reset_password_sent_at: Redefinir a senha enviada em  #g
+        reset_password_token: Token de redefinição de senha  #g
+        telefone: Telefone  #g
+        perfil_id: Perfil
+        index: Lista de Usuários
+        password: Nova Senha
+        current_password: Senha Atual
+        password_confirmation: Confirmação de Senha
+
+      empresa:
+        cnpj: CNPJ  #g
+        desvio_percentual: Desvio Percentual  #g
+        endereco: Endereço  #g
+        nome: Nome  #g
+        index: "Lista de %{tipo}" #g
+        clientes_associados: Clientes Associados
+        fornecedor: Fornecedor
+
+      endereco:
+        municipio: Município
+        uf: UF
+        cep: CEP
+        lat: Latitude
+        long: Longitude
+
+      fatura_discriminacao:
+        fatura_discriminacao_atributo: Descrição
+
+      fatura_discriminacao_atributo:
+        index: Lista de Atributos
+        descricao: Descrição
+        quantidade: Quant.
+        tarifa: Tarifa
+        valor: Valor
+        tipo: Tipo
+        distribuidora: Distribuidora
+        is_set: Definido
+        credito: Desconsiderar
+        taxa_disponibilidade: Taxa de Dispon.
+      fornecimento_usina:
+        index: Lista de Fornecimentos
+        data_hora: Data/Hora
+        kwh_forn: kWh Fornecidos
+        kwh_rec: kWh Recebidos
+        usina_id: Usina
+
+      contato:
+        email: E-mail
+        funcao: Função
+
+      fornecedor:
+        index: Lista de Fornecedores
+
+      perfil:
+        nome: Nome  #g
+        usuarios: Usuários  #g
+        valor: Valor  #g
+        index: Lista de Perfis
+
+      distribuidora:
+        index: Lista de Distribuidoras
+        nome: Nome
+        url: URL
+        uf: UF
+        tusd: TUSD
+        te: TE
+
+      usina:
+        nome: Nome
+        index: Lista de Usinas
+        codigo: Código
+        endereco: Endereço
+        fonte: Fonte
+        potencia: Potência
+        garantia_fisica: Garantia Física
+        distribuidora: Distribuidora
+        spe: SPE
+        spe_id: SPE
+        arrendatario: Arrendatário
+      
+      unidade_consumidora:
+        nome: Nome
+        codigo: Código 
+        distribuidora: Distribuidora
+        cliente: Cliente
+        endereco: Endereço
+        cliente_id: Cliente
+        index: Lista de Unidades Consumidoras
+        unidade_geradora: Unidade Geradora  #g
+
+      cliente:
+        index: Lista de Clientes
+
+      fornecedor:
+        index: Lista de Fornecedores
+
+      spe:
+        index: Lista de SPE's
+
+      cliente_distribuidora_login:
+        numero_cliente: Número do Cliente
+
+      conta: 
+        unidade_consumidora: Unidade Consumidora
+        razao_social: Razão Social
+        ano: Ano
+        mes: Mês
+        mes_ano: Mês/ Ano
+        numero_cliente: Nº do Cliente
+        cnpj: CNPJ
+        debito_automatico: Nº Débito Automático
+        consumo_kwh: kWh
+        vencimento: Vencim.
+        valor_total: Valor Total
+        index: Lista de Contas
+        filename: Nome do Arquivo
+        endereco: Endereço
+        uf: UF
+
+      arrendamento_contrato:
+        index: Lista de Contratos de Arrendamento
+        cliente_id: Cliente
+        numero: Número
+        usina: Usina
+        valor_mensal: Valor Mensal
+        fornecedor_id: Fornecedor
+        data_inicio: Data de Início
+        data_fim: Data Final
+        esco_contrato: Contrato de ESCO
+        om_contrato: Contrato de O&M
+        percentual_credito: Percentual de Crédito
+        desvio_percentual: Desvio Percentual
+      
+      om_contrato:
+        index: Lista de Contratos O&M
+        cliente_id: Cliente
+        numero: Número
+        valor_unitario: Valor Unit.
+        valor_total: Valor Total
+        arrendamento_contratos: Contratos de Arrendamento
+        esco_contrato: Contrato de ESCO
+      
+      esco_contrato:
+        index: Lista de Contratos ESCO
+        cliente_id: Cliente
+        numero: Número
+        om_contrato: Contrato de O&M
+        arrendamento_contratos: Contratos de Arrendamento
+        desconto: Desconto (%)
+      
+      arrendamento_contrato_unidade:
+        percentual_credito: Percentual de Crédito
+      
+      esco_contrato_unidade:
+        unidade_atendida: Unidade Atendida
+
+      csv_fornecimento_usina:
+        csv_fornecimento: Arquivo CSV
+      
+      relatorio:
+        cliente_id: Cliente
+        usina_ids: Usinas
+        unidade_consumidora_ids: Unidades Consumidoras
+        data_inicio: Data de Início
+        data_fim: Data Final
+        data_inicio_mes_ano: Data de Início (MM/AAAA)
+        data_fim_mes_ano: Data Final (MM/AAAA)
+        data_inicio_contrato: Data Início (Contratos)
+        data_fim_contrato: Data Final (Contratos)
+      update_success_a: atualizada com sucesso
+      destroy_success_a: removida com sucesso
+
+    messages:
+      create_success: criado com sucesso
+      update_success: atualizado com sucesso
+      destroy_success: removido com sucesso
+      create_success_a: criada com sucesso
+      update_success_a: atualizada com sucesso
+      destroy_success_a: removida com sucesso
+      import_csv_success: O arquivo CSV foi recebido com sucesso. Ele será processado e você receberá o retorno por e-mail.
+
+
+  destroy: Remover
+  mensagem_confirm: Você tem certeza?
+
+
+  permissions:
+    name: Permissões
+    custom: Permissões Personalizadas
+
+    context:
+      application: 
+        name: Geral
+      cadastros:
+        name: Cadastros
+        user_management:
+          name: Usuários
+        perfis:
+          name: Perfis
+        fornecedores:
+          name: Fornecedores
+        clientes:
+          name: Clientes
+        spes:
+          name: SPE's
+        distribuidoras:
+          name: Distribuidoras
+        usinas:
+          name: Usinas
+        unidades_consumidoras:
+          name: Unidades Consumidoras
+      fornecimento_usinas:
+        name: Usinas - Fornecimento
+      contas:
+        name: Contas
+        fatura_discriminacao_atributos:
+          name: Fatura - Atributos
+      contratos:
+        name: Contratos
+        arrendamento_contratos:
+          name: Contratos de Arrendamento
+        om_contratos:
+          name: Contratos de O&M
+        esco_contratos:
+          name: Contratos de ESCO
+      relatorios:
+        name: Relatórios
+        economia:
+          name: Economia
+        quantidade_de_credito: 
+          name: Quantidade de Crédito
+        energia_gerada:
+          name: Energia Gerada
+        cliente_arrendatarios:
+          name: Unidades Arrendadas
+        fornecedor_faturamento:
+          name: Faturamento Mensal
+        creditos_acumulados:
+          name: Créditos Acumulados
+
+
+    actions:
+      manage_all: Administrador
+      read: Visualizar
+      create: Criar
+      update: Editar
+      destroy: Excluir
+      importar_csv: Importar CSV's
+      importar_pdf: Importar PDF's
+      gerar_relatorio: Gerar Relatório
+
+  menu:
+    cadastros: Cadastros
+    empresas: Empresas
+
+  TransportadorasController: Transportadoras
+  UsersController: Usuários
+  PerfisController: Perfis de Acesso
+  Application: Administrativo
+  FiltroDatatablesController: Filtros
+  ImportacoesController: Importação
+  MotoristasController: Motoristas
+  TipoVeiculosController: Tipo de Veiculo
+  TransportadoraFiliaisController: Transportadora Filiais
+  TransportesController: Transportes
+  VeiculosController: Veiculos
+  MotivoOfertaFretesController: Motivos Ofertão
+  ConfiguracaoOfertaFretesController: Configuração do Ofertão
+  CentrosController: Centro de Distribuição
+
+  organizado: ORGANIZADO
+  ag_sap: AGUARDANDO SAP
+  dbelgo: DBELGO PENDENTE
+  pendente_cotacao: PENDENTE COTAÇÃO
+  pendente_oferta_coletiva: PENDENTE OFERTA COLETIVA
+  restricao_comercial: RESTRIÇÃO COMERCIAL
+  pendente_agendamento: PENDENTE AGENDAMENTO
+  pendente_vistoria: PENDENTE VISTORIA
+  pendente_faturamento: PENDENTE FATURAMENTO
+  pendente_pv: PENDENTE PLANO DE VIAGEM
+  em_viagem: EM VIAGEM
+  finalizado: FINALIZADO
+  embarque_liberado: EMBARQUE LIBERADO
+  liberacao_pa: LIBERAÇÃO PA
+  limbo: APAGADO
+  cancelado: CANCELADO
+  ofeta_coletiva_andamento: OFERTA COLETIVA EM ANDAMENTO
+  cotacao_andamento: COTAÇÃO EM ANDAMENTO
+  cotacao_encerrada: AGUARDANDO SAP
+  oferta_coletiva_encerrada: AGUARDANDO SAP
+
+  portaria: PORTARIA
+  pendente_vistoria_entrada: PORTARIA VISTORIA ENTRADA
+  pendente_pesagem_inicial: PORTARIA VISTORIA INICIAL
+  carregamento_andamento: CARREGAMENTO EM ANDAMENTO
+  pendente_pesagem_final: PENDENTE PESAGEM FINAL
+  pendente_enlonamento: PENDENTE ENLONAMENTO
+  pendente_vistoria_saida: PENDENTE VISTORIA SAIDA
+  dp01: DP01
+  dp02: DP02
+  dp03: DP03
+  dp04: DP04
+  fila_dp01: FILA DP01
+  fila_dp02: FILA DP02
+  fila_dp03: FILA DP03
+  fila_dp04: FILA DP04
