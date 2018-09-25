@@ -6,11 +6,10 @@ class User < ApplicationRecord
   :recoverable, :rememberable, :validatable
 
 
-  belongs_to :tipo_user
+  belongs_to :tipo_user, optional: true
 
   validates_presence_of :nome
   validates_presence_of :codigo
-  validates_presence_of :tipo_id
 
   has_attached_file :imagem
   do_not_validate_attachment_file_type :imagem
