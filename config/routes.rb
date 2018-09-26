@@ -12,5 +12,10 @@ Rails.application.routes.draw do
   resources :users, except: [:show], path: "/controle_de_usuarios"
   resources :produtos
   resources :tipo_users
+  resources :combos
+
+  # Ajax
+  match "/creditar" => "users#creditar", via: [:get, :post]
+
   
 end

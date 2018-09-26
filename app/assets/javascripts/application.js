@@ -40,6 +40,9 @@
 //= require buttons.html5.min
 //= require buttons.print.min
 //= require dropify/dist/js/dropify.min
+//= require select2/dist/js/select2.full.min.js
+//= require bootstrap-select/bootstrap-select.min.js
+//= require multiselect/js/jquery.multi-select.js
 
 
 $(document).ready(function() {

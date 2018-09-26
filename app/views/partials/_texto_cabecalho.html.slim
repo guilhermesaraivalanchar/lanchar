@@ -1,6 +1,6 @@
 .row.page-titles
   .user-img
-    img.img-circle alt="user" src="#{current_user.imagem.url}" width="80"
+    img.img-circle alt="user" src="#{current_user.imagem.url}" width="80" height="80"
     span.profile-status.online.pull-right
   .mail-contnet.align-self-center style="margin-left: 10px"
     h3.text-themecolor style="margin-left: 10px"
@@ -9,6 +9,7 @@
       .chart-text.m-r-10
         h6.m-b-0
           small Saldo Atual
-        h4.m-t-0.text-info R$58,35
+        h4.m-t-0.text-info
+          = "R$ #{current_user.saldo}"
       .spark-chart
         #monthchart

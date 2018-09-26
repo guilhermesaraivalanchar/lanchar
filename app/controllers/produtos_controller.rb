@@ -4,11 +4,11 @@ class ProdutosController < ApplicationController
   end
 
   def show
-    @produto = Produto.find(params[:id])
+    init_current
   end
 
   def edit
-    @produto = Produto.find(params[:id])
+    init_current
 
     if @produto.imagem_file_name != nil
       @imagem = @produto.imagem.url.split("?")
@@ -17,11 +17,11 @@ class ProdutosController < ApplicationController
   end
 
   def new
-    @produto = Produto.new()
+    init_new
   end
 
   def create
-    @produto = Produto.new()
+    init_new
     respond_to do |format|
       if @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto criado com sucesso.") }
@@ -34,7 +34,7 @@ class ProdutosController < ApplicationController
   end
 
   def update
-    @produto = Produto.find(params[:id])
+    init_current
     respond_to do |format|
       if @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto editado com sucesso.") }
@@ -47,7 +47,7 @@ class ProdutosController < ApplicationController
   end
 
   def destroy
-    @produto = Produto.find(params[:id])
+    init_current
     respond_to do |format|
       if @produto.destroy
         format.html { redirect_to(produtos_path, :notice => "Produto apagado com sucesso.") }
@@ -60,5 +60,13 @@ class ProdutosController < ApplicationController
 private
   def produto_params
     params.require(:produto).permit!
+  end
+
+  def init_new
+    @produto = Produto.new()
+  end
+
+  def init_current
+    @produto = Produto.find(params[:id])
   end
 end

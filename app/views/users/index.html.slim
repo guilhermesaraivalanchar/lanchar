@@ -1,4 +1,3 @@
-= render partial: "/partials/texto_cabecalho"
 h1 Users#index
 p Find me in app/views/users/index.html.slim
 .row
@@ -35,7 +34,7 @@ p Find me in app/views/users/index.html.slim
                     = user.cartao_id
                   td
                     = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" type="button" style="margin-right: 10px" Creditar
+                    button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
                     = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 
 
@@ -49,17 +48,24 @@ p Find me in app/views/users/index.html.slim
       .modal-body
         form
           .form-group
-            label.control-label for="recipient-name"  Quantidade:
-            input#recipient-name1.form-control type="text"
+            label.control-label style="font-weight: bold" for="recipient-name" Nome:
+            div#modal_nome
+            label.control-label style="font-weight: bold" for="recipient-name" Saldo Atual:
+            div#modal_saldo
+            label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
+            input#quantidade_credito.form-control type="text"
+        div#creditado_alerta class="alert alert-success" style="display:none" Aluno Creditado com sucesso.
       .modal-footer
         div#botoes_modal
-          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px"  Close
-          button.btn.btn-primary type="button"  Send message
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
+          button#botao_creditar.btn.btn-primary type="button" Creditar
         div#spiner_modal
           svg class="circular" viewBox="25 25 50 50"
             circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
 
 javascript:
+    var user_id = 0;
+
     $('#example23').DataTable({
         "displayLength": 15,
         dom: 'Bfrtip',
@@ -68,20 +74,36 @@ javascript:
         ]
     });
 
-    $('[id^=creditar_]').click(function(){
+    $("#botao_creditar").click(function(){
 
-      console.log(this.id)
-      
-      elemento_referencia = this.id.split("_")
+      $.getJSON("/creditar", { user_id: user_id, valor: $("#quantidade_credito").val() },function(d){
+        if (d) {
+          console.log(d);
+          if (d.resultado == "OK"){
+            $("#creditado_alerta").show();
+            setTimeout(function(){
 
-      user_nome = this.getAttribute("nome_user")
-      user_id = elemento_referencia[1]
+              $("#quantidade_credito").val("");
+              $("#creditado_alerta").hide();
 
-      console.log(user_nome)
-      console.log(user_id)
+            }, 1000);
+          }
+        } else {
 
-      $("#exampleModalLabel1").html("Creditar para "+user_nome);
-
-
+        }
+      })
 
     })
+
+    $('[id^=creditar_]').click(function(){
+      elemento_referencia = this.id.split("_")
+      user_nome = this.getAttribute("nome_user")
+      saldo_user = this.getAttribute("saldo_user")
+
+      user_id = elemento_referencia[1]
+      $("#exampleModalLabel1").html("Creditar para "+user_nome);
+      $("#modal_nome").html(user_nome);
+      $("#modal_saldo").html("R$ " +saldo_user);
+      
+    })
+

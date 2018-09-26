@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_23_194333) do
+ActiveRecord::Schema.define(version: 2018_09_26_013119) do
+
+  create_table "combo_produtos", force: :cascade do |t|
+    t.integer "produto_id"
+    t.integer "combo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "combos", force: :cascade do |t|
+    t.string "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "imagem_file_name"
+    t.string "imagem_content_type"
+    t.bigint "imagem_file_size"
+    t.datetime "imagem_updated_at"
+  end
 
   create_table "escolas", force: :cascade do |t|
     t.string "nome"

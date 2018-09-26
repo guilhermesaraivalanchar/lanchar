@@ -25,7 +25,9 @@
  *= require datatables/media/css/dataTables.bootstrap4
  *= require dropify/dist/css/dropify.min
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
- 
+ *= require select2/dist/css/select2.min.css
+ *= require multiselect/css/multi-select.css
+ *= require bootstrap-select/bootstrap-select.min.css
 
 
 

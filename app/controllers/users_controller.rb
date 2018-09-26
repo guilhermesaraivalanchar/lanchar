@@ -61,6 +61,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def creditar
+    user = User.find(params[:user_id])
+    if user
+      if user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
+          render json:  { resultado: "OK" }
+        else
+          render json:  { resultado: "ERRO_ADD" }
+        end
+    else
+      render json:  { resultado: "USU_INEXISTENTE" }
+    end
+
+  end
+
 private
   def user_params
     params.require(:user).permit!

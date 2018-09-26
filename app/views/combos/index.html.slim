@@ -1,12 +1,12 @@
-h1 TipoUsers#index
-p Find me in app/views/tipo_users/index.html.slim
+h1 Combos#index
+p Find me in app/views/combos/index.html.slim
 .row
   .col-12
     .card
       .card-body
         h4.card-title Data Export
         h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
-        = link_to "Novo tipo de usuário", new_tipo_user_path, class: "btn btn-info waves-effect waves-light"
+        = link_to "Novo combo", new_combo_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
             col width="90%"
@@ -16,13 +16,13 @@ p Find me in app/views/tipo_users/index.html.slim
                 th Nome
                 th Ação
             tbody
-              - @tipo_users.each do |tipo_user|
+              - @combos.each do |combo|
                 tr
                   td 
-                    = tipo_user.nome
+                    = combo.nome
                   td
-                    = link_to "Editar", edit_tipo_user_path(tipo_user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    = link_to "Deletar", tipo_user_path(tipo_user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{tipo_user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+                    = link_to "Editar", edit_combo_path(combo.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    = link_to "Deletar", combo_path(combo), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{combo.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({
         "displayLength": 15,
