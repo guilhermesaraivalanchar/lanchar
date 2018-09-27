@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'compras/index'
   root to: 'application#index'
 
   devise_for :users
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
   resources :produtos
   resources :tipo_users
   resources :combos
+  resources :compras
 
   # Ajax
   match "/creditar" => "users#creditar", via: [:get, :post]

@@ -1,0 +1,69 @@
+h1 Compras#index
+p Find me in app/views/compras/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Editar Usuário
+        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        h5.m-t-20 Itens
+        select#select_val.select2.m-b-10.select2-multiple data-placeholder="Escolha seus produtos" multiple="multiple" style=("width: 100%")
+          - Produto.all.each do |produto|
+            option value="#{produto.id}"
+              = "#{produto.nome}"
+        h5.m-t-20 Usuário
+        select#select_val.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
+          option value="" Escolha um usuário
+          - User.all.each do |user|
+            option value="#{user.id}"
+              = "#{user.nome}"
+        br
+        br
+        button.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Enviar
+
+        br
+        br
+
+        div.comment-widgets
+          div.d-flex.flex-row.comment-row
+            div class="w-100"
+              h5
+                | Ricardo Martins Rodriguez
+              div id="div_obs" class="m-b-5"
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+              div class="comment-footer"
+                span class="text-muted"
+                  | Total : R$ 56,52
+          div.d-flex.flex-row.comment-row
+            div class="w-100"
+              h5
+                | Ricardo Martins Rodriguez
+              div id="div_obs" class="m-b-5"
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+                br
+                = "Combo - R$ 12,20"
+              div class="comment-footer"
+                span class="text-muted"
+                  | Total : R$ 56,52
+          
+
+
+javascript:
+  $("#select_val").change(function(){
+    console.log($(this).val())
+  })
+  $(".select2").select2();
