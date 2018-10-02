@@ -63,6 +63,7 @@ class UsersController < ApplicationController
 
   def creditar
     user = User.find(params[:user_id])
+    user.saldo = 0 if !user.saldo
     if user
       if user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
           render json:  { resultado: "OK" }
