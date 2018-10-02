@@ -1,6 +1,7 @@
 class Produto < ApplicationRecord
   include AASM
 
+  has_many :cardapio_produtos
   has_many :combo_produtos
   has_attached_file :imagem, :styles => { :original => "400x400>"}
   do_not_validate_attachment_file_type :imagem

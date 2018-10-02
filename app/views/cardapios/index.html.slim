@@ -1,0 +1,51 @@
+h1 Cardapios#index
+p Find me in app/views/cardapios/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Data Export
+        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        = link_to "Novo cardapio", new_cardapio_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="90%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Ação
+            tbody
+              - @cardapios.each do |cardapio|
+                tr
+                  td 
+                    = cardapio.nome
+                  td
+                    - if cardapio.ativo
+                      button.btn.waves-effect.waves-light.btn-secundary cardapio_id="#{cardapio.id}" style="margin-right: 10px" Atual 
+                    - else
+                      button#usar_cardapio.btn.waves-effect.waves-light.btn-primary cardapio_id="#{cardapio.id}" style="margin-right: 10px" Usar 
+                    = link_to "Editar", edit_cardapio_path(cardapio.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    = link_to "Deletar", cardapio_path(cardapio), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{cardapio.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
+
+    $('#usar_cardapio').click(function(){
+      $.getJSON("/setar_cardapio", { cardapio_id: this.getAttribute("cardapio_id") },function(resultado) {
+        if (resultado) {
+          console.log(resultado);
+          if (resultado.status == "OK"){
+            location.reload();
+          }
+
+        } else {
+          console.log("NAO DEU");
+        }
+      })
+    })

@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_26_013119) do
+ActiveRecord::Schema.define(version: 2018_10_01_233910) do
+
+  create_table "cardapio_produtos", force: :cascade do |t|
+    t.integer "produto_id"
+    t.integer "cardapio_id"
+    t.decimal "preco", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cardapios", force: :cascade do |t|
+    t.string "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "ativo"
+  end
 
   create_table "combo_produtos", force: :cascade do |t|
     t.integer "produto_id"

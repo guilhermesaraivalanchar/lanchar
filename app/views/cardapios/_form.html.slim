@@ -1,0 +1,32 @@
+= render :partial => "/partials/error_display", :locals => { :object => @cardapio }
+
+.form-body
+  = simple_form_for @cardapio do |f|
+    h4.box-title.m-t-10
+      | Dados do Cardápio
+    hr
+    .clear
+    div.col-12
+      = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
+      br
+
+    h4.box-title.m-t-10
+      | Produtos
+    hr
+    .row.m-b-20
+      .col-12
+        = f.simple_fields_for :cardapio_produtos do |w|
+          = render "cardapio_produto_fields", { :f => w }
+            .clear
+
+        div
+          = link_to_add_association "<button class='btn btn-primary waves-effect waves-light' helper='button'>Adicionar Produto</button>".html_safe, f, :cardapio_produtos
+
+      .clear
+      br
+
+
+    .clear
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+      | Enviar
+    = link_to "Voltar", cardapios_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"

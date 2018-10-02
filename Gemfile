@@ -12,6 +12,7 @@ gem 'devise'
 gem 'i18n'
 gem 'bootstrap', '~> 4.1.3'
 gem 'aasm'
+gem 'cocoon', '~> 1.2', '>= 1.2.11'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'

@@ -43,7 +43,8 @@
 //= require select2/dist/js/select2.full.min.js
 //= require bootstrap-select/bootstrap-select.min.js
 //= require multiselect/js/jquery.multi-select.js
-
+//= require cocoon
+//= require jquery.maskMoney
 
 $(document).ready(function() {
 
