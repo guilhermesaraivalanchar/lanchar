@@ -9,22 +9,21 @@
     div.col-12
       = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
       br
+    h4.box-title.m-t-10
+      | Permissões do Grupo
+    hr
+    - @permissoes.each do |nome, permissoes_grupo|
+      div.col-12 style="padding-left: 15px; padding-right: 15px;"
+        button.btn.btn-secondary.btn-block.text-uppdercase.waves-effect.waves-light type="button" data-toggle="collapse" data-target="#filho_#{permissoes_grupo.first.permissao_codigo}" aria-expanded="false" aria-controls="filho_#{permissoes_grupo.first.permissao_codigo}"
+          = nome
 
+        .collapse id="filho_#{permissoes_grupo.first.permissao_codigo}" style="padding-top: 5px;"
+          .row
+            - permissoes_grupo.each do |perm|
+              .col-3 data-toggle="tooltip" data-placement="top" data-original-title="#{perm.permissao_nome}" title="#{perm.permissao_nome}"
+                = f.input :permissao_ids, label: perm.permissao_nome ,as: :boolean,boolean_style: :inline, checked: 'checked', checked_value: perm.id, unchecked_value: nil, disabled: false, input_html: { :class => "filled-in", id: "tipo_user_permissao_ids_#{perm.id}", name: "tipo_user[permissao_ids][]", checked: @tipo_user.tem_permissao(perm.permissao_codigo)}
+    br
     .clear
     button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
       | Enviar
     = link_to "Voltar", tipo_users_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
-
-
-javascript:
-  $('.dropify').dropify({
-    messages: {
-      'default': '',
-      'replace': 'Arraste a Imagem ou click aqui para trocar',
-      'remove':  'Remove',
-      'error':   'Ooops, Ocorreu um erro.'
-    },
-    error: {
-      'fileExtension': 'Formato do arquivo não permitido, Formatos permitidos: ({{ value }}).'
-    }
-  });

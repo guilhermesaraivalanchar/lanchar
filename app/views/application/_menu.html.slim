@@ -5,18 +5,28 @@ ul#sidebarnav.in
       span.hide-menu
         | Cadastros
     ul.collapse
-      li
-        = link_to("Usuários", users_path)
-      li
-        = link_to("Tipos de Usuários", tipo_users_path)
-      li 
-        = link_to("Produtos", produtos_path, class: "has-arrow")
-        ul.collapse
-          li
-            = link_to "Produtos", produtos_path
-          li
-            = link_to "Combos", combos_path
-      li
-        = link_to("Compras", compras_path)
-      li
-        = link_to("Cardápios", cardapios_path)
+      - if current_user.tem_permissao("ver_usuarios")
+        li
+          = link_to("Usuários", users_path)
+      - if current_user.tem_permissao("ver_tipo_usuarios")
+        li
+          = link_to("Tipos de Usuários", tipo_users_path)
+      - if current_user.tem_permissao("ver_tipo_produtos")
+        li
+          = link_to("Tipos de Produtos", tipo_produtos_path)
+      - if current_user.tem_permissao("ver_produtos") || current_user.tem_permissao("ver_combos")
+        li 
+          = link_to("Produtos", produtos_path, class: "has-arrow")
+          ul.collapse
+            - if current_user.tem_permissao("ver_produtos")
+              li
+                = link_to "Produtos", produtos_path
+            - if current_user.tem_permissao("ver_combos")
+              li
+                = link_to "Combos", combos_path
+      - if current_user.tem_permissao("comprar_sistema")
+        li
+          = link_to("Compras", compras_path)
+      - if current_user.tem_permissao("ver_cardapio")
+        li
+          = link_to("Cardápios", cardapios_path)

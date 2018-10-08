@@ -6,7 +6,8 @@ p Find me in app/views/combos/index.html.slim
       .card-body
         h4.card-title Data Export
         h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
-        = link_to "Novo combo", new_combo_path, class: "btn btn-info waves-effect waves-light"
+        - if current_user.tem_permissao("criar_combos")
+          = link_to "Novo combo", new_combo_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
             col width="90%"
@@ -21,8 +22,10 @@ p Find me in app/views/combos/index.html.slim
                   td 
                     = combo.nome
                   td
-                    = link_to "Editar", edit_combo_path(combo.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    = link_to "Deletar", combo_path(combo), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{combo.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+                    - if current_user.tem_permissao("editar_combos")
+                      = link_to "Editar", edit_combo_path(combo.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    - if current_user.tem_permissao("deletar_combos")
+                      = link_to "Deletar", combo_path(combo), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{combo.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({
         "displayLength": 15,

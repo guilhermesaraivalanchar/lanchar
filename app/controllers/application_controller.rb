@@ -4,5 +4,7 @@ class ApplicationController < ActionController::Base
 			#redirect_to "http://www.rubyonrails.org"
 			redirect_to new_user_session_path
 		end
+		@cardapio = Cardapio.where(ativo: true).last
+
 	end
 end

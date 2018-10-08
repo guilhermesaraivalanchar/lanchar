@@ -12,6 +12,7 @@
       = f.input :codigo, label: "Codigo", input_html: { nome_validacao: "Código" }
       = f.input :tipo_user_id, as: :select, label: "Tipo de Usuário", prompt: "Selecione" , collection: @tipo_users, input_html: { nome_validacao: "Tipo Usuário" }
       = f.input :cartao_id, label: "Cartão", input_html: { nome_validacao: "Código" }
+      = f.input :usuario_responsavel_id, as: :select, label: "Usuário Responsável", prompt: "Selecione" , collection: @users, input_html: { nome_validacao: "Tipo Usuário" }
       br
 
     .clear

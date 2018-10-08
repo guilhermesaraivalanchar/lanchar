@@ -17,19 +17,24 @@ class CardapiosController < ApplicationController
 
   def setar_cardapio
     
-    cardapio = Cardapio.find(params[:cardapio_id])
-    cardapio_atual = Cardapio.where(ativo: true).last
+    if current_user.tem_permissao("definir_cardapio")
 
-    cardapio_atual.update_attribute(:ativo, false) if cardapio_atual
-    cardapio.update_attribute(:ativo, true)
+      cardapio = Cardapio.find(params[:cardapio_id])
+      cardapio_atual = Cardapio.where(ativo: true).last
 
-    render json: { status: "OK"}
+      cardapio_atual.update_attribute(:ativo, false) if cardapio_atual
+      cardapio.update_attribute(:ativo, true)
+
+      render json: { status: "OK"}
+    else
+      render json: { status: "NEGADO"}
+    end
   end
 
   def create
     init_new
     respond_to do |format|
-      if @cardapio.update_attributes(cardapio_params)
+      if current_user.tem_permissao("criar_cardapio") && @cardapio.update_attributes(cardapio_params)
         format.html { redirect_to(cardapios_path, :notice => "Cardapio criado com sucesso.") }
       else
         format.html do
@@ -42,7 +47,7 @@ class CardapiosController < ApplicationController
   def update
     init_current
     respond_to do |format|
-      if @cardapio.update_attributes(cardapio_params)
+      if current_user.tem_permissao("editar_cardapio") && @cardapio.update_attributes(cardapio_params)
         format.html { redirect_to(cardapios_path, :notice => "Cardapio editado com sucesso.") }
       else
         format.html do
@@ -55,7 +60,7 @@ class CardapiosController < ApplicationController
   def destroy
     init_current
     respond_to do |format|
-      if @cardapio.destroy
+      if current_user.tem_permissao("deletar_cardapio") && @cardapio.destroy
         format.html { redirect_to(cardapios_path, :notice => "Cardapio apagado com sucesso.") }
       else
         format.html { redirect_to(cardapios_path, :notice => "Ocorreu um erro ao apagar o cardapio.") }
@@ -71,10 +76,12 @@ private
   def init_new
     @cardapio = Cardapio.new()
     @produtos = Produto.all.collect { |m| [m.nome, m.id] }
+    @combos = Combo.all.collect { |m| [m.nome, m.id] }
   end
 
   def init_current
     @cardapio = Cardapio.find(params[:id])
     @produtos = Produto.all.collect { |m| [m.nome, m.id] }
+    @combos = Combo.all.collect { |m| [m.nome, m.id] }
   end
 end

@@ -19,7 +19,7 @@ class UsersController < ApplicationController
   def update
     init_current
     respond_to do |format|
-      if @user.update_attributes(user_params)
+      if current_user.tem_permissao("editar_usuarios") && @user.update_attributes(user_params)
         format.html { redirect_to(users_path, :notice => "Usuário editado com sucesso.") }
       else
         format.html do
@@ -37,10 +37,10 @@ class UsersController < ApplicationController
     init_new 
     @user.assign_attributes(user_params)
     @user.password = "123456"
-    @user.email = "none@none.com"
+    @user.email = "none#{@user.codigo}@none.com"
     @user.saldo = 0
     respond_to do |format|
-      if @user.save
+      if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
       else
         format.html do
@@ -53,7 +53,7 @@ class UsersController < ApplicationController
   def destroy
     init_current
     respond_to do |format|
-      if @user.destroy
+      if current_user.tem_permissao("deletar_usuarios") && @user.destroy 
         format.html { redirect_to(users_path, :notice => "Usuário apagado com sucesso.") }
       else
         format.html { redirect_to(users_path, :notice => "Ocorreu um erro ao apagar o usuário.") }
@@ -65,7 +65,7 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
     user.saldo = 0 if !user.saldo
     if user
-      if user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
+      if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
           render json:  { resultado: "OK" }
         else
           render json:  { resultado: "ERRO_ADD" }
@@ -81,14 +81,18 @@ private
     params.require(:user).permit!
   end
 
+  def init_vars
+    @tipo_users = TipoUser.all.collect { |m| [m.nome, m.id] }
+    @users = User.all.collect { |m| [m.nome, m.id] }
+  end
+
   def init_new
     @user = User.new()
-    @tipo_users = TipoUser.all.collect { |m| [m.nome, m.id] }
-
+    init_vars
   end
 
   def init_current
     @user = User.find(params[:id])
-    @tipo_users = TipoUser.all.collect { |m| [m.nome, m.id] }
+    init_vars
   end
 end

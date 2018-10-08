@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_movimentou_id: 1
+  user_comprou_id: 1
+  produto_id: 1
+  combo_id: 1
+
+two:
+  user_movimentou_id: 1
+  user_comprou_id: 1
+  produto_id: 1
+  combo_id: 1

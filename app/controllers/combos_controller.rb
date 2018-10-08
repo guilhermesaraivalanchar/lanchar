@@ -23,7 +23,7 @@ class CombosController < ApplicationController
   def create
     init_new
     respond_to do |format|
-      if @combo.update_attributes(combo_params)
+      if current_user.tem_permissao("criar_combos") && @combo.update_attributes(combo_params)
         format.html { redirect_to(combos_path, :notice => "Combo criado com sucesso.") }
       else
         format.html do
@@ -36,7 +36,7 @@ class CombosController < ApplicationController
   def update
     init_current
     respond_to do |format|
-      if @combo.update_attributes(combo_params)
+      if current_user.tem_permissao("editar_combos") && @combo.update_attributes(combo_params)
         format.html { redirect_to(combos_path, :notice => "Combo editado com sucesso.") }
       else
         format.html do
@@ -49,7 +49,7 @@ class CombosController < ApplicationController
   def destroy
     init_current
     respond_to do |format|
-      if @combo.destroy
+      if current_user.tem_permissao("deletar_combos") && @combo.destroy
         format.html { redirect_to(combos_path, :notice => "Combo apagado com sucesso.") }
       else
         format.html { redirect_to(combos_path, :notice => "Ocorreu um erro ao apagar o combo.") }

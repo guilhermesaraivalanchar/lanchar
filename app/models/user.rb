@@ -11,12 +11,18 @@ class User < ApplicationRecord
   validates_presence_of :nome
   validates_presence_of :codigo
 
+  validates :codigo, uniqueness: true
+
+  has_many :transferencias
+
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"
   #validates_attachment_content_type :imagem, :message => "O arquivo enviado não é uma imagem", :content_type => %w( image/jpeg image/png image/gif image/pjpeg image/x-png )
 
   validate :tipo_foto
+
+  accepts_nested_attributes_for :transferencias, reject_if: :all_blank, allow_destroy: true
   
   def tipo_foto
 
@@ -25,4 +31,7 @@ class User < ApplicationRecord
     end
   end
 
+  def tem_permissao(perm_codigo)
+    self.tipo_user.tem_permissao(perm_codigo)
+  end
 end

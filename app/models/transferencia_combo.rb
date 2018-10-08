@@ -1,0 +1,2 @@
+class TransferenciaCombo < ApplicationRecord
+end

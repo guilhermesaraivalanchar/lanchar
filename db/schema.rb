@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_01_233910) do
+ActiveRecord::Schema.define(version: 2018_10_07_195825) do
+
+  create_table "cardapio_combos", force: :cascade do |t|
+    t.integer "combo_id"
+    t.integer "cardapio_id"
+    t.decimal "preco", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "cardapio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -29,6 +37,13 @@ ActiveRecord::Schema.define(version: 2018_10_01_233910) do
 
   create_table "combo_produtos", force: :cascade do |t|
     t.integer "produto_id"
+    t.integer "combo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "combo_tipo_produtos", force: :cascade do |t|
+    t.integer "tipo_produto_id"
     t.integer "combo_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -61,6 +76,22 @@ ActiveRecord::Schema.define(version: 2018_10_01_233910) do
     t.string "escola_id"
   end
 
+  create_table "permissoes", force: :cascade do |t|
+    t.string "permissao_nome"
+    t.string "permissao_codigo"
+    t.string "permissao_grupo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "permissoes_users", force: :cascade do |t|
+    t.integer "tipo_user_id"
+    t.integer "user_id"
+    t.integer "permissao_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "produtos", force: :cascade do |t|
     t.integer "codigo"
     t.string "nome"
@@ -74,11 +105,34 @@ ActiveRecord::Schema.define(version: 2018_10_01_233910) do
     t.string "imagem_content_type"
     t.bigint "imagem_file_size"
     t.datetime "imagem_updated_at"
+    t.integer "tipo_produto_id"
+  end
+
+  create_table "tipo_produtos", force: :cascade do |t|
+    t.string "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tipo_users", force: :cascade do |t|
     t.string "nome"
     t.integer "desconto_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "transferencia_combos", force: :cascade do |t|
+    t.integer "transferencia_id"
+    t.integer "combo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "transferencias", force: :cascade do |t|
+    t.integer "user_movimentou_id"
+    t.integer "user_id"
+    t.integer "produto_id"
+    t.integer "combo_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -102,6 +156,7 @@ ActiveRecord::Schema.define(version: 2018_10_01_233910) do
     t.datetime "imagem_updated_at"
     t.string "tipo_user_id"
     t.decimal "saldo", precision: 10, scale: 2
+    t.integer "usuario_responsavel_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

@@ -11,7 +11,7 @@
       = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
       = f.input :produtos, as: :hidden
       h5.m-t-20 Itens
-      select#select_val.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
+      select#select_produtos.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
         - combo_produtos = @combo.combo_produtos.map(&:produto_id)
         - Produto.all.each do |produto|
           - if combo_produtos.include?(produto.id)
@@ -20,6 +20,18 @@
           - else
             option value="#{produto.id}"
               = "#{produto.nome}"
+      = f.input :tipo_produtos, as: :hidden
+      h5.m-t-20 Tipo Produtos
+      select#select_tipo_produtos.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
+        - combo_tipo_produtos = @combo.combo_tipo_produtos.map(&:tipo_produto_id)
+        - TipoProduto.all.each do |tipo_produto|
+          - if combo_tipo_produtos.include?(tipo_produto.id)
+            option selected="true" value="#{tipo_produto.id}"
+              = "#{tipo_produto.nome}"
+          - else
+            option value="#{tipo_produto.id}"
+              = "#{tipo_produto.nome}"
+
     br
     .clear
     button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
@@ -28,10 +40,16 @@
 
 
 javascript:
-  $("#select_val").change(function(){
+  $("#select_produtos").change(function(){
     console.log($(this).val())
     $("#combo_produtos").val($(this).val())
   })
+
+  $("#select_tipo_produtos").change(function(){
+    console.log($(this).val())
+    $("#combo_tipo_produtos").val($(this).val())
+  })
+
   $(".select2").select2();
   $('.dropify').dropify({
     messages: {

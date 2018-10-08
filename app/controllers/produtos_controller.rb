@@ -23,7 +23,7 @@ class ProdutosController < ApplicationController
   def create
     init_new
     respond_to do |format|
-      if @produto.update_attributes(produto_params)
+      if current_user.tem_permissao("criar_usuarios") && @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto criado com sucesso.") }
       else
         format.html do
@@ -36,7 +36,7 @@ class ProdutosController < ApplicationController
   def update
     init_current
     respond_to do |format|
-      if @produto.update_attributes(produto_params)
+      if current_user.tem_permissao("editar_usuarios") && @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto editado com sucesso.") }
       else
         format.html do
@@ -49,7 +49,7 @@ class ProdutosController < ApplicationController
   def destroy
     init_current
     respond_to do |format|
-      if @produto.destroy
+      if current_user.tem_permissao("deletar_usuarios") && @produto.destroy
         format.html { redirect_to(produtos_path, :notice => "Produto apagado com sucesso.") }
       else
         format.html { redirect_to(produtos_path, :notice => "Ocorreu um erro ao apagar o produto.") }
@@ -64,9 +64,11 @@ private
 
   def init_new
     @produto = Produto.new()
+    @tipo_produtos = TipoProduto.all.collect { |m| [m.nome, m.id] }
   end
 
   def init_current
     @produto = Produto.find(params[:id])
+    @tipo_produtos = TipoProduto.all.collect { |m| [m.nome, m.id] }
   end
 end

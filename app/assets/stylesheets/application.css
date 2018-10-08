@@ -46,3 +46,8 @@
  color: #67757c;
  padding: 9px 15px;
 }
+
+.show_input{
+	font-weight: bold;
+	font-size: 14px;
+}

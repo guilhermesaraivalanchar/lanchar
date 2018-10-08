@@ -25,6 +25,20 @@
       .clear
       br
 
+    h4.box-title.m-t-10
+      | Combos
+    hr
+    .row.m-b-20
+      .col-12
+        = f.simple_fields_for :cardapio_combos do |w|
+          = render "cardapio_combo_fields", { :f => w }
+            .clear
+
+        div
+          = link_to_add_association "<button class='btn btn-primary waves-effect waves-light' helper='button'>Adicionar Combo</button>".html_safe, f, :cardapio_combos
+
+      .clear
+      br
 
     .clear
     button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"

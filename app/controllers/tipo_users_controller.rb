@@ -18,7 +18,7 @@ class TipoUsersController < ApplicationController
   def create
     init_new
     respond_to do |format|
-      if @tipo_user.update_attributes(tipo_user_params)
+      if current_user.tem_permissao("criar_tipo_usuarios") && @tipo_user.update_attributes(tipo_user_params)
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user criado com sucesso.") }
       else
         format.html do
@@ -31,7 +31,7 @@ class TipoUsersController < ApplicationController
   def update
     init_current
     respond_to do |format|
-      if @tipo_user.update_attributes(tipo_user_params)
+      if current_user.tem_permissao("editar_tipo_usuarios") && @tipo_user.update_attributes(tipo_user_params)
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user editado com sucesso.") }
       else
         format.html do
@@ -44,7 +44,7 @@ class TipoUsersController < ApplicationController
   def destroy
     init_current
     respond_to do |format|
-      if @tipo_user.destroy
+      if current_user.tem_permissao("deletar_tipo_usuarios") && @tipo_user.destroy
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user apagado com sucesso.") }
       else
         format.html { redirect_to(tipo_users_path, :notice => "Ocorreu um erro ao apagar o tipo_user.") }
@@ -59,9 +59,12 @@ private
 
   def init_new
     @tipo_user = TipoUser.new()
+
+    @permissoes = Permissao.all.group_by { |o| o.permissao_grupo }
   end
 
   def init_current
     @tipo_user = TipoUser.find(params[:id])
+    @permissoes = Permissao.all.group_by { |o| o.permissao_grupo }
   end
 end

@@ -6,7 +6,8 @@ p Find me in app/views/users/index.html.slim
       .card-body
         h4.card-title Data Export
         h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
-        = link_to "Novo Usuário", new_user_path, class: "btn btn-info waves-effect waves-light"
+        - if current_user.tem_permissao("criar_usuarios")
+          = link_to "Novo Usuário", new_user_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
             col width="30%"
@@ -20,12 +21,13 @@ p Find me in app/views/users/index.html.slim
                 th Matricula
                 th Tipo
                 th Cartão
+                th Saldo
                 th Ação
             tbody
               - @users.each do |user|
                 tr
                   td 
-                    = user.nome
+                    = link_to(user.nome, user_path(user.id))
                   td 
                     = user.codigo
                   td 
@@ -33,9 +35,14 @@ p Find me in app/views/users/index.html.slim
                   td
                     = user.cartao_id
                   td
-                    = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
-                    = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+                    = "R$ #{user.saldo}"
+                  td
+                    - if current_user.tem_permissao("criar_usuarios")
+                      = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    - if current_user.tem_permissao("creditar_usuarios_tabela")
+                      button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
+                    - if current_user.tem_permissao("deletar_usuarios")
+                      = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 

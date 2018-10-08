@@ -11,6 +11,7 @@
       = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
       = f.input :codigo, label: "Codigo", input_html: { nome_validacao: "Código" }
       = f.input :quantidade, label: "Quantidade", input_html: { nome_validacao: "Código", value: 0 }
+      = f.input :tipo_produto_id, as: :select, label: "Tipo do produto", prompt: "Selecione" , collection: @tipo_produtos, input_html: { nome_validacao: "Tipo produto" }
       br
 
     .clear
