@@ -1,3 +1,6 @@
 class Transferencia < ApplicationRecord
-   has_one :user
+	belongs_to :transferencia_geral
+	belongs_to :produto, optional: true
+	belongs_to :combo, optional: true
+	has_many :transferencia_combos, :dependent => :destroy
 end

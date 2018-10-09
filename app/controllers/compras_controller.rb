@@ -66,19 +66,38 @@ class ComprasController < ApplicationController
 
   def enviar_confirmacao_compra
     
-  	puts "
+    cardapio_ativo = Cardapio.where(ativo: true).last
 
+    params[:confirmacao].each do |conf|
 
+      user_id = conf.last[:user_id]
 
+      transf_geral = TransferenciaGeral.new(user_id: user_id)
+      preco_total = 0
+      if transf_geral.save
 
+        conf.last[:produtos].each do |prod_combo|
 
-  	#{params.inspect}
+          if prod_combo.last[:tipo] == "p"
+            prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
+            Transferencia.create(user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, produto_id: prod_combo.last[:id], valor: prod_preco)
+            preco_total += prod_preco
+          elsif prod_combo.last[:tipo] == "c"
+            combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+            transf = Transferencia.new(user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, combo_id: prod_combo.last[:id], valor: combo_preco)
+            preco_total += combo_preco
+            if transf.save
+              prod_combo.last[:produtos].each do |prod_id|
+                TransferenciaCombo.create(transferencia_id: transf.id, produto_id: prod_id)
+              end
+            end
+          end
+        end
 
+        transf_geral.update_attribute(:valor, preco_total)
+      end
 
-
-
-
-  	"
+    end
 
     render json: { status: "OK"}
 

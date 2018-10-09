@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_07_195825) do
+ActiveRecord::Schema.define(version: 2018_10_09_021027) do
 
   create_table "cardapio_combos", force: :cascade do |t|
     t.integer "combo_id"
@@ -22,6 +22,14 @@ ActiveRecord::Schema.define(version: 2018_10_07_195825) do
 
   create_table "cardapio_produtos", force: :cascade do |t|
     t.integer "produto_id"
+    t.integer "cardapio_id"
+    t.decimal "preco", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cardapio_tipo_produtos", force: :cascade do |t|
+    t.integer "tipo_produto_id"
     t.integer "cardapio_id"
     t.decimal "preco", precision: 10, scale: 2
     t.datetime "created_at", null: false
@@ -123,18 +131,26 @@ ActiveRecord::Schema.define(version: 2018_10_07_195825) do
 
   create_table "transferencia_combos", force: :cascade do |t|
     t.integer "transferencia_id"
-    t.integer "combo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "produto_id"
+  end
+
+  create_table "transferencia_gerais", force: :cascade do |t|
+    t.integer "user_id"
+    t.float "valor"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "transferencias", force: :cascade do |t|
     t.integer "user_movimentou_id"
-    t.integer "user_id"
     t.integer "produto_id"
     t.integer "combo_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "transferencia_geral_id"
+    t.float "valor"
   end
 
   create_table "users", force: :cascade do |t|

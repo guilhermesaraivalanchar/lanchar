@@ -3,6 +3,7 @@ class Combo < ApplicationRecord
 	has_many :combo_produtos
   has_many :combo_tipo_produtos
   has_many :cardapio_combos
+  has_many :transferencias
 
   has_attached_file :imagem, :styles => { :original => "400x400>"}
   do_not_validate_attachment_file_type :imagem

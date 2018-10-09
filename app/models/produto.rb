@@ -4,6 +4,8 @@ class Produto < ApplicationRecord
   belongs_to :tipo_produto
   has_many :cardapio_produtos
   has_many :combo_produtos
+  has_many :transferencias
+  has_many :transferencia_combos
   has_attached_file :imagem, :styles => { :original => "400x400>"}
   do_not_validate_attachment_file_type :imagem
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"

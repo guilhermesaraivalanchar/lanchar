@@ -13,7 +13,7 @@ class User < ApplicationRecord
 
   validates :codigo, uniqueness: true
 
-  has_many :transferencias
+  has_many :transferencia_gerais
 
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem
@@ -21,8 +21,6 @@ class User < ApplicationRecord
   #validates_attachment_content_type :imagem, :message => "O arquivo enviado não é uma imagem", :content_type => %w( image/jpeg image/png image/gif image/pjpeg image/x-png )
 
   validate :tipo_foto
-
-  accepts_nested_attributes_for :transferencias, reject_if: :all_blank, allow_destroy: true
   
   def tipo_foto
 

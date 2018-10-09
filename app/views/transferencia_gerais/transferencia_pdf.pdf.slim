@@ -1,0 +1,61 @@
+meta content="text/html; charset=utf-8" http-equiv="content-type"
+= wicked_pdf_javascript_include_tag "jquery.min.js", "application.js", "meiomask.min.js"
+
+css:
+  .b {
+    font-weight: bold;
+  }
+  .b_header {
+    padding-left: 10px;
+    font-size: 20px !important; 
+  }
+  .i {
+    font-style: italic;
+  }
+  .font-grande {
+    font-size: 15px;
+  }
+  * {
+    font-family: Courier;
+    font-size: 12px;
+  }
+
+  body {
+      padding: 0;
+      background-color: #FFF;
+      width: 210mm;
+      height: 297mm;
+  }
+
+  //table { page-break-inside:auto }
+  //tr    { page-break-inside:avoid; page-break-after:auto }
+  //thead { display:table-header-group }
+  //tfoot { display:table-footer-group }
+  .page-break { display:block; clear:both; page-break-after:always; }
+
+  .barby-barcode {
+    height: 70px;
+    width: 50px;
+    border: 0 none transparent !important;
+    border-collapse: collapse !important;
+  }
+  table.barby-barcode tr.barby_row {
+    border: 0 none transparent !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  table.barby-barcode tr.barby-row td { border: 0 none transparent !important; }
+  table.barby-barcode tr.barby-row td.on { background-color: black !important; }
+  table.barby-barcode tr.barby-row td.off { background-color: white !important; }
+
+  td {
+    padding: 5px 0;
+  }
+
+
+div style="font-size: 40px"
+  | --------------------------------------------------
+br
+div style="font-size: 40px"
+  = @transferencia_geral.user.nome
