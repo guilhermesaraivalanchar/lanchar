@@ -62,7 +62,7 @@ div style="font-size: 15px; max-width: 245px; text-align:center"
 div style="font-size: 15px; max-width: 245px"
   = "Empresa: IBS"
   br
-  = "Data/Hora: #{DateTime.now.strftime('%d/%m/%Y %H:%M')}"
+  = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
   br
   = "Aluno: "
   = "#{@transferencia_geral.user.nome}"
@@ -82,4 +82,3 @@ div style="font-size: 15px; max-width: 245px"
   div style="font-weight: bold;font-size: 20px;"
     = "Total: R$ #{@transferencia_geral.valor.to_f}"
   | -------------------------------------------------
-  

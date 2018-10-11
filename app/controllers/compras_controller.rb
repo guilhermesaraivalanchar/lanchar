@@ -68,6 +68,8 @@ class ComprasController < ApplicationController
     
     cardapio_ativo = Cardapio.where(ativo: true).last
 
+    resposta = []
+
     params[:confirmacao].each do |conf|
 
       user_id = conf.last[:user_id]
@@ -81,6 +83,8 @@ class ComprasController < ApplicationController
           if prod_combo.last[:tipo] == "p"
             prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
             Transferencia.create(user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, produto_id: prod_combo.last[:id], valor: prod_preco)
+            produto = Produto.find(prod_combo.last[:id])
+            produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
             preco_total += prod_preco
           elsif prod_combo.last[:tipo] == "c"
             combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
@@ -89,17 +93,25 @@ class ComprasController < ApplicationController
             if transf.save
               prod_combo.last[:produtos].each do |prod_id|
                 TransferenciaCombo.create(transferencia_id: transf.id, produto_id: prod_id)
+                produto = Produto.find(prod_id)
+                produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
               end
             end
           end
         end
 
         transf_geral.update_attribute(:valor, preco_total)
+        transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d)
+        resposta << {
+          div_confirmacao_id: conf.last[:div_confirmacao_id],
+          transf_geral_id: transf_geral.id
+        }
+
       end
 
     end
 
-    render json: { status: "OK"}
+    render json: { status: "OK", resposta: resposta}
 
   end
 

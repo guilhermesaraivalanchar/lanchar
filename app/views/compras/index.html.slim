@@ -174,7 +174,7 @@ javascript:
 
     elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+'</span></div></div>'
 
-    elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="add_prod_usu" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button></div></div>'
+    elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="/transferencia_gerais/transferencia_pdf/1.pdf" target="_blank">Imprimir</a></div></div>'
   
     $('#div_confirmacao').append(elemento_confirmacao)
 
@@ -208,9 +208,26 @@ javascript:
 
     $.getJSON("/enviar_confirmacao_compra", { confirmacao: confirmacao },function(resultado) {
       if (resultado) {
-        console.log(resultado);
+        console.log(resultado)
+        if (resultado.status == "OK"){
 
 
+          for(i in resultado.resposta){
+            div_confirmacao_id = resultado.resposta[i].div_confirmacao_id
+            transf_geral_id = resultado.resposta[i].transf_geral_id
+
+            $("#remover_confirmacao_"+div_confirmacao_id).hide()
+            $("#imprimir_confirmacao_"+div_confirmacao_id).attr("href","/transferencia_gerais/transferencia_pdf/"+transf_geral_id+".pdf");
+            $("#imprimir_confirmacao_"+div_confirmacao_id).show()
+            for(i in confirmacao){
+              if (confirmacao[i].div_confirmacao_id == div_confirmacao_id){
+                confirmacao.splice(i, 1);
+              }
+            }
+
+          }
+
+        }
       } else {
         console.log("NAO DEU");
       }

@@ -34,7 +34,7 @@ p Find me in app/views/users/index.html.slim
                     = user.tipo_user.nome rescue ""
                   td
                     = user.cartao_id
-                  td
+                  td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
                     = "R$ #{user.saldo}"
                   td
                     - if current_user.tem_permissao("criar_usuarios")
