@@ -53,8 +53,31 @@ css:
   }
 
 
-div style="font-size: 40px"
-  | -------------------
-br
-div style="font-size: 20px"
-  = "Breno Augusto Baião Santos"
+div style="font-size: 15px; max-width: 245px; text-align:center"
+  | -------------------------------------------------
+  br
+  | NOME LEGAL
+  br
+  | -------------------------------------------------
+div style="font-size: 15px; border: solid; max-width: 245px"
+  = "Empresa: IBS"
+  br
+  = "Data/Hora: #{DateTime.now.strftime('%d/%m/%Y %H:%M')}"
+  br
+  = "Aluno: "
+  = "#{@transferencia_geral.user.nome}"
+  br
+  = "Itens: "
+  br
+  - @transferencia_geral.transferencias.each do |t|
+    = ("#{t.produto.nome} - R$ #{t.valor.to_f}") if t.produto
+    - if t.combo
+      = "#{t.combo.nome} - R$ #{t.valor.to_f} "
+      br
+      div style="padding-left: 20px;font-size: 15px;"
+        - t.transferencia_combos.each do |tc|
+          = tc.produto.nome
+          br
+    br
+  div style="font-weight: bold;font-size: 20px;"
+    = "Total: R$ #{@transferencia_geral.valor.to_f}"
