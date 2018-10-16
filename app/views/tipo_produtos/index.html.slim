@@ -3,7 +3,7 @@
     .card
       .card-body
         h2.card-title Lista de tipo de produtos
-        h6.card-subtitle Visualização e busca de todos os tipos de  produtos.
+        h6.card-subtitle Visualização e busca de todos os tipos de produtos.
         - if current_user.tem_permissao("criar_tipo_produtos")
           = link_to "Novo tipo de produto", new_tipo_produto_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
