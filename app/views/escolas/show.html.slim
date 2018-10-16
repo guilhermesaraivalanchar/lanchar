@@ -1,0 +1,237 @@
+
+.row
+  .col-lg-3.col-md-6
+    .card.card-inverse.card-info
+      .card-body
+        .d-flex
+          div
+            h3.card-title Saldo em Caixa
+            h6.card-subtitle
+              = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
+        .d-flex
+          div.font-light.text-white style="font-size: 20px;"
+            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA']).sum(:valor)}"
+            button.btn.btn-sm.btn-youtube data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
+
+  .col-lg-3.col-md-6
+    .card.card-inverse.card-info
+      .card-body
+        .d-flex
+          div
+            h3.card-title Faturamento Mensal
+            h6.card-subtitle
+              = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
+        .d-flex
+          div.font-light.text-white style="font-size: 20px;"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0 AND tipo = 'VENDA'", Time.now.beginning_of_month, Time.now.end_of_month).sum(:valor)}"
+  .col-lg-3.col-md-6
+    .card.card-inverse.card-info
+      .card-body
+        .d-flex
+          div
+            h3.card-title Faturamento Anual
+            h6.card-subtitle
+              = "#{Date.today.strftime("%Y")}"
+        .d-flex
+          div.font-light.text-white style="font-size: 20px;"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0 AND tipo = 'VENDA'" , Time.now.beginning_of_year, Time.now.end_of_year).sum(:valor)}"
+  .col-lg-3.col-md-6
+    .card.card-inverse.card-danger
+      .card-body
+        .d-flex
+          div
+            h3.card-title Saldo Devedor
+            h6.card-subtitle
+              = "#{Date.today.strftime("%Y")}"
+        .d-flex
+          div.font-light.text-white style="font-size: 20px;"
+            = "R$ #{(@escola.transferencias.where("transferencias.valor > 0 AND tipo = 'VENDA'").sum(:valor).to_d * 0.02).round(2)}"
+
+
+
+.row
+  .col-lg-4.col-md-6
+    .card
+      img.card-img-top alt=("Card image cap") src="../imagens/profile-bg.jpg"
+      .card-body.little-profile
+        div.text-center
+          .pro-img
+            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
+          h3.m-b-0
+            = @escola.nome
+          p 
+            = current_user.tipo_user.nome
+        .row
+          .col-lg-12.col-md-12
+            h4.box-title.m-t-10
+              | Meus Dados
+            hr
+            .clear
+            .row
+              div.col-lg-4.col-md-6
+                div.show_input  
+                  = "Matricula"
+                = current_user.codigo
+              div.col-lg-4.col-md-6
+                div.show_input  
+                  = "Tipo"
+                = current_user.tipo_user.nome
+              div.col-lg-4.col-md-6
+                div.show_input  
+                  = "Cartao"
+                = current_user.cartao_id
+    - dependentes = User.where(usuario_responsavel_id: current_user.id)
+    - if !dependentes.empty?
+      .card.earning-widget
+        .card-header
+          .card-actions
+            a data-action="collapse" 
+              i.ti-minus
+            a.btn-minimize data-action="expand" 
+              i.mdi.mdi-arrow-expand
+            a.btn-close data-action="close" 
+              i.ti-close
+          h4.card-title.m-b-0 Dependentes
+        .card-body.b-t.collapse.show
+          table.table.v-middle.no-border
+            tbody
+              - dependentes.each do |dep|
+                tr
+                  td style="width:40px" 
+                    img.img-circle alt="logo" src="#{dep.imagem.url != '/imagens/original/missing.png' ? dep.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
+                  td
+                    = link_to(dep.nome, user_path(dep.id))
+                  td align="right" 
+                    span.label.label-light-info
+                      = "R$#{dep.saldo}"
+
+
+         
+  .col-lg-8.col-md-6
+    .row
+      .col-12
+        .card
+          .card-body
+            h4.card-title Histórico de transação
+            h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
+            .table-responsive.m-t-40
+              table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="5%"
+                thead
+                  tr
+                    th Nome
+                    th Destino
+                    th Tipo
+                    th Data
+                    th Valor (R$)
+                tfoot
+                  tr
+                    th Total
+                    th
+                    th
+                    th
+                    th valor
+                tbody
+                  - @escola.transferencia_gerais.where(tipo: ["ENTRADA","SAIDA"]).order("created_at DESC").each do |transferencia_geral|
+                    - transferencia_geral.transferencias.each do |transferencia|
+                      - if transferencia.tipo == "ENTRADA"
+                        tr
+                          td
+                            = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            - if current_user.tem_permissao("ver_usuario")
+                              = link_to(transferencia_geral.user.nome, user_path(transferencia_geral.user.id))
+                            - else
+                              = transferencia_geral.user.nome
+                          td 
+                            = "#{I18n.t(transferencia_geral.tipo_entrada)}" if transferencia_geral.tipo_entrada
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td.text-green
+                            = "#{transferencia.valor}"
+                      - if transferencia.tipo == "SAIDA"
+                        tr
+                          td
+                            = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            = ""
+                          td
+                            = ""
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td.text-danger
+                            = "#{transferencia.valor}"
+
+#modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title Sangria
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        form
+          .form-group
+            label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
+            input#quantidade_credito.form-control type="text"
+        div#creditado_alerta class="alert alert-success" style="display:none" Sangria realizada com sucesso.
+      .modal-footer
+        div#botoes_modal
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
+          button#botao_retirar.btn.btn-danger type="button" Retirar
+        div#spiner_modal
+          svg class="circular" viewBox="25 25 50 50"
+            circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
+
+
+
+
+
+javascript:
+  $('#example23').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ],
+      drawCallback: function () {
+        var api = this.api();
+        try {
+            valor_total = api.column( 4, {page:'all', search:'applied'} ).data().sum()
+        }
+        catch(err) {
+            valor_total = 0
+        }
+        
+        console.log(valor_total) 
+        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
+      }
+  });
+
+
+  $("#botao_retirar").click(function(){
+
+    $.getJSON("/creditar", { valor: $("#quantidade_credito").val(), status: "sangria" },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          $("#creditado_alerta").show();
+          setTimeout(function(){
+
+            $("#quantidade_credito").val("");
+            $("#creditado_alerta").hide();
+
+          }, 1000);
+        }
+      } else {
+
+      }
+    })
+
+  })
+

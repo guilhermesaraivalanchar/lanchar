@@ -1,11 +1,9 @@
-h1 TipoUsers#index
-p Find me in app/views/tipo_users/index.html.slim
 .row
   .col-12
     .card
       .card-body
-        h4.card-title Data Export
-        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        h2.card-title Lista de tipo de usuários
+        h6.card-subtitle Visualização e busca de todos os tipos usuários.
         - if current_user.tem_permissao("criar_tipo_usuarios")
           = link_to "Novo tipo de usuário", new_tipo_user_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40

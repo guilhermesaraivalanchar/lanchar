@@ -1,6 +1,7 @@
 class CardapiosController < ApplicationController
   def index
-  	@cardapios = Cardapio.all
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_cardapio")
+  	@cardapios = Cardapio.where(escola_id: current_user.escola_id)
   end
 
   def show
@@ -8,19 +9,20 @@ class CardapiosController < ApplicationController
   end
 
   def edit
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_cardapio")
     init_current
   end
 
   def new
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_cardapio")
     init_new
   end
 
   def setar_cardapio
-    
     if current_user.tem_permissao("definir_cardapio")
 
       cardapio = Cardapio.find(params[:cardapio_id])
-      cardapio_atual = Cardapio.where(ativo: true).last
+      cardapio_atual = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
       cardapio_atual.update_attribute(:ativo, false) if cardapio_atual
       cardapio.update_attribute(:ativo, true)
@@ -33,6 +35,7 @@ class CardapiosController < ApplicationController
 
   def create
     init_new
+    cardapio_params[:escola_id] = current_user.escola_id
     respond_to do |format|
       if current_user.tem_permissao("criar_cardapio") && @cardapio.update_attributes(cardapio_params)
         format.html { redirect_to(cardapios_path, :notice => "Cardapio criado com sucesso.") }
@@ -75,13 +78,13 @@ private
 
   def init_new
     @cardapio = Cardapio.new()
-    @produtos = Produto.all.collect { |m| [m.nome, m.id] }
-    @combos = Combo.all.collect { |m| [m.nome, m.id] }
+    @produtos = Produto.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
+    @combos = Combo.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
   end
 
   def init_current
     @cardapio = Cardapio.find(params[:id])
-    @produtos = Produto.all.collect { |m| [m.nome, m.id] }
-    @combos = Combo.all.collect { |m| [m.nome, m.id] }
+    @produtos = Produto.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
+    @combos = Combo.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
   end
 end

@@ -10,11 +10,13 @@
       .card-body.little-profile
         div.text-center
           .pro-img
-            img alt="user" src="#{current_user.imagem.url}"
+            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
           h3.m-b-0
             = current_user.nome
-          p Web Designer &amp; Developer
-          a.m-t-10.waves-effect.waves-dark.btn.btn-success.btn-md.btn-rounded href="javascript:void(0)"  Creditar
+          p 
+            = current_user.tipo_user.nome
+          - if false && current_user.tem_permissao("auto_creditar")
+            button.btn.btn-rounded.btn-success data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-right: 10px" Creditar
         .row
           .col-lg-12.col-md-12
             h4.box-title.m-t-10
@@ -22,20 +24,15 @@
             hr
             .clear
             .row
-              div.col-lg-3.col-md-6
-                div.show_input  
-                  = "Nome"
-                = current_user.nome
-              div.col-lg-3.col-md-6
+              div.col-lg-4.col-md-6
                 div.show_input  
                   = "Matricula"
                 = current_user.codigo
-              div.col-lg-3.col-md-6
+              div.col-lg-4.col-md-6
                 div.show_input  
                   = "Tipo"
                 = current_user.tipo_user.nome
-
-              div.col-lg-3.col-md-6
+              div.col-lg-4.col-md-6
                 div.show_input  
                   = "Cartao"
                 = current_user.cartao_id
@@ -57,12 +54,12 @@
               - dependentes.each do |dep|
                 tr
                   td style="width:40px" 
-                    img.img-circle alt="logo" src="#{dep.imagem.url}" width="50" height="50" /
+                    img.img-circle alt="logo" src="#{dep.imagem.url != '/imagens/original/missing.png' ? dep.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
                   td
                     = link_to(dep.nome, user_path(dep.id))
                   td align="right" 
                     span.label.label-light-info
-                      = "R$ #{dep.saldo}"
+                      = "R$#{dep.saldo}"
 
 
          
@@ -83,107 +80,72 @@
                 thead
                   tr
                     th Nome
-                    th Codigo
-                    th Quantidade
-                    th Status
-                    th Ação
+                    th Data
+                    th Valor
                 tbody
-                  - Produto.all.each do |produto|
-                    tr
-                      td 
-                        = produto.nome
-                      td 
-                        = produto.codigo
-                      td 
-                        = produto.quantidade
-                      td
-                        = produto.status
-                      td
-                        - if current_user.tem_permissao("editar_produtos")
-                          = link_to "Editar", edit_produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                        - if current_user.tem_permissao("deletar_produtos")
-                          = link_to "Deletar", produto_path(produto), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{produto.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+                  - current_user.transferencia_gerais.order("created_at DESC").each do |transferencia_geral|
+                    - transferencia_geral.transferencias.each do |transferencia|
+                      - if transferencia.produto
+                        tr
+                          td
+                            = transferencia.produto.nome
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td.text-danger
+                            = "R$ #{transferencia.valor}"
+                      - elsif transferencia.combo
+                        tr
+                          td
+                            = transferencia.combo.nome
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td.text-danger
+                            = "R$ #{transferencia.valor}"
+                        - transferencia.transferencia_combos.each do |tranf_combo|
+                          tr
+                            td style="padding-left: 20px"
+                              = " #{tranf_combo.produto.nome} (#{transferencia.combo.nome})"
+                            td 
+                              = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                            td
+                              = 
+                      - else
+                        tr
+                          td
+                            = transferencia.tipo
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td.text-green
+                            = "R$ #{transferencia.valor}"
+#modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title Creditar
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        form
+          .form-group
+            label.control-label style="font-weight: bold" for="recipient-name" 
+              = "Nome: #{current_user.nome}"
+            div#modal_nome
+            label.control-label style="font-weight: bold" for="recipient-name" 
+              = "Saldo Atual: R$ #{current_user.saldo}"
+            div#modal_saldo
+            label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
+            input#quantidade_credito.form-control type="text"
+        div#creditado_alerta class="alert alert-success" style="display:none" Aluno Creditado com sucesso.
+      .modal-footer
+        div#botoes_modal
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
+          button#botao_creditar.btn.btn-primary type="button" Creditar
+        div#spiner_modal
+          svg class="circular" viewBox="25 25 50 50"
+            circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
 
 
-br
-.row
-  .col-lg-3.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-info
-            i.ti-wallet
-          .m-l-10.align-self-center
-            .d-flex.m-r-20.m-l-10
-              .chart-text.m-r-10
-                h6.m-b-0
-                  small Saldo Atual
-                h4.m-t-0.text-info $58,356
-              .spark-chart
-  .col-lg-3.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-warning
-            i.mdi.mdi-cellphone-link
-          .m-l-10.align-self-center
-            .d-flex.m-r-20.m-l-10
-              .chart-text.m-r-10
-                h6.m-b-0
-                  small Saldo Atual
-                h4.m-t-0.text-info $58,356
-              .spark-chart
-                #monthchart
-  .col-lg-3.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-primary
-            i.mdi.mdi-cart-outline
-          .m-l-10.align-self-center
-            h3.m-b-0.font-lgiht R$ 1795,00
-            h5.text-muted.m-b-0 Offline Revenue
-  .col-lg-3.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-danger
-            i.mdi.mdi-bullseye
-          .m-l-10.align-self-center
-            h3.m-b-0.font-lgiht $687
-            h5.text-muted.m-b-0 Ad. Expense
 
-
-.row
-  .col-lg-6.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-info
-            i.ti-wallet
-          .m-l-10.align-self-center
-            .d-flex.m-r-20.m-l-10
-              .chart-text.m-r-10
-                h6.m-b-0
-                  small Saldo Atual
-                h4.m-t-0.text-info $58,356
-              .spark-chart
-  .col-lg-6.col-md-6
-    .card
-      .card-body
-        .d-flex.flex-row
-          .round.round-lg.align-self-center.round-warning
-            i.mdi.mdi-cellphone-link
-          .m-l-10.align-self-center
-            .d-flex.m-r-20.m-l-10
-              .chart-text.m-r-10
-                h6.m-b-0
-                  small Saldo Atual
-                h4.m-t-0.text-info $58,356
-              .spark-chart
-                #monthchart
-
-br
 .row
   .col-lg-6.col-md-6
     .card.card-inverse.card-primary
@@ -224,13 +186,35 @@ br
 <script type="text/javascript" src="../../javascripts/jQuery.style.switcher.js"></script>
 
 javascript:
-    $('#example23').DataTable({
-        "displayLength": 15,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    });
+  $('#example23').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
+
+  $("#botao_creditar").click(function(){
+
+    $.getJSON("/creditar", { user_id: "#{current_user.id}", valor: $("#quantidade_credito").val() },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          $("#creditado_alerta").show();
+          setTimeout(function(){
+
+            $("#quantidade_credito").val("");
+            $("#creditado_alerta").hide();
+
+          }, 1000);
+        }
+      } else {
+
+      }
+    })
+
+  })
 
   $(function () {
       "use strict";

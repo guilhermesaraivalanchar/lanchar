@@ -1,6 +1,7 @@
 class CombosController < ApplicationController
   def index
-  	@combos = Combo.all
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_combos")
+  	@combos = Combo.where(escola_id: current_user.escola_id)
   end
 
   def show
@@ -8,6 +9,7 @@ class CombosController < ApplicationController
   end
 
   def edit
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_combos")
     init_current
 
     if @combo.imagem_file_name != nil
@@ -17,11 +19,13 @@ class CombosController < ApplicationController
   end
 
   def new
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_combos")
     init_new
   end
 
   def create
     init_new
+    combo_params[:escola_id] = current_user.escola_id
     respond_to do |format|
       if current_user.tem_permissao("criar_combos") && @combo.update_attributes(combo_params)
         format.html { redirect_to(combos_path, :notice => "Combo criado com sucesso.") }

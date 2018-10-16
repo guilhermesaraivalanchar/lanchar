@@ -43,7 +43,7 @@ html
                       li tchau
                 li.nav-item.dropdown
                   a.nav-link.dropdown-toggle.text-muted.waves-effect.waves-dark data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    img src="#{current_user.imagem.url}" alt="user" class="profile-pic" height="30"
+                    img src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}" alt="user" class="profile-pic" height="30"
                   .dropdown-menu.dropdown-menu-right.scape-up
                     = render "menu_current_user.html.slim"
 

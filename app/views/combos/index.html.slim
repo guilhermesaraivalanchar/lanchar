@@ -1,11 +1,9 @@
-h1 Combos#index
-p Find me in app/views/combos/index.html.slim
 .row
   .col-12
     .card
       .card-body
-        h4.card-title Data Export
-        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        h2.card-title Lista de combos
+        h6.card-subtitle Visualização e busca de todos os combos.
         - if current_user.tem_permissao("criar_combos")
           = link_to "Novo combo", new_combo_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40

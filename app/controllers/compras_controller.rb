@@ -1,7 +1,9 @@
 class ComprasController < ApplicationController
   def index
 
-  	cardapio_ativo = Cardapio.where(ativo: true).last
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("comprar_sistema")
+
+  	cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
 		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.map(&:produto_id)
 		cardapio_combo_ids = cardapio_ativo.cardapio_combos.map(&:combo_id)
@@ -66,52 +68,56 @@ class ComprasController < ApplicationController
 
   def enviar_confirmacao_compra
     
-    cardapio_ativo = Cardapio.where(ativo: true).last
+    if current_user.tem_permissao("comprar_sistema")
+      cardapio_ativo = Cardapio.where(ativo: true).last
 
-    resposta = []
+      resposta = []
 
-    params[:confirmacao].each do |conf|
+      params[:confirmacao].each do |conf|
 
-      user_id = conf.last[:user_id]
+        user_id = conf.last[:user_id]
 
-      transf_geral = TransferenciaGeral.new(user_id: user_id)
-      preco_total = 0
-      if transf_geral.save
+        transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: "VENDA")
+        preco_total = 0
+        if transf_geral.save
 
-        conf.last[:produtos].each do |prod_combo|
+          conf.last[:produtos].each do |prod_combo|
 
-          if prod_combo.last[:tipo] == "p"
-            prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
-            Transferencia.create(user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, produto_id: prod_combo.last[:id], valor: prod_preco)
-            produto = Produto.find(prod_combo.last[:id])
-            produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
-            preco_total += prod_preco
-          elsif prod_combo.last[:tipo] == "c"
-            combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
-            transf = Transferencia.new(user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, combo_id: prod_combo.last[:id], valor: combo_preco)
-            preco_total += combo_preco
-            if transf.save
-              prod_combo.last[:produtos].each do |prod_id|
-                TransferenciaCombo.create(transferencia_id: transf.id, produto_id: prod_id)
-                produto = Produto.find(prod_id)
-                produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+            if prod_combo.last[:tipo] == "p"
+              prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
+              Transferencia.create(escola_id: current_user.escola_id, tipo: "VENDA", user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, produto_id: prod_combo.last[:id], valor: prod_preco)
+              produto = Produto.find(prod_combo.last[:id])
+              produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+              preco_total += prod_preco
+            elsif prod_combo.last[:tipo] == "c"
+              combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+              transf = Transferencia.new(escola_id: current_user.escola_id, tipo: "VENDA", user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, combo_id: prod_combo.last[:id], valor: combo_preco)
+              preco_total += combo_preco
+              if transf.save
+                prod_combo.last[:produtos].each do |prod_id|
+                  TransferenciaCombo.create(transferencia_id: transf.id, produto_id: prod_id)
+                  produto = Produto.find(prod_id)
+                  produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                end
               end
             end
           end
-        end
 
-        transf_geral.update_attribute(:valor, preco_total)
-        transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d)
-        resposta << {
-          div_confirmacao_id: conf.last[:div_confirmacao_id],
-          transf_geral_id: transf_geral.id
-        }
+          transf_geral.update_attribute(:valor, preco_total)
+          transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d)
+          resposta << {
+            div_confirmacao_id: conf.last[:div_confirmacao_id],
+            transf_geral_id: transf_geral.id
+          }
+
+        end
 
       end
 
+      render json: { status: "OK", resposta: resposta}
+    else
+      render json: { status: "NEGADO", resposta: ""}
     end
-
-    render json: { status: "OK", resposta: resposta}
 
   end
 

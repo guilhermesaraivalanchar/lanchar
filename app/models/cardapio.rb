@@ -1,5 +1,6 @@
 class Cardapio < ApplicationRecord
   
+  belongs_to :escola
   has_many :cardapio_produtos
   has_many :cardapio_combos
 

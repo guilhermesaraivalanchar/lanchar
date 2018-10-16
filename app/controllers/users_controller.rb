@@ -1,19 +1,22 @@
 class UsersController < ApplicationController
   def index
-  	@users = User.all
+  	@users = User.where(escola_id: current_user.escola_id)
   end
 
   def show
     init_current
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_usuario") && current_user.id != @user.usuario_responsavel_id && current_user != @user
   end
 
   def edit
     init_current
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_usuarios") && current_user.id != @user.usuario_responsavel_id && current_user != @user
 
     if @user.imagem_file_name != nil
       @imagem = @user.imagem.url.split("?")
       @user_imagem = @imagem[0]
     end
+
   end
 
   def update
@@ -31,10 +34,12 @@ class UsersController < ApplicationController
 
   def new
     init_new
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_usuarios")
   end
 
   def create
     init_new 
+    user_params[:escola_id] = current_user.escola_id
     @user.assign_attributes(user_params)
     @user.password = "123456"
     @user.email = "none#{@user.codigo}@none.com"
@@ -62,17 +67,44 @@ class UsersController < ApplicationController
   end
 
   def creditar
-    user = User.find(params[:user_id])
-    user.saldo = 0 if !user.saldo
-    if user
-      if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
-          render json:  { resultado: "OK" }
-        else
-          render json:  { resultado: "ERRO_ADD" }
-        end
+
+    if params[:status] == "sangria"
+      transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, valor: (params[:valor].to_d * -1), tipo: "SAIDA")
+      transf_geral.transferencias.new({
+        escola_id: current_user.escola_id,
+        user_movimentou_id: current_user.id,
+        valor: (params[:valor].to_d * -1),
+        tipo: "SAIDA"
+      })
+      
+      transf_geral.save
+      
+      render json:  { resultado: "OK" }
+
     else
-      render json:  { resultado: "USU_INEXISTENTE" }
+      user = User.find(params[:user_id])
+      user.saldo = 0 if !user.saldo
+      if user
+        if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
+            if params[:status] == "caixa"
+              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo])
+              transf_geral.transferencias.new({
+                escola_id: current_user.escola_id,
+                user_movimentou_id: current_user.id,
+                valor: params[:valor],
+                tipo: "ENTRADA"
+              })
+              transf_geral.save
+            end
+            render json:  { resultado: "OK" }
+          else
+            render json:  { resultado: "ERRO_ADD" }
+          end
+      else
+        render json:  { resultado: "USU_INEXISTENTE" }
+      end
     end
+
 
   end
 
@@ -82,8 +114,8 @@ private
   end
 
   def init_vars
-    @tipo_users = TipoUser.all.collect { |m| [m.nome, m.id] }
-    @users = User.all.collect { |m| [m.nome, m.id] }
+    @tipo_users = TipoUser.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
+    @users = User.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
   end
 
   def init_new

@@ -1,12 +1,9 @@
-h1 Compras#index
-p Find me in app/views/compras/index.html.slim
-
 .row
   .col-12
     .card
       .card-body
-        h4.card-title Editar Usuário
-        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        h2.card-title Compras
+        h6.card-subtitle Realização de compras de produtos e combos
 
 
 
@@ -20,7 +17,7 @@ p Find me in app/views/compras/index.html.slim
         h5.m-t-20 Usuário
         select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
           option value="" Escolha um usuário
-          - User.all.each do |user|
+          - User.where(escola_id: current_user.escola_id).each do |user|
             option id="option_usu_#{user.id}" value="#{user.id}" usuario_nome="#{user.nome}"
               = "#{user.nome}"
         br
@@ -35,7 +32,7 @@ p Find me in app/views/compras/index.html.slim
         div#div_confirmacao.comment-widgets
 
 
-        button#enviar_confirmacao.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Enviar
+        button#enviar_confirmacao.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Comprar
 
 javascript:
   var produto_num = 0;
@@ -210,8 +207,6 @@ javascript:
       if (resultado) {
         console.log(resultado)
         if (resultado.status == "OK"){
-
-
           for(i in resultado.resposta){
             div_confirmacao_id = resultado.resposta[i].div_confirmacao_id
             transf_geral_id = resultado.resposta[i].transf_geral_id

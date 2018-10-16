@@ -5,6 +5,9 @@ ul#sidebarnav.in
       span.hide-menu
         | Cadastros
     ul.collapse
+      - if current_user.tem_permissao("ver_escola")
+        li
+          = link_to("Escola", escola_path(current_user.escola_id))
       - if current_user.tem_permissao("ver_usuarios")
         li
           = link_to("Usuários", users_path)

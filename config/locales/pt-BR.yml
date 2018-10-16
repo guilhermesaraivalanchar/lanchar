@@ -624,54 +624,18 @@ pt-BR:
     cadastros: Cadastros
     empresas: Empresas
 
-  TransportadorasController: Transportadoras
-  UsersController: Usuários
-  PerfisController: Perfis de Acesso
-  Application: Administrativo
-  FiltroDatatablesController: Filtros
-  ImportacoesController: Importação
-  MotoristasController: Motoristas
-  TipoVeiculosController: Tipo de Veiculo
-  TransportadoraFiliaisController: Transportadora Filiais
-  TransportesController: Transportes
-  VeiculosController: Veiculos
-  MotivoOfertaFretesController: Motivos Ofertão
-  ConfiguracaoOfertaFretesController: Configuração do Ofertão
-  CentrosController: Centro de Distribuição
+  January: "Janeiro"
+  February: "Fevereiro"
+  March: "Março"
+  April: "Abril"
+  May: "Maio"
+  June: "Junho"
+  July: "Julho"
+  August: "Agosto"
+  September: "Setembro"
+  October: "Outubro"
+  November: "Novembro"
+  December: "Dezembro"
 
-  organizado: ORGANIZADO
-  ag_sap: AGUARDANDO SAP
-  dbelgo: DBELGO PENDENTE
-  pendente_cotacao: PENDENTE COTAÇÃO
-  pendente_oferta_coletiva: PENDENTE OFERTA COLETIVA
-  restricao_comercial: RESTRIÇÃO COMERCIAL
-  pendente_agendamento: PENDENTE AGENDAMENTO
-  pendente_vistoria: PENDENTE VISTORIA
-  pendente_faturamento: PENDENTE FATURAMENTO
-  pendente_pv: PENDENTE PLANO DE VIAGEM
-  em_viagem: EM VIAGEM
-  finalizado: FINALIZADO
-  embarque_liberado: EMBARQUE LIBERADO
-  liberacao_pa: LIBERAÇÃO PA
-  limbo: APAGADO
-  cancelado: CANCELADO
-  ofeta_coletiva_andamento: OFERTA COLETIVA EM ANDAMENTO
-  cotacao_andamento: COTAÇÃO EM ANDAMENTO
-  cotacao_encerrada: AGUARDANDO SAP
-  oferta_coletiva_encerrada: AGUARDANDO SAP
-
-  portaria: PORTARIA
-  pendente_vistoria_entrada: PORTARIA VISTORIA ENTRADA
-  pendente_pesagem_inicial: PORTARIA VISTORIA INICIAL
-  carregamento_andamento: CARREGAMENTO EM ANDAMENTO
-  pendente_pesagem_final: PENDENTE PESAGEM FINAL
-  pendente_enlonamento: PENDENTE ENLONAMENTO
-  pendente_vistoria_saida: PENDENTE VISTORIA SAIDA
-  dp01: DP01
-  dp02: DP02
-  dp03: DP03
-  dp04: DP04
-  fila_dp01: FILA DP01
-  fila_dp02: FILA DP02
-  fila_dp03: FILA DP03
-  fila_dp04: FILA DP04
+  anotacao: Anotação
+  dinheiro: Dinheiro

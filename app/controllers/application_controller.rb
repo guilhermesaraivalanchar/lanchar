@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 			redirect_to new_user_session_path
 		end
 		@cardapio = Cardapio.where(ativo: true).last
+	end
 
+	def pagina_sem_permissao
 	end
 end

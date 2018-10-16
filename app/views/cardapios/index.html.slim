@@ -1,11 +1,9 @@
-h1 Cardapios#index
-p Find me in app/views/cardapios/index.html.slim
 .row
   .col-12
     .card
       .card-body
-        h4.card-title Data Export
-        h6.card-subtitle Export data to Copy, CSV, Excel, PDF and Print
+        h2.card-title Lista de cardápios
+        h6.card-subtitle Visualização e busca de todos os cardápios.
         - if current_user.tem_permissao("criar_cardapio")
           = link_to "Novo cardapio", new_cardapio_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40

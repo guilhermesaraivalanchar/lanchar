@@ -5,6 +5,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
   :recoverable, :rememberable, :validatable
 
+  belongs_to :escola
 
   belongs_to :tipo_user, optional: true
 

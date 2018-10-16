@@ -1,6 +1,7 @@
 class TipoProdutosController < ApplicationController
   def index
-  	@tipo_produtos = TipoProduto.all
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_tipo_produtos")
+  	@tipo_produtos = TipoProduto.where(escola_id: current_user.escola_id)
   end
 
   def show
@@ -8,15 +9,18 @@ class TipoProdutosController < ApplicationController
   end
 
   def edit
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_tipo_produtos")
     init_current
   end
 
   def new
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_tipo_produtos")
     init_new
   end
 
   def create
     init_new
+    tipo_produto_params[:escola_id] = current_user.escola_id
     respond_to do |format|
       if current_user.tem_permissao("criar_tipo_produtos") && @tipo_produto.update_attributes(tipo_produto_params)
         format.html { redirect_to(tipo_produtos_path, :notice => "Tipo Produto criado com sucesso.") }

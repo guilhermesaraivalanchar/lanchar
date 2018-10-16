@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   resources :compras
   resources :cardapios
   resources :tipo_produtos
+  resources :escolas
 
   # Ajax
   match "/creditar" => "users#creditar", via: [:get, :post]
@@ -24,5 +25,6 @@ Rails.application.routes.draw do
   match "/get_dados_combo" => "compras#get_dados_combo", as: :get_dados_combo, via: [:get, :post]
   match "/enviar_confirmacao_compra" => "compras#enviar_confirmacao_compra", as: :enviar_confirmacao_compra, via: [:get, :post]
   match "/transferencia_gerais/transferencia_pdf/:id" => "transferencia_gerais#transferencia_pdf", as: :transferencia_pdf, via: [:get, :post]
+  match "/pagina_sem_permissao" => "application#pagina_sem_permissao", as: :pagina_sem_permissao, via: [:get, :post]
 
 end

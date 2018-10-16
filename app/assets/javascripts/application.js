@@ -33,6 +33,7 @@
 //= require bootstrap-datetimepicker.pt-BR
 //= require datatables/datatables.min
 //= require dataTables.buttons.min
+//= require datatables-plugins/api/sum()
 //= require buttons.flash.min
 //= require jszip.min
 //= require pdfmake.min

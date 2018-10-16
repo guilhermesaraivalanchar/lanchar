@@ -1,6 +1,7 @@
 class TipoUsersController < ApplicationController
   def index
-  	@tipo_users = TipoUser.all
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_tipo_usuarios")
+  	@tipo_users = TipoUser.where(escola_id: current_user.escola_id)
   end
 
   def show
@@ -8,15 +9,18 @@ class TipoUsersController < ApplicationController
   end
 
   def edit
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_tipo_usuarios")
     init_current
   end
 
   def new
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_tipo_usuarios")
     init_new
   end
 
   def create
     init_new
+    tipo_user_params[:escola_id] = current_user.escola_id
     respond_to do |format|
       if current_user.tem_permissao("criar_tipo_usuarios") && @tipo_user.update_attributes(tipo_user_params)
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user criado com sucesso.") }

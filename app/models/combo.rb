@@ -1,5 +1,7 @@
 class Combo < ApplicationRecord
 
+  belongs_to :escola
+
 	has_many :combo_produtos
   has_many :combo_tipo_produtos
   has_many :cardapio_combos
