@@ -47,6 +47,10 @@
 //= require cocoon
 //= require jquery.maskMoney
 
+
+function toggle_menu(){
+  $("body").toggleClass("show-sidebar");
+}
 $(document).ready(function() {
 
   $("form").validate({
