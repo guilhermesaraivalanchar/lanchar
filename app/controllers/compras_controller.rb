@@ -5,8 +5,19 @@ class ComprasController < ApplicationController
 
   	cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
-		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.map(&:produto_id)
-		cardapio_combo_ids = cardapio_ativo.cardapio_combos.map(&:combo_id)
+		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
+		cardapio_combo_ids = []
+
+    cardapio_ativo.cardapio_combos.each do |cardapio_combo|
+      nao_entrar = false
+      cardapio_combo.combo.combo_produtos.each do |combo_produto|
+        if combo_produto.produto.quantidade <= 0
+          nao_entrar = true
+        end
+      end
+      cardapio_combo_ids << cardapio_combo.combo_id if !nao_entrar
+    end
+
 
   	@produtos_cardapio = Produto.where(id: cardapio_produto_ids).collect { |m| [m.nome, m.id] }
   	@combos_cardapio = Combo.where(id: cardapio_combo_ids).collect { |m| [m.nome, m.id] }
