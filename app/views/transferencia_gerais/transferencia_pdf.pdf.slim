@@ -60,7 +60,7 @@ div style="font-size: 15px; max-width: 245px; text-align:center"
   br
   | -------------------------------------------------
 div style="font-size: 15px; max-width: 245px"
-  = "Empresa: IBS"
+  = "Empresa: #{current_user.escola.nome}"
   br
   = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
   br
@@ -70,9 +70,9 @@ div style="font-size: 15px; max-width: 245px"
   = "Itens: "
   br
   - @transferencia_geral.transferencias.each do |t|
-    = ("#{t.produto.nome} - R$ #{t.valor.to_f}") if t.produto
+    = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
     - if t.combo
-      = "#{t.combo.nome} - R$ #{t.valor.to_f} "
+      = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
       br
       div style="padding-left: 20px;font-size: 15px;"
         - t.transferencia_combos.each do |tc|
@@ -80,5 +80,5 @@ div style="font-size: 15px; max-width: 245px"
           br
     br
   div style="font-weight: bold;font-size: 20px;"
-    = "Total: R$ #{@transferencia_geral.valor.to_f}"
+    = "Total: R$ #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
   | -------------------------------------------------

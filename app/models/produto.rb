@@ -3,8 +3,8 @@ class Produto < ApplicationRecord
 
   belongs_to :escola
   belongs_to :tipo_produto
-  has_many :cardapio_produtos
-  has_many :combo_produtos
+  has_many :cardapio_produtos, :dependent => :destroy
+  has_many :combo_produtos, :dependent => :destroy
   has_many :transferencias
   has_many :transferencia_combos
   has_attached_file :imagem, :styles => { :original => "400x400>"}

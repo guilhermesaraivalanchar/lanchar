@@ -127,10 +127,12 @@
                     th Destino
                     th Tipo
                     th Data
+                    th Mês
                     th Valor (R$)
                 tfoot
                   tr
                     th Total
+                    th
                     th
                     th
                     th
@@ -151,6 +153,8 @@
                             = "#{I18n.t(transferencia_geral.tipo_entrada)}" if transferencia_geral.tipo_entrada
                           td 
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-green
                             = "#{transferencia.valor}"
                       - if transferencia.tipo == "SAIDA"
@@ -163,6 +167,8 @@
                             = ""
                           td 
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-danger
                             = "#{transferencia.valor}"
 
@@ -202,14 +208,14 @@ javascript:
       drawCallback: function () {
         var api = this.api();
         try {
-            valor_total = api.column( 4, {page:'all', search:'applied'} ).data().sum()
+            valor_total = api.column( 5, {page:'all', search:'applied'} ).data().sum()
         }
         catch(err) {
             valor_total = 0
         }
         
         console.log(valor_total) 
-        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
+        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
       }
   });
 

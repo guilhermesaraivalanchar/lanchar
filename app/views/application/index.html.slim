@@ -76,6 +76,7 @@
                   tr
                     th Nome
                     th Data
+                    th Mẽs
                     th Valor
                 tbody
                   - current_user.transferencia_gerais.order("created_at DESC").each do |transferencia_geral|
@@ -86,22 +87,28 @@
                             = transferencia.produto.nome
                           td 
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-danger
-                            = "R$ #{transferencia.valor}"
+                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
                       - elsif transferencia.combo
                         tr
                           td
                             = transferencia.combo.nome
                           td 
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-danger
-                            = "R$ #{transferencia.valor}"
+                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
                         - transferencia.transferencia_combos.each do |tranf_combo|
                           tr
                             td style="padding-left: 20px"
                               = " #{tranf_combo.produto.nome} (#{transferencia.combo.nome})"
                             td 
                               = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                            td 
+                              = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                             td
                               = 
                       - else
@@ -110,8 +117,10 @@
                             = transferencia.tipo
                           td 
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-green
-                            = "R$ #{transferencia.valor}"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
     .modal-content
@@ -126,7 +135,7 @@
               = "Nome: #{current_user.nome}"
             div#modal_nome
             label.control-label style="font-weight: bold" for="recipient-name" 
-              = "Saldo Atual: R$ #{current_user.saldo}"
+              = "Saldo Atual: #{ActionController::Base.helpers.number_to_currency(current_user.saldo)}"
             div#modal_saldo
             label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
             input#quantidade_credito.form-control type="text"

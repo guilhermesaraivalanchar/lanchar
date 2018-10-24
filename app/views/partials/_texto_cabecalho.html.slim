@@ -10,6 +10,6 @@
         h6.m-b-0
           small Saldo Atual
         h4.m-t-0 class="#{current_user.saldo >= 0 ? 'text-info' : 'text-danger'}"
-          = "R$ #{current_user.saldo}"
+          = "#{ActionController::Base.helpers.number_to_currency(current_user.saldo)}"
       .spark-chart
         #monthchart
