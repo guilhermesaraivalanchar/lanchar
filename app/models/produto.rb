@@ -5,8 +5,8 @@ class Produto < ApplicationRecord
   belongs_to :tipo_produto
   has_many :cardapio_produtos, :dependent => :destroy
   has_many :combo_produtos, :dependent => :destroy
-  has_many :transferencias
-  has_many :transferencia_combos
+  has_many :transferencias, :dependent => :destroy
+  has_many :transferencia_combos, :dependent => :destroy
   has_attached_file :imagem, :styles => { :original => "400x400>"}
   do_not_validate_attachment_file_type :imagem
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"

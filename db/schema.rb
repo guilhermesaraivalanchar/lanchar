@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_13_220752) do
+ActiveRecord::Schema.define(version: 2018_10_25_004152) do
 
   create_table "cardapio_combos", force: :cascade do |t|
     t.integer "combo_id"
@@ -65,10 +65,20 @@ ActiveRecord::Schema.define(version: 2018_10_13_220752) do
     t.datetime "updated_at", null: false
     t.string "imagem_file_name"
     t.string "imagem_content_type"
-    t.bigint "imagem_file_size"
+    t.integer "imagem_file_size"
     t.datetime "imagem_updated_at"
     t.integer "escola_id"
     t.index ["escola_id"], name: "index_combos_on_escola_id"
+  end
+
+  create_table "entrada_produtos", force: :cascade do |t|
+    t.integer "fornecedor_id"
+    t.integer "produto_id"
+    t.decimal "preco_custo", precision: 10, scale: 2
+    t.integer "quantidade"
+    t.integer "escola_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "escolas", force: :cascade do |t|

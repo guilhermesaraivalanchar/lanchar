@@ -22,7 +22,7 @@
                   td
                     - if current_user.tem_permissao("editar_combos")
                       = link_to "Editar", edit_combo_path(combo.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_combos")
+                    - if current_user.tem_permissao("deletar_combos") && combo.transferencias.empty?
                       = link_to "Deletar", combo_path(combo), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{combo.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

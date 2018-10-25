@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  get 'entrada_produtos/index'
+  get 'fornecedores/index'
+  get 'fornecedores/new'
+  get 'fornecedores/edit'
   root to: 'application#index'
 
   devise_for :users
@@ -17,6 +21,8 @@ Rails.application.routes.draw do
   resources :cardapios
   resources :tipo_produtos
   resources :escolas
+  resources :fornecedores
+  resources :entrada_produtos
 
   # Ajax
   match "/creditar" => "users#creditar", via: [:get, :post]

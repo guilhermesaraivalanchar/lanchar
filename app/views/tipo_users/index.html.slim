@@ -22,7 +22,7 @@
                   td
                     - if current_user.tem_permissao("editar_tipo_usuarios")
                       = link_to "Editar", edit_tipo_user_path(tipo_user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_tipo_usuarios")
+                    - if current_user.tem_permissao("deletar_tipo_usuarios") && tipo_user.users.empty?
                       = link_to "Deletar", tipo_user_path(tipo_user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{tipo_user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

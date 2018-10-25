@@ -1,0 +1,34 @@
+= render :partial => "/partials/error_display", :locals => { :object => @entrada_produto }
+
+.form-body
+  = simple_form_for @entrada_produto do |f|
+    h4.box-title.m-t-10
+      | Dados do entrada_produto
+    hr
+    .clear
+    div.col-12
+      = f.input :produto_id, as: :select, label: "Produtos", prompt: "Selecione" , collection: Produto.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
+      = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
+      = f.input :preco_custo, label: "Preco", input_html: { nome_validacao: "Código" }
+      = f.input :quantidade, label: "Quantidade", input_html: { nome_validacao: "Código" }
+      br
+
+    .clear
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+      | Enviar
+    = link_to "Voltar", entrada_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
+
+
+javascript:
+  $(".select2").select2();
+  $('.dropify').dropify({
+    messages: {
+      'default': '',
+      'replace': 'Arraste a Imagem ou click aqui para trocar',
+      'remove':  'Remove',
+      'error':   'Ooops, Ocorreu um erro.'
+    },
+    error: {
+      'fileExtension': 'Formato do arquivo não permitido, Formatos permitidos: ({{ value }}).'
+    }
+  });

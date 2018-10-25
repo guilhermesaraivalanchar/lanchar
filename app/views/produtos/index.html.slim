@@ -34,7 +34,7 @@
                   td
                     - if current_user.tem_permissao("editar_produtos")
                       = link_to "Editar", edit_produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_produtos")
+                    - if current_user.tem_permissao("deletar_produtos") && produto.transferencias.empty? && produto.transferencia_combos.empty?
                       = link_to "Deletar", produto_path(produto), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{produto.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

@@ -11,12 +11,22 @@ ul#sidebarnav.in
       - if current_user.tem_permissao("ver_usuarios")
         li
           = link_to("Usuários", users_path)
+
       - if current_user.tem_permissao("ver_tipo_usuarios")
         li
           = link_to("Tipos de Usuários", tipo_users_path)
+
       - if current_user.tem_permissao("ver_tipo_produtos")
         li
           = link_to("Tipos de Produtos", tipo_produtos_path)
+
+      - if current_user.tem_permissao("dar_entrada_produto")
+        li
+          = link_to("Entrada de Produtos", entrada_produtos_path)
+
+      - if current_user.tem_permissao("ver_fornecedores")
+        li
+          = link_to("Fornecedores", fornecedores_path)
       - if current_user.tem_permissao("ver_produtos") || current_user.tem_permissao("ver_combos")
         li 
           = link_to("Produtos", produtos_path, class: "has-arrow")

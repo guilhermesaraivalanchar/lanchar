@@ -1,0 +1,49 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Lista de fornecedores
+        h6.card-subtitle Visualização e busca de todos os fornecedores.
+        - if current_user.tem_permissao("criar_fornecedores")
+          = link_to "Novo fornecedor", new_fornecedor_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Codigo
+                th Contato
+                th Email
+                th Telefone
+                th Ação
+            tbody
+              - @fornecedores.each do |fornecedor|
+                tr
+                  td 
+                    = fornecedor.nome
+                  td 
+                    = fornecedor.codigo
+                  td 
+                    = fornecedor.contato
+                  td
+                    = fornecedor.email
+                  td
+                    = fornecedor.telefone
+                  td
+                    - if current_user.tem_permissao("editar_fornecedores")
+                      = link_to "Editar", edit_fornecedor_path(fornecedor.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    - if current_user.tem_permissao("deletar_fornecedores") && fornecedor.entrada_produtos.empty?
+                      = link_to "Deletar", fornecedor_path(fornecedor), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{fornecedor.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

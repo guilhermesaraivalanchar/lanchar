@@ -2,10 +2,10 @@ class Combo < ApplicationRecord
 
   belongs_to :escola
 
-	has_many :combo_produtos
-  has_many :combo_tipo_produtos
-  has_many :cardapio_combos
-  has_many :transferencias
+	has_many :combo_produtos, :dependent => :destroy
+  has_many :combo_tipo_produtos, :dependent => :destroy
+  has_many :cardapio_combos, :dependent => :destroy
+  has_many :transferencias, :dependent => :destroy
 
   has_attached_file :imagem, :styles => { :original => "400x400>"}
   do_not_validate_attachment_file_type :imagem
