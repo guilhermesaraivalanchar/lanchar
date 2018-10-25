@@ -1,0 +1,45 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title
+          = "#{@produto.nome}"
+        h6.card-subtitle Edição de produto
+        div.error_validate.alert.alert-danger style="display:none"
+          span
+        div.row
+          div.col-lg-3.col-md-6
+            img src="#{@produto.imagem.url != '/imagens/original/missing.png' ? @produto.imagem.url : '../imagens/sem_imagem.jpg'}" style="width: 100%"
+          div.col-lg-9.col-md-6
+            h4.card-title Histórico de entrada
+            h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
+            .table-responsive.m-t-40
+              table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="5%"
+                thead
+                  tr
+                    th Produto
+                    th Fornecedor
+                    th Preço de Custo
+                tbody
+                  - @produto.entrada_produtos.each do |entrada|
+                    tr
+                      td 
+                        = @produto.nome
+                      td 
+                        = entrada.fornecedor.nome
+                      td 
+                        = (entrada.preco_custo.to_d / entrada.quantidade.to_d).to_f.round(2)
+javascript:
+  $('#example23').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });

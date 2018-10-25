@@ -11,6 +11,10 @@ ul#sidebarnav.in
       - if current_user.tem_permissao("ver_usuarios")
         li
           = link_to("Usuários", users_path)
+      
+      - if current_user.tem_permissao("ver_transacoes")
+        li
+          = link_to("Transações", transferencia_gerais_path)
 
       - if current_user.tem_permissao("ver_tipo_usuarios")
         li
@@ -22,7 +26,7 @@ ul#sidebarnav.in
 
       - if current_user.tem_permissao("dar_entrada_produto")
         li
-          = link_to("Entrada de Produtos", entrada_produtos_path)
+          = link_to("Entrada de Produtos", new_entrada_produto_path)
 
       - if current_user.tem_permissao("ver_fornecedores")
         li

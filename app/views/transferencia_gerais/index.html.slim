@@ -1,0 +1,43 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Lista de Transações
+        h6.card-subtitle Visualização e busca de todos as transações.
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th ID
+                th Comprador
+                th Vendedor
+                th Data
+                th Valor
+                th Ação
+            tbody
+              - @transferencia_gerais.each do |transferencia_geral|
+                tr
+                  td 
+                    = transferencia_geral.nome
+                  td 
+                    = transferencia_geral.codigo
+                  td 
+                    = transferencia_geral.quantidade
+                  td
+                    = transferencia_geral.status
+                  td
+                    - if current_user.tem_permissao("cancelar_transacao")
+                      = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral.id), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

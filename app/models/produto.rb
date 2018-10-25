@@ -5,6 +5,7 @@ class Produto < ApplicationRecord
   belongs_to :tipo_produto
   has_many :cardapio_produtos, :dependent => :destroy
   has_many :combo_produtos, :dependent => :destroy
+  has_many :entrada_produtos, :dependent => :destroy
   has_many :transferencias, :dependent => :destroy
   has_many :transferencia_combos, :dependent => :destroy
   has_attached_file :imagem, :styles => { :original => "400x400>"}

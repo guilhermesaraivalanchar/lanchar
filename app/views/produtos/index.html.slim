@@ -32,6 +32,8 @@
                   td
                     = produto.status
                   td
+                    - if current_user.tem_permissao("ver_produto")
+                      = link_to "Ver", produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if current_user.tem_permissao("editar_produtos")
                       = link_to "Editar", edit_produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if current_user.tem_permissao("deletar_produtos") && produto.transferencias.empty? && produto.transferencia_combos.empty?

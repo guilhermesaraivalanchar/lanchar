@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
   validates :codigo, uniqueness: true
 
-  has_many :transferencia_gerais
+  has_many :transferencia_gerais, :dependent => :destroy
 
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem

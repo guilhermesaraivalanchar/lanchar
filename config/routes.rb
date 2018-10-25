@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
 
-  get 'entrada_produtos/index'
-  get 'fornecedores/index'
-  get 'fornecedores/new'
-  get 'fornecedores/edit'
   root to: 'application#index'
 
   devise_for :users
@@ -23,6 +19,7 @@ Rails.application.routes.draw do
   resources :escolas
   resources :fornecedores
   resources :entrada_produtos
+  resources :transferencia_gerais
 
   # Ajax
   match "/creditar" => "users#creditar", via: [:get, :post]
@@ -32,5 +29,6 @@ Rails.application.routes.draw do
   match "/enviar_confirmacao_compra" => "compras#enviar_confirmacao_compra", as: :enviar_confirmacao_compra, via: [:get, :post]
   match "/transferencia_gerais/transferencia_pdf/:id" => "transferencia_gerais#transferencia_pdf", as: :transferencia_pdf, via: [:get, :post]
   match "/pagina_sem_permissao" => "application#pagina_sem_permissao", as: :pagina_sem_permissao, via: [:get, :post]
+  match "/cancelar_transferencia" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
 
 end

@@ -20,5 +20,20 @@ class TransferenciaGeraisController < ApplicationController
     end 
   end
 
+  def index
+    @transferencia_gerais = TransferenciaGeral.all
+  end
 
+  def cancelar_transferencia
+    @transferencia_geral = TransferenciaGeral.find(params[:id])
+    
+
+    respond_to do |format|
+      if current_user.tem_permissao("cancelar_transacao") && @transferencia_geral.cancelar
+        format.html { redirect_to(transferencia_gerais_path, :notice => "Transfenrecia cancelada com sucesso.") }
+      else
+        format.html { redirect_to(transferencia_gerais_path, :notice => "Ocorreu um erro ao apagar o produto.") }
+      end
+    end
+  end
 end

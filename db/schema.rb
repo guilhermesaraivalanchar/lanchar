@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_25_004152) do
+ActiveRecord::Schema.define(version: 2018_10_25_125954) do
 
   create_table "cardapio_combos", force: :cascade do |t|
     t.integer "combo_id"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_004152) do
     t.datetime "updated_at", null: false
     t.string "imagem_file_name"
     t.string "imagem_content_type"
-    t.integer "imagem_file_size"
+    t.bigint "imagem_file_size"
     t.datetime "imagem_updated_at"
     t.integer "escola_id"
     t.index ["escola_id"], name: "index_combos_on_escola_id"
@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_004152) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "produto_id"
+    t.boolean "cancelada"
     t.index ["transferencia_id"], name: "index_transferencia_combos_on_transferencia_id"
   end
 
@@ -163,6 +164,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_004152) do
     t.integer "escola_id"
     t.string "tipo"
     t.string "tipo_entrada"
+    t.boolean "cancelada"
     t.index ["escola_id"], name: "index_transferencia_gerais_on_escola_id"
     t.index ["user_id"], name: "index_transferencia_gerais_on_user_id"
   end
@@ -177,6 +179,7 @@ ActiveRecord::Schema.define(version: 2018_10_25_004152) do
     t.float "valor"
     t.integer "escola_id"
     t.string "tipo"
+    t.boolean "cancelada"
     t.index ["escola_id"], name: "index_transferencias_on_escola_id"
     t.index ["transferencia_geral_id"], name: "index_transferencias_on_transferencia_geral_id"
   end
