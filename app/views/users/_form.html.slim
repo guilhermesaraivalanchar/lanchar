@@ -16,6 +16,7 @@
       - if current_user.tem_permissao("limite_credito")
         = f.input :credito, label: "Limite de Credito", input_html: { nome_validacao: "Credito" }
       br
+      = f.input :turma, label: "Turma", input_html: { nome_validacao: "Turma" }
 
     .clear
     button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"

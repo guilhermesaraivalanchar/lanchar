@@ -18,6 +18,7 @@
                 th Nome
                 th Matricula
                 th Tipo
+                th Turma
                 th Saldo
                 th Credito
                 th Ação
@@ -33,6 +34,8 @@
                     = user.codigo
                   td 
                     = user.tipo_user.nome rescue ""
+                  td 
+                    = user.turma rescue ""
                   td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
                     = "#{ActionController::Base.helpers.number_to_currency(user.saldo)}"
                   td

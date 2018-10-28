@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_28_192939) do
+ActiveRecord::Schema.define(version: 2018_10_28_195745) do
 
   create_table "cardapio_combos", force: :cascade do |t|
     t.integer "combo_id"
@@ -208,6 +208,7 @@ ActiveRecord::Schema.define(version: 2018_10_28_192939) do
     t.integer "escola_id"
     t.boolean "admin"
     t.integer "credito"
+    t.string "turma"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
