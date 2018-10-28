@@ -15,6 +15,7 @@ class User < ApplicationRecord
   validates :codigo, uniqueness: true
 
   has_many :transferencia_gerais, :dependent => :destroy
+  has_many :entrada_produtos
 
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem
@@ -31,6 +32,7 @@ class User < ApplicationRecord
   end
 
   def tem_permissao(perm_codigo)
+    return true if self.admin
     self.tipo_user.tem_permissao(perm_codigo)
   end
 end

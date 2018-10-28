@@ -1,0 +1,22 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Alterar Senha
+        div.error_validate.alert.alert-danger style="display:none"
+          span
+        = simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+          = f.error_notification
+          .form-inputs
+            = f.input :email, as: :hidden
+            - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+              p
+                | Currently waiting confirmation for: 
+                = resource.unconfirmed_email
+            = f.input :password, hint: "Deixe em branco se não deseja alterar", required: false, input_html: { autocomplete: "new-password" }, label: "Nova Senha"
+            = f.input :password_confirmation, required: false, input_html: { autocomplete: "new-password" }, label: "Confirmar Nova Senha"
+            = f.input :current_password, hint: "Precisamos da sua senha atual para confirmar as alterações", required: true, input_html: { autocomplete: "current-password" }, label: "Senha Atual"
+          .clear
+          button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+            | Enviar
+          = link_to "Voltar", cardapios_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"

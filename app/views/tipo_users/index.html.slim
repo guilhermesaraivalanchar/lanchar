@@ -4,7 +4,7 @@
       .card-body
         h2.card-title Lista de tipo de usuários
         h6.card-subtitle Visualização e busca de todos os tipos usuários.
-        - if current_user.tem_permissao("criar_tipo_usuarios")
+        - if @can_criar_tipo_usuarios
           = link_to "Novo tipo de usuário", new_tipo_user_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
@@ -20,9 +20,9 @@
                   td 
                     = tipo_user.nome
                   td
-                    - if current_user.tem_permissao("editar_tipo_usuarios")
+                    - if @can_editar_tipo_usuarios
                       = link_to "Editar", edit_tipo_user_path(tipo_user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_tipo_usuarios") && tipo_user.users.empty?
+                    - if @can_deletar_tipo_usuarios && tipo_user.users.empty?
                       = link_to "Deletar", tipo_user_path(tipo_user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{tipo_user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

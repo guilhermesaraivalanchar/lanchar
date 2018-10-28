@@ -10,7 +10,7 @@
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA']).sum(:valor)}"
+            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA']).sum(:valor)}"
             button.btn.btn-sm.btn-youtube data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
@@ -23,7 +23,7 @@
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0 AND tipo = 'VENDA'", Time.now.beginning_of_month, Time.now.end_of_month).sum(:valor)}"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
       .card-body
@@ -34,7 +34,7 @@
               = "#{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0 AND tipo = 'VENDA'" , Time.now.beginning_of_year, Time.now.end_of_year).sum(:valor)}"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_year, Time.now.end_of_year).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-danger
       .card-body
@@ -45,7 +45,7 @@
               = "#{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{(@escola.transferencias.where("transferencias.valor > 0 AND tipo = 'VENDA'").sum(:valor).to_d * 0.02).round(2)}"
+            = "R$ #{(@escola.transferencias.where("transferencias.valor > 0").where(tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor).to_d * 0.02).round(2)}"
 
 
 

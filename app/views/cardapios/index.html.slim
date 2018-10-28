@@ -4,7 +4,7 @@
       .card-body
         h2.card-title Lista de cardápios
         h6.card-subtitle Visualização e busca de todos os cardápios.
-        - if current_user.tem_permissao("criar_cardapio")
+        - if @can_criar_cardapio
           = link_to "Novo cardapio", new_cardapio_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
@@ -20,14 +20,14 @@
                   td 
                     = cardapio.nome
                   td
-                    - if current_user.tem_permissao("definir_cardapio")
+                    - if @can_definir_cardapio
                       - if cardapio.ativo
                         button.btn.waves-effect.waves-light.btn-secundary cardapio_id="#{cardapio.id}" style="margin-right: 10px" Atual 
                       - else
                         button#usar_cardapio.btn.waves-effect.waves-light.btn-primary cardapio_id="#{cardapio.id}" style="margin-right: 10px" Usar 
-                    - if current_user.tem_permissao("editar_cardapio")
+                    - if @can_editar_cardapio
                       = link_to "Editar", edit_cardapio_path(cardapio.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_cardapio")
+                    - if @can_deletar_cardapio
                       = link_to "Deletar", cardapio_path(cardapio), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{cardapio.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

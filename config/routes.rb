@@ -28,7 +28,8 @@ Rails.application.routes.draw do
   match "/get_dados_combo" => "compras#get_dados_combo", as: :get_dados_combo, via: [:get, :post]
   match "/enviar_confirmacao_compra" => "compras#enviar_confirmacao_compra", as: :enviar_confirmacao_compra, via: [:get, :post]
   match "/transferencia_gerais/transferencia_pdf/:id" => "transferencia_gerais#transferencia_pdf", as: :transferencia_pdf, via: [:get, :post]
+  match "/transferencia_gerais/transferencia_completa_pdf/:id" => "transferencia_gerais#transferencia_completa_pdf", as: :transferencia_completa_pdf, via: [:get, :post]
   match "/pagina_sem_permissao" => "application#pagina_sem_permissao", as: :pagina_sem_permissao, via: [:get, :post]
-  match "/cancelar_transferencia" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
+  match "/cancelar_transferencia/:id" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
 
 end

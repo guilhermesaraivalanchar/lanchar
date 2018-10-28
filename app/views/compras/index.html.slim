@@ -5,8 +5,6 @@
         h2.card-title Compras
         h6.card-subtitle Realização de compras de produtos e combos
 
-
-
         div#add_produtos
         button#add_produto_botao.btn.btn-primary.waves-effect.waves-light helper='button' Adicionar Produto
         br
@@ -17,15 +15,21 @@
         h5.m-t-20 Usuário
         select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
           option value="" Escolha um usuário
-          - User.where(escola_id: current_user.escola_id).each do |user|
-            option id="option_usu_#{user.id}" value="#{user.id}" usuario_nome="#{user.nome}"
+          option id="option_usu_0" usuario_nome="Sem Usuário" value="0" Venda Direta
+          - User.where(escola_id: current_user.escola_id).order(:nome).each do |user|
+            option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_disponivel="#{user.saldo.to_d + user.credito.to_d}" usuario_nome="#{user.nome}"
               = "#{user.nome}"
         br
         br
+        div.div_saldo.alert.alert-info style="display: none"
+          span
+        div.erro_saldo.alert.alert-danger style="display: none"
+          span
         button#add_prod_usu.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Adicionar
-
         br
         br
+        div.div_erro_quantidade.alert.alert-danger style="display: none"
+          span
         h4.box-title.m-t-10
           | Lista
         hr
@@ -33,6 +37,8 @@
 
 
         button#enviar_confirmacao.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Comprar
+        a.btn.waves-effect.waves-light.btn-info helper="button" href="" id="imprimir_tudo" style="margin-right: 10px; display: none" target="_blank" Imprimir Todos
+
 
 javascript:
   var produto_num = 0;
@@ -46,6 +52,7 @@ javascript:
 
   produtos_all = []
   produtos_all_preco = []
+  produtos_all_quantidade = []
 
   prod_card = produtos_all_string.split("...")
 
@@ -53,6 +60,7 @@ javascript:
     prod_dados = prod_card[i].split("::")
     produtos_all[prod_dados[1]] = prod_dados[0]
     produtos_all_preco[prod_dados[1]] = parseFloat(prod_dados[2])
+    produtos_all_quantidade[prod_dados[1]] = parseFloat(prod_dados[3])
   }
 
   combos_all = []
@@ -112,7 +120,7 @@ javascript:
           produto_combo_def_num = 0
           
           for(i in resultado.produtos){
-            input_produto_combo = "<div class='row' id='div_input_prod_combo_"+combo_param+"_"+produto_combo_num+"'><div class='col-10'><input class='string required form-control' disabled='disabled' type='text' id='input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"' value='"+resultado.produtos[i].nome+"' produto_id='"+resultado.produtos[i].id+"'></div><div class='col-2'><button class='btn btn-danger waves-effect waves-light'  onclick='remover_select_combo_input("+combo_param+","+produto_combo_num+")' helper='button'>Não Quero</button></div><br><br><br></div>"
+            input_produto_combo = "<div class='row' id='div_input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"'><div class='col-10'><input class='string required form-control' disabled='disabled' type='text' id='input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"' value='"+resultado.produtos[i].nome+"' produto_id='"+resultado.produtos[i].id+"'></div><div class='col-2'><button class='btn btn-danger waves-effect waves-light'  onclick='remover_select_combo_input("+combo_param+","+produto_combo_def_num+")' helper='button'>Não Quero</button></div><br><br><br></div>"
             $("#div_combo_"+combo_param).append(input_produto_combo)
             produto_combo_def_num++
           }
@@ -135,21 +143,43 @@ javascript:
       })
   }
 
+  $("#select_usuario").change(function(){
+
+    user_id = $(this).val()
+    user_saldo_disponivel = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_disponivel");
+    if (user_id != 0){
+      $("div.div_saldo span").html("Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      $("div.div_saldo").show()
+    } else {
+      $("div.div_saldo").hide()
+    }
+  
+  })
+
   var div_confirmacao_num = 0
   $("#add_prod_usu").click(function(){
     //<div class="d-flex flex-row comment-row"><div class="w-100"><h5>Ricardo Martins Rodriguez</h5><div class="m-b-5" id="div_obs"><div>Combo - R$ 12,20</div><div>Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div>Combo - R$ 12,20</div></div><div class="comment-footer"><span class="text-muted">Total : R$ 56,52</span></div></div></div>
     produtos = []
-
+    produtos_atual_quantidade = []
+    for (i in produtos_all_quantidade){
+      produtos_atual_quantidade[i] = produtos_all_quantidade[i]
+    }
     user_id = $("#select_usuario").val()
 
     user_nome = document.getElementById("option_usu_"+user_id).getAttribute("usuario_nome");
-
+    user_saldo_disponivel = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_disponivel");
+    erro_quantidade = []
     elemento_confirmacao = '<div id="div_confirmacao_usu_'+div_confirmacao_num+'" class="d-flex flex-row comment-row"><div class="w-100"><h5>'+user_nome+'</h5><div class="m-b-5">'
     total = 0
     $('[id^=select_prod_]').each(function(){
       elemento_confirmacao += '<div>'+produtos_all[$(this).val()]+' - R$ '+produtos_all_preco[$(this).val()]+'</div>'
-      total = total + produtos_all_preco[$(this).val()]
-      produtos.push({tipo: 'p', id: $(this).val()})
+      if (produtos_atual_quantidade[$(this).val()] > 0){
+        total = total + produtos_all_preco[$(this).val()]
+        produtos.push({tipo: 'p', id: $(this).val()})
+        produtos_atual_quantidade[$(this).val()] = parseInt(produtos_atual_quantidade[$(this).val()]) - 1
+      }else{
+        erro_quantidade.push($(this).val())
+      }
     })
     $('[id^=select_combo_]').each(function(){
       produtos_combo = []
@@ -157,13 +187,31 @@ javascript:
       elemento_confirmacao += '<div>'+combos_all[$(this).val()]+' - R$ '+combos_all_preco[$(this).val()]+'</div>'
       $('[id^=input_prod_combo_'+combo_param+'_]').each(function(){
         prd_id = this.getAttribute("produto_id");
-        elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[prd_id]+'</div>'
-        produtos_combo.push(prd_id)
+        
+        if (produtos_atual_quantidade[prd_id] > 0){
+
+          elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[prd_id]+'</div>'
+          produtos_combo.push(prd_id)
+          produtos_atual_quantidade[prd_id] = parseInt(produtos_atual_quantidade[prd_id]) - 1
+
+        }else{
+          erro_quantidade.push(prd_id)
+        }
+      
       })
       $('[id^=select_nested_prod_combo_'+combo_param+'_]').each(function(){
-        prd_id = this.getAttribute("produto_id");
-        elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[$(this).val()]+'</div>'
-        produtos_combo.push($(this).val())
+        
+
+        if (produtos_atual_quantidade[$(this).val()] > 0){
+          prd_id = this.getAttribute("produto_id");
+          elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[$(this).val()]+'</div>'
+          produtos_combo.push($(this).val())
+          produtos_atual_quantidade[$(this).val()] = parseInt(produtos_atual_quantidade[$(this).val()]) - 1
+        }else{
+          erro_quantidade.push($(this).val())
+        }
+
+
       })
       total = total + combos_all_preco[$(this).val()]
       produtos.push({tipo: 'c', id: $(this).val(), produtos: produtos_combo})
@@ -171,17 +219,37 @@ javascript:
 
     elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+'</span></div></div>'
 
-    elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="/transferencia_gerais/transferencia_pdf/1.pdf" target="_blank">Imprimir</a></div></div>'
+    elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="" target="_blank">Imprimir</a></div></div>'
   
-    $('#div_confirmacao').append(elemento_confirmacao)
+    if (parseFloat(user_saldo_disponivel) > parseFloat(total)){
+
+      if (erro_quantidade.length == 0){
+        $('#div_confirmacao').append(elemento_confirmacao)
+        confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos})
+        div_confirmacao_num++
+        $("#add_produtos").html("")
+        $("#add_combos").html("")
+        $("div.div_erro_quantidade").hide()
+        $("div.erro_saldo").hide()
+        produtos_all_quantidade = produtos_atual_quantidade
+
+      }else{
+        erro_quantidade = jQuery.unique(erro_quantidade)
+        erro_quantidade_content = ""
+        for(i in erro_quantidade){
+          erro_quantidade_content = erro_quantidade_content + "<div>Quantidade de "+produtos_all[erro_quantidade]+" altrapassada. Quantidade atual: "+produtos_all_quantidade[erro_quantidade]+"</div>"
+        }
+        $("div.div_erro_quantidade span").html(erro_quantidade_content)
+        $("div.div_erro_quantidade").show()
+      }
+      
+
+    } else {
+      $("div.erro_saldo span").html("Saldo Insuficiente.")
+      $("div.erro_saldo").show()
+    }
 
 
-    confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos})
-
-    div_confirmacao_num++
-
-    $("#add_produtos").html("")
-    $("#add_combos").html("")
   })
 
   function remover_div_confirmacao(id){
@@ -197,37 +265,28 @@ javascript:
         confirmacao.splice(i, 1);
       }
     }
-
-
   }
-
 
   function remover_select_prod(id){
     console.log("id -- "+id)
     $("#div_select_prod_"+id).remove();
-
-
-
   }
 
   function remover_select_combo(id){
     console.log("id -- "+id)
     $("#div_select_combo_"+id).remove();
-
   }
 
   function remover_select_combo_select(id,id2){
     console.log("id -- "+id)
     console.log("id2 -- "+id2)
     $("#div_select_nested_prod_combo_"+id+"_"+id2).remove();
-
   }
 
   function remover_select_combo_input(id,id2){
     console.log("id -- "+id)
     console.log("id2 -- "+id2)
     $("#div_input_prod_combo_"+id+"_"+id2).remove();
-
   }
 
   $("#enviar_confirmacao").click(function(){
@@ -236,6 +295,7 @@ javascript:
       if (resultado) {
         console.log(resultado)
         if (resultado.status == "OK"){
+          transferencia_ids = "" 
           for(i in resultado.resposta){
             div_confirmacao_id = resultado.resposta[i].div_confirmacao_id
             transf_geral_id = resultado.resposta[i].transf_geral_id
@@ -243,6 +303,7 @@ javascript:
             $("#remover_confirmacao_"+div_confirmacao_id).hide()
             $("#imprimir_confirmacao_"+div_confirmacao_id).attr("href","/transferencia_gerais/transferencia_pdf/"+transf_geral_id+".pdf");
             $("#imprimir_confirmacao_"+div_confirmacao_id).show()
+            transferencia_ids = transferencia_ids + transf_geral_id + ","
             for(i in confirmacao){
               if (confirmacao[i].div_confirmacao_id == div_confirmacao_id){
                 confirmacao.splice(i, 1);
@@ -250,6 +311,10 @@ javascript:
             }
 
           }
+
+          $("#enviar_confirmacao").hide()
+          $("#imprimir_tudo").attr("href","/transferencia_gerais/transferencia_completa_pdf/"+transferencia_ids.substring(0, transferencia_ids.length-1)+".pdf");
+          $("#imprimir_tudo").show()
 
         }
       } else {

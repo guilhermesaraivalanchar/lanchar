@@ -2,6 +2,10 @@ class ProdutosController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_produtos")
     @produtos = Produto.where(escola_id: current_user.escola_id)
+    @can_criar_produtos = current_user.tem_permissao("criar_produtos")
+    @can_ver_produto = current_user.tem_permissao("ver_produto")
+    @can_editar_produtos = current_user.tem_permissao("editar_produtos")
+    @can_deletar_produtos = current_user.tem_permissao("deletar_produtos")
   end
 
   def show

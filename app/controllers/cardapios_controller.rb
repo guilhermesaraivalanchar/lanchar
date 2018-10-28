@@ -2,6 +2,10 @@ class CardapiosController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_cardapio")
   	@cardapios = Cardapio.where(escola_id: current_user.escola_id)
+    @can_criar_cardapio = current_user.tem_permissao("criar_cardapio")
+    @can_definir_cardapio = current_user.tem_permissao("definir_cardapio")
+    @can_editar_cardapio = current_user.tem_permissao("editar_cardapio")
+    @can_deletar_cardapio = current_user.tem_permissao("deletar_cardapio")
   end
 
   def show

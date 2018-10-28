@@ -24,9 +24,9 @@ ul#sidebarnav.in
         li
           = link_to("Tipos de Produtos", tipo_produtos_path)
 
-      - if current_user.tem_permissao("dar_entrada_produto")
+      - if current_user.tem_permissao("ver_entrada_produto")
         li
-          = link_to("Entrada de Produtos", new_entrada_produto_path)
+          = link_to("Entrada de Produtos", entrada_produtos_path)
 
       - if current_user.tem_permissao("ver_fornecedores")
         li

@@ -1,34 +1,46 @@
-= render :partial => "/partials/error_display", :locals => { :object => @entrada_produto }
-
-.form-body
-  = simple_form_for @entrada_produto do |f|
-    h4.box-title.m-t-10
-      | Dados do entrada_produto
-    hr
-    .clear
-    div.col-12
-      = f.input :produto_id, as: :select, label: "Produtos", prompt: "Selecione" , collection: Produto.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
-      = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
-      = f.input :preco_custo, label: "Preco", input_html: { nome_validacao: "Código" }
-      = f.input :quantidade, label: "Quantidade", input_html: { nome_validacao: "Código" }
-      br
-
-    .clear
-    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
-      | Enviar
-    = link_to "Voltar", entrada_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
-
-
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Lista de produtos
+        h6.card-subtitle Visualização e busca de todos os produtos.
+        - if @can_dar_entrada_produto
+          = link_to "Nova Entrada", new_entrada_produto_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th Responsável
+                th Produto
+                th Fornecedor
+                th Data
+                th Mês
+                th Preço/Unidade
+            tbody
+              - @entradas.each do |entrada|
+                tr
+                  td 
+                    = entrada.user.nome
+                  td 
+                    = entrada.produto.nome
+                  td 
+                    = entrada.fornecedor.nome
+                  td 
+                    = entrada.created_at.strftime('%d/%m/%Y %H:%M')
+                  td 
+                    = I18n.t(entrada.created_at.strftime("%B"))
+                  td 
+                    = ActionController::Base.helpers.number_to_currency((entrada.preco_custo.to_d / entrada.quantidade.to_d))
 javascript:
-  $(".select2").select2();
-  $('.dropify').dropify({
-    messages: {
-      'default': '',
-      'replace': 'Arraste a Imagem ou click aqui para trocar',
-      'remove':  'Remove',
-      'error':   'Ooops, Ocorreu um erro.'
-    },
-    error: {
-      'fileExtension': 'Formato do arquivo não permitido, Formatos permitidos: ({{ value }}).'
-    }
-  });
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

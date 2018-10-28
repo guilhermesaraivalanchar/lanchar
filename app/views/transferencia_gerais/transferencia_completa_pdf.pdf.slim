@@ -1,0 +1,88 @@
+meta content="text/html; charset=utf-8" http-equiv="content-type"
+
+css:
+  .b {
+    font-weight: bold;
+  }
+  .b_header {
+    padding-left: 10px;
+    font-size: 20px !important; 
+  }
+  .i {
+    font-style: italic;
+  }
+  .font-grande {
+    font-size: 15px;
+  }
+  * {
+    font-family: Courier;
+    font-size: 12px;
+  }
+
+  body {
+      padding: 0;
+      background-color: #FFF;
+      width: 210mm;
+      height: 297mm;
+  }
+
+  //table { page-break-inside:auto }
+  //tr    { page-break-inside:avoid; page-break-after:auto }
+  //thead { display:table-header-group }
+  //tfoot { display:table-footer-group }
+  .page-break { display:block; clear:both; page-break-after:always; }
+
+  .barby-barcode {
+    height: 70px;
+    width: 50px;
+    border: 0 none transparent !important;
+    border-collapse: collapse !important;
+  }
+  table.barby-barcode tr.barby_row {
+    border: 0 none transparent !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  table.barby-barcode tr.barby-row td { border: 0 none transparent !important; }
+  table.barby-barcode tr.barby-row td.on { background-color: black !important; }
+  table.barby-barcode tr.barby-row td.off { background-color: white !important; }
+
+  td {
+    padding: 5px 0;
+  }
+
+- @transferencia_geral_all.each do |transferencia_geral|
+
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | -------------------------------------------------
+    br
+    | NOME LEGAL
+    br
+    | -------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Aluno: "
+    = "#{transferencia_geral.user.nome}"
+    br
+    = "Itens: "
+    br
+    - transferencia_geral.transferencias.each do |t|
+      = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+      - if t.combo
+        = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+        br
+        div style="padding-left: 20px;font-size: 15px;"
+          - t.transferencia_combos.each do |tc|
+            = tc.produto.nome
+            br
+      br
+    div style="font-weight: bold;font-size: 20px;"
+      = "Total: R$ #{ActionController::Base.helpers.number_to_currency(transferencia_geral.valor.to_f)}"
+    | -------------------------------------------------
+    br
+    br
+

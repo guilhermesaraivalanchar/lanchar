@@ -17,27 +17,34 @@
                 th Comprador
                 th Vendedor
                 th Data
+                th Mês
                 th Valor
                 th Ação
             tbody
               - @transferencia_gerais.each do |transferencia_geral|
                 tr
                   td 
-                    = transferencia_geral.nome
+                    = transferencia_geral.id
                   td 
-                    = transferencia_geral.codigo
+                    = transferencia_geral.user.nome rescue "VENDA DIRETA"
                   td 
-                    = transferencia_geral.quantidade
+                    = User.find(transferencia_geral.transferencias.first.user_movimentou_id).nome rescue "-"
+                  td 
+                    = transferencia_geral.created_at.strftime("%d/%m/%Y %H:%M")
+                  td 
+                    = I18n.t(transferencia_geral.created_at.strftime("%B"))
                   td
-                    = transferencia_geral.status
+                    = ActionController::Base.helpers.number_to_currency(transferencia_geral.valor)
                   td
-                    - if current_user.tem_permissao("cancelar_transacao")
+                    - if @can_cancelar && !transferencia_geral.cancelada && transferencia_geral.tipo != "VENDA_DIRETA"
                       = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral.id), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
 javascript:
     $('#example23').DataTable({
+        "ordering": false,
         "displayLength": 15,
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
+

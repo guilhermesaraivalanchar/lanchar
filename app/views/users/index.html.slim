@@ -4,7 +4,7 @@
       .card-body
         h2.card-title Lista Usuarios
         h6.card-subtitle Visualização e busca de todos os usuários.
-        - if current_user.tem_permissao("criar_usuarios")
+        - if @can_criar_usuarios
           = link_to "Novo Usuário", new_user_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
@@ -18,14 +18,14 @@
                 th Nome
                 th Matricula
                 th Tipo
-                th Cartão
                 th Saldo
+                th Credito
                 th Ação
             tbody
               - @users.each do |user|
                 tr
                   td 
-                    - if current_user.tem_permissao("ver_usuario")
+                    - if @can_ver_usuario
                       = link_to(user.nome, user_path(user.id))
                     - else
                       = user.nome
@@ -33,16 +33,16 @@
                     = user.codigo
                   td 
                     = user.tipo_user.nome rescue ""
-                  td
-                    = user.cartao_id
                   td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
-                    = "R$ #{user.saldo}"
+                    = "#{ActionController::Base.helpers.number_to_currency(user.saldo)}"
                   td
-                    - if current_user.tem_permissao("criar_usuarios")
+                    = "#{ActionController::Base.helpers.number_to_currency(user.credito)}"
+                  td
+                    - if @can_editar_usuarios
                       = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("creditar_usuarios_tabela")
+                    - if @can_creditar_usuarios_tabela
                       button.btn.btn-success id="creditar_#{user.id}" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
-                    - if current_user.tem_permissao("deletar_usuarios") && user.transferencia_gerais.empty?
+                    - if @can_deletar_usuarios && user.transferencia_gerais.empty?
                       = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 
 

@@ -4,7 +4,7 @@
       .card-body
         h2.card-title Lista de combos
         h6.card-subtitle Visualização e busca de todos os combos.
-        - if current_user.tem_permissao("criar_combos")
+        - if @can_criar_combos 
           = link_to "Novo combo", new_combo_path, class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
@@ -20,9 +20,9 @@
                   td 
                     = combo.nome
                   td
-                    - if current_user.tem_permissao("editar_combos")
+                    - if @can_editar_combos
                       = link_to "Editar", edit_combo_path(combo.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if current_user.tem_permissao("deletar_combos") && combo.transferencias.empty?
+                    - if @can_deletar_combos && combo.transferencias.empty?
                       = link_to "Deletar", combo_path(combo), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{combo.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 javascript:
     $('#example23').DataTable({

@@ -2,6 +2,9 @@ class CombosController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_combos")
   	@combos = Combo.where(escola_id: current_user.escola_id)
+    @can_criar_combos = current_user.tem_permissao("criar_combos")
+    @can_editar_combos = current_user.tem_permissao("editar_combos")
+    @can_deletar_combos = current_user.tem_permissao("deletar_combos")
   end
 
   def show

@@ -2,6 +2,9 @@ class FornecedoresController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_fornecedores")
     @fornecedores = Fornecedor.where(escola_id: current_user.escola_id)
+    @can_criar_fornecedores = current_user.tem_permissao("criar_fornecedores")
+	@can_editar_fornecedores = current_user.tem_permissao("editar_fornecedores")
+	@can_deletar_fornecedores = current_user.tem_permissao("deletar_fornecedores")
   end
 
   def show

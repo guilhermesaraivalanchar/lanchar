@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   def index
   	@users = User.where(escola_id: current_user.escola_id)
+    @can_criar_usuarios = current_user.tem_permissao("criar_usuarios")
+    @can_ver_usuario = current_user.tem_permissao("ver_usuario")
+    @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
+    @can_creditar_usuarios_tabela = current_user.tem_permissao("creditar_usuarios_tabela")
+    @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
   end
 
   def show
@@ -44,6 +49,7 @@ class UsersController < ApplicationController
     @user.password = "123456"
     @user.email = "none#{@user.codigo}@none.com"
     @user.saldo = 0
+    @user.credito = 0
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
