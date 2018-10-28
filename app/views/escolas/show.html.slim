@@ -18,23 +18,23 @@
       .card-body
         .d-flex
           div
-            h3.card-title Faturamento Mensal
+            h3.card-title Faturamento Diario
             h6.card-subtitle
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
       .card-body
         .d-flex
           div
-            h3.card-title Faturamento Anual
+            h3.card-title Faturamento Mensal
             h6.card-subtitle
               = "#{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_year, Time.now.end_of_year).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
+            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-danger
       .card-body
