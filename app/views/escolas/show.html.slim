@@ -23,7 +23,7 @@
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
+            = "#{ActionController::Base.helpers.number_to_currency(@escola.faturamento_diario)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
       .card-body
@@ -34,7 +34,7 @@
               = "#{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)}"
+            = "#{ActionController::Base.helpers.number_to_currency(@escola.faturamento_mensal)}"
   .col-lg-3.col-md-6
     .card.card-inverse.card-danger
       .card-body
@@ -45,7 +45,7 @@
               = "#{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{(@escola.transferencias.where("transferencias.valor > 0").where(tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor).to_d * 0.02).round(2)}"
+            = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_devedor)}"
 
 
 
