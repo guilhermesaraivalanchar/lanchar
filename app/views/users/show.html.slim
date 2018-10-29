@@ -94,7 +94,7 @@
                             = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
                           td 
                             = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-green
+                          td class="#{ transferencia.tipo == 'ENTRADA' ? 'text-green' : 'text-danger'}"
                             = "#{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 

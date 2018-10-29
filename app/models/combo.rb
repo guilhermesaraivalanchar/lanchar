@@ -16,14 +16,18 @@ class Combo < ApplicationRecord
   after_save :salvar_produtos, :salvar_tipo_produtos
 
   def salvar_produtos
+    self.combo_produtos.destroy_all
   	self.produtos.split(",").each do |produto_id|
   		ComboProduto.create(combo_id: self.id, produto_id: produto_id)
   	end
   end
 
   def salvar_tipo_produtos
+    self.combo_tipo_produtos.destroy_all
     self.tipo_produtos.split(",").each do |tipo_produto_id|
       ComboTipoProduto.create(combo_id: self.id, tipo_produto_id: tipo_produto_id)
     end
   end
+
+
 end

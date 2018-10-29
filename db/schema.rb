@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2018_10_28_195745) do
     t.datetime "updated_at", null: false
     t.string "imagem_file_name"
     t.string "imagem_content_type"
-    t.integer "imagem_file_size"
+    t.bigint "imagem_file_size"
     t.datetime "imagem_updated_at"
     t.integer "escola_id"
     t.index ["escola_id"], name: "index_combos_on_escola_id"

@@ -10,7 +10,7 @@
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA']).sum(:valor)}"
+            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).sum(:valor)}"
             button.btn.btn-sm.btn-youtube data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
@@ -124,6 +124,7 @@
                 thead
                   tr
                     th Nome
+                    th Tipo
                     th Destino
                     th Tipo
                     th Data
@@ -138,12 +139,14 @@
                     th
                     th valor
                 tbody
-                  - @escola.transferencia_gerais.where(tipo: ["ENTRADA","SAIDA"]).order("created_at DESC").each do |transferencia_geral|
+                  - @escola.transferencia_gerais.where(tipo: ["ENTRADA","SAIDA","SAIDA CANCELADA"]).order("created_at DESC").each do |transferencia_geral|
                     - transferencia_geral.transferencias.each do |transferencia|
                       - if transferencia.tipo == "ENTRADA"
-                        tr
+                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                           td
                             = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            = transferencia_geral.tipo
                           td
                             - if current_user.tem_permissao("ver_usuario")
                               = link_to(transferencia_geral.user.nome, user_path(transferencia_geral.user.id))
@@ -158,9 +161,11 @@
                           td.text-green
                             = "#{transferencia.valor}"
                       - if transferencia.tipo == "SAIDA"
-                        tr
+                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                           td
                             = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            = transferencia_geral.tipo
                           td
                             = ""
                           td
@@ -170,6 +175,22 @@
                           td 
                             = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-danger
+                            = "#{transferencia.valor}"
+                      - if transferencia.tipo == "SAIDA CANCELADA"
+                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
+                          td
+                            = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            = transferencia_geral.tipo
+                          td
+                            = ""
+                          td
+                            = ""
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
+                          td.text-green
                             = "#{transferencia.valor}"
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
@@ -231,6 +252,8 @@ javascript:
 
             $("#quantidade_credito").val("");
             $("#creditado_alerta").hide();
+            //window.open("/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf")
+            window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
 
           }, 1000);
         }

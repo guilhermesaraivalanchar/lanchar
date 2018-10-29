@@ -85,7 +85,7 @@ class UsersController < ApplicationController
       
       transf_geral.save
       
-      render json:  { resultado: "OK" }
+      render json:  { resultado: "OK", transferencia_sangria: transf_geral.id }
 
     else
       user = User.find(params[:user_id])

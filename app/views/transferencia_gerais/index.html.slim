@@ -14,6 +14,7 @@
             thead
               tr
                 th ID
+                th Tipo
                 th Comprador
                 th Vendedor
                 th Data
@@ -22,11 +23,16 @@
                 th Ação
             tbody
               - @transferencia_gerais.each do |transferencia_geral|
-                tr
+                - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA"
+                - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA"
+                - nome = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
+                tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                   td 
                     = transferencia_geral.id
                   td 
-                    = transferencia_geral.user.nome rescue "VENDA DIRETA"
+                    = transferencia_geral.tipo
+                  td 
+                    = nome
                   td 
                     = User.find(transferencia_geral.transferencias.first.user_movimentou_id).nome rescue "-"
                   td 
@@ -38,6 +44,8 @@
                   td
                     - if @can_cancelar && !transferencia_geral.cancelada && transferencia_geral.tipo != "VENDA_DIRETA"
                       = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral.id), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
+                    - elsif transferencia_geral.cancelada
+                      = link_to "Cancelada", '', helper: "button", class: "btn waves-effect waves-light btn-secondary", style: "margin-right: 10px"
 javascript:
     $('#example23').DataTable({
         "ordering": false,

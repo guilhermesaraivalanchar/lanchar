@@ -52,33 +52,56 @@ css:
     padding: 5px 0;
   }
 
-
-div style="font-size: 15px; max-width: 245px; text-align:center"
-  | -------------------------------------------------
-  br
-  | NOME LEGAL
-  br
-  | -------------------------------------------------
-div style="font-size: 15px; max-width: 245px"
-  = "Empresa: #{current_user.escola.nome}"
-  br
-  = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
-  br
-  = "Aluno: "
-  = "#{@transferencia_geral.user.nome}"
-  br
-  = "Itens: "
-  br
-  - @transferencia_geral.transferencias.each do |t|
-    = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
-    - if t.combo
-      = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
-      br
-      div style="padding-left: 20px;font-size: 15px;"
-        - t.transferencia_combos.each do |tc|
-          = tc.produto.nome
-          br
+- if @transferencia_geral.tipo != "SAIDA"
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | -------------------------------------------------
     br
-  div style="font-weight: bold;font-size: 20px;"
-    = "Total: R$ #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
-  | -------------------------------------------------
+    | NOME LEGAL
+    br
+    | -------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Aluno: "
+    = "#{@transferencia_geral.user.nome}"
+    br
+    = "Itens: "
+    br
+    - @transferencia_geral.transferencias.each do |t|
+      = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+      - if t.combo
+        = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+        br
+        div style="padding-left: 20px;font-size: 15px;"
+          - t.transferencia_combos.each do |tc|
+            = tc.produto.nome
+            br
+      br
+    div style="font-weight: bold;font-size: 20px;"
+      = "Total: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
+    | -------------------------------------------------
+- else
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | ------------------------------------------------
+    br
+    | NOME LEGAL
+    br
+    | ------------------------------------------------
+    br
+    | SANGRIA
+    br
+    | ------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Responsável: "
+    = "#{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
+    br
+    br
+    div style="font-weight: bold;font-size: 20px;"
+      = "Valor: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f * -1)}"
+    | ------------------------------------------------
