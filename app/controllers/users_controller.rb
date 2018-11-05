@@ -42,6 +42,8 @@ class UsersController < ApplicationController
   def new
     init_new
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_usuarios")
+    
+    @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
   end
 
   def create
