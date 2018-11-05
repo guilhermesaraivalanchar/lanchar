@@ -15,7 +15,6 @@ class TipoUser < ApplicationRecord
 
     if permissao_ids
     	self.permissao_ids.each do |permissao_id|
-        puts "FDP -- #{permissao_id} -- #{self.id}"
         per = PermissoesUser.create(tipo_user_id: self.id, permissao_id: permissao_id.to_i)
         if per
           puts " CRIO"

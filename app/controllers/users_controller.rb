@@ -22,6 +22,8 @@ class UsersController < ApplicationController
       @user_imagem = @imagem[0]
     end
 
+    @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
+
   end
 
   def update

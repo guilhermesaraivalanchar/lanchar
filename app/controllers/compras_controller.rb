@@ -52,7 +52,7 @@ class ComprasController < ApplicationController
   	combo.combo_tipo_produtos.each do |combo_tipo|
 			
 			select_prod_options = "<option value='0'>Escolha seu/sua #{combo_tipo.tipo_produto.nome.singularize}</option>"
-	    Produto.where(tipo_produto_id: combo_tipo.tipo_produto_id).collect { |m| [m.nome, m.id] }.each do |produto|
+	    Produto.where('produtos.quantidade > 0').where(tipo_produto_id: combo_tipo.tipo_produto_id).collect { |m| [m.nome, m.id] }.each do |produto|
 	    	select_prod_options += "<option value='#{produto.last}'>#{produto.first}</option>"
 	    end
 

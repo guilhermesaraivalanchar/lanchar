@@ -13,12 +13,33 @@
       = f.input :tipo_user_id, as: :select, label: "Tipo de Usuário", prompt: "Selecione" , collection: @tipo_users, input_html: { nome_validacao: "Tipo Usuário" }
       = f.input :cartao_id, label: "Cartão", input_html: { nome_validacao: "Código" }
       = f.input :usuario_responsavel_id, as: :select, label: "Usuário Responsável", prompt: "Selecione" , collection: @users, input_html: { nome_validacao: "Tipo Usuário" }
+    h4.box-title.m-t-10
+      | Dados de Cŕedito
+    hr
+    .clear
+    div.col-12
       - if current_user.tem_permissao("limite_credito")
         = f.input :credito, label: "Limite de Credito", input_html: { nome_validacao: "Credito" }
-      br
+      - if current_user.tem_permissao("editar_saldo_diario")
+        = f.input :saldo_diario, label: "Saldo Diário", input_html: { nome_validacao: "Saldo Diário" }
       = f.input :turma, label: "Turma", input_html: { nome_validacao: "Turma" }
-
+      br
+    h4.box-title.m-t-10
+      | Bloqueio de Produtos
+    hr
     .clear
+    div.col-12
+      div
+        button.btn.btn-secondary.btn-block.text-uppdercase.waves-effect.waves-light type="button" data-toggle="collapse" data-target="#collapse_bloqueio_produtos" aria-expanded="false" aria-controls="collapse_bloqueio_produtos"
+          | Bloqueio Produtos
+        .collapse id="collapse_bloqueio_produtos" style="padding-top: 5px;"
+          .row
+            - Produto.all.each do |produto|
+              .col-3 data-toggle="tooltip" data-placement="top" data-original-title="#{produto.nome}" title="#{produto.nome}"
+                = f.input :produto_ids, label: produto.nome ,as: :boolean,boolean_style: :inline, checked: 'checked', checked_value: produto.id, unchecked_value: nil, disabled: false, input_html: { :class => "filled-in", id: "produto_ids_#{produto.id}", name: "user[produto_ids][]", checked: @produtos_bloqueados.include?(produto.id)}
+      br
+    .clear
+
     button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
       | Enviar
     = link_to "Voltar", users_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"

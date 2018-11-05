@@ -66,3 +66,4 @@ Permissao.create(permissao_nome: "Cancelar Transação", permissao_codigo: "canc
 
 ################################# NOVAS 
 Permissao.create(permissao_nome: "Alterar Limite de Credito", permissao_codigo: "limite_credito", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Editar Saldo Diário", permissao_codigo: "editar_saldo_diario", permissao_grupo: "Usuários")
