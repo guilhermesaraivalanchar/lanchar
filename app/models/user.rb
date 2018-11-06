@@ -9,7 +9,8 @@ class User < ApplicationRecord
 
   validates_presence_of :nome
   validates_presence_of :codigo
-
+  validates_uniqueness_of :codigo
+  
   validates :codigo, uniqueness: true
 
   has_many :transferencia_gerais, :dependent => :destroy
