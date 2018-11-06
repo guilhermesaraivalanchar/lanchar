@@ -2,7 +2,8 @@
   .col-12
     .card
       .card-body
-        h2.card-title Editar Usuário
+        h2.card-title 
+        	= "Editar Usuário (#{@user.nome})"
         h6.card-subtitle Edição de usuário
         div.error_validate.alert.alert-danger style="display:none"
           span

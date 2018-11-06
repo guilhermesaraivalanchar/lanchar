@@ -7,8 +7,6 @@ class User < ApplicationRecord
 
   belongs_to :escola
 
-  belongs_to :tipo_user, optional: true
-
   validates_presence_of :nome
   validates_presence_of :codigo
 
@@ -17,7 +15,7 @@ class User < ApplicationRecord
   has_many :transferencia_gerais, :dependent => :destroy
   has_many :entrada_produtos
   has_many :bloqueio_produtos, :dependent => :destroy
-
+  has_many :tipos_users
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"
@@ -26,8 +24,9 @@ class User < ApplicationRecord
   validate :tipo_foto
 
   attr_accessor :produto_ids
+  attr_accessor :tipo_users
 
-  after_save :att_bloqueio_produto
+  after_save :att_bloqueio_produto, :salvar_tipo_produtos
 
   def att_bloqueio_produto
 
@@ -48,6 +47,13 @@ class User < ApplicationRecord
     end
   end
 
+  def salvar_tipo_produtos
+    self.tipos_users.destroy_all
+    self.tipo_users.split(",").each do |tipo_user_id|
+      TiposUser.create(user_id: self.id, tipo_user_id: tipo_user_id)
+    end
+  end
+
   def tipo_foto
 
     if imagem_content_type && imagem_content_type != "image/jpg" && imagem_content_type != "image/jpeg" && imagem_content_type != "image/png"
@@ -56,8 +62,27 @@ class User < ApplicationRecord
   end
 
   def tem_permissao(perm_codigo)
+    
     return true if self.admin
-    self.tipo_user.tem_permissao(perm_codigo)
+
+    self.tipos_users.each do |tipos_userr|
+      return true if tipos_userr.tipo_user.tem_permissao(perm_codigo)
+    end
+
+    return false
+  end
+
+  def check_perms(perms)
+
+    return true if self.admin
+
+    perms.each do |perm|
+      self.tipos_users.each do |tipos_userr|
+        return true if tipos_userr.tipo_user.tem_permissao(perm)
+      end
+    end
+    
+    return false
   end
 
   def saldo_diario_atual

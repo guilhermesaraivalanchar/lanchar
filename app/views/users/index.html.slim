@@ -33,7 +33,7 @@
                   td 
                     = user.codigo
                   td 
-                    = user.tipo_user.nome rescue ""
+                    = TipoUser.where(id: user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
                   td 
                     = user.turma rescue ""
                   td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
@@ -82,7 +82,7 @@ javascript:
     var user_id = 0;
 
     $('#example23').DataTable({
-        "displayLength": 3,
+        "displayLength": 15,
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'

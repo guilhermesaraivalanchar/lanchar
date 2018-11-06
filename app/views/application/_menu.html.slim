@@ -1,49 +1,65 @@
 ul#sidebarnav.in
   li
-    a.has-arrow.waves-effect.waves-dark
-      i.mdi.mdi-book-open
+    a.waves-effect.waves-dark href="#{root_url}"
       span.hide-menu
-        | Cadastros
-    ul.collapse
-      - if current_user.tem_permissao("ver_escola")
-        li
-          = link_to("Escola", escola_path(current_user.escola_id))
-      - if current_user.tem_permissao("ver_usuarios")
-        li
-          = link_to("Usuários", users_path)
-      
-      - if current_user.tem_permissao("ver_transacoes")
-        li
-          = link_to("Transações", transferencia_gerais_path)
+        | Home
+  - if current_user.tem_permissao("ver_escola")
+    li
+      a.waves-effect.waves-dark href="#{escola_path(current_user.escola_id)}"
+        span.hide-menu
+          | Escola
+  - if current_user.check_perms(['ver_usuarios','ver_tipo_usuarios','ver_produtos','ver_tipo_produtos','ver_combos'])
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Cadastro
+      ul.collapse
+        - if current_user.tem_permissao("ver_usuarios")
+          li
+            = link_to("Usuários", users_path)
 
-      - if current_user.tem_permissao("ver_tipo_usuarios")
-        li
-          = link_to("Tipos de Usuários", tipo_users_path)
+        - if current_user.tem_permissao("ver_tipo_usuarios")
+          li
+            = link_to("Tipos de Usuários", tipo_users_path)
+        
+        - if current_user.tem_permissao("ver_produtos")
+          li
+            = link_to("Produtos", produtos_path)
 
-      - if current_user.tem_permissao("ver_tipo_produtos")
-        li
-          = link_to("Tipos de Produtos", tipo_produtos_path)
+        - if current_user.tem_permissao("ver_tipo_produtos")
+          li
+            = link_to("Tipos de Produtos", tipo_produtos_path)
+        
+        - if current_user.tem_permissao("ver_combos")
+          li
+            = link_to("Combos", combos_path)
 
-      - if current_user.tem_permissao("ver_entrada_produto")
-        li
-          = link_to("Entrada de Produtos", entrada_produtos_path)
+  - if current_user.tem_permissao("comprar_sistema")
+    li
+      a.waves-effect.waves-dark href="#{compras_path}"
+        span.hide-menu
+          | Venda
+  - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores'])
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Estoque
+      ul.collapse
+        - if current_user.tem_permissao("ver_entrada_produto")
+          li
+            = link_to("Entrada de Produtos", entrada_produtos_path)
 
-      - if current_user.tem_permissao("ver_fornecedores")
-        li
-          = link_to("Fornecedores", fornecedores_path)
-      - if current_user.tem_permissao("ver_produtos") || current_user.tem_permissao("ver_combos")
-        li 
-          = link_to("Produtos", produtos_path, class: "has-arrow")
-          ul.collapse
-            - if current_user.tem_permissao("ver_produtos")
-              li
-                = link_to "Produtos", produtos_path
-            - if current_user.tem_permissao("ver_combos")
-              li
-                = link_to "Combos", combos_path
-      - if current_user.tem_permissao("comprar_sistema")
-        li
-          = link_to("Compras", compras_path)
-      - if current_user.tem_permissao("ver_cardapio")
-        li
-          = link_to("Cardápios", cardapios_path)
+        - if current_user.tem_permissao("ver_fornecedores")
+          li
+            = link_to("Fornecedores", fornecedores_path)
+
+  - if current_user.tem_permissao("ver_cardapio")
+    li
+      a.waves-effect.waves-dark href="#{cardapios_path}"
+        span.hide-menu
+          | Cardápios
+  - if current_user.tem_permissao("ver_transacoes")
+    li
+      a.waves-effect.waves-dark href="#{transferencia_gerais_path}"
+        span.hide-menu
+          | Transações

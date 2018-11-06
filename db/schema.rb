@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_05_030129) do
+ActiveRecord::Schema.define(version: 2018_11_06_005821) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -156,6 +156,13 @@ ActiveRecord::Schema.define(version: 2018_11_05_030129) do
     t.index ["escola_id"], name: "index_tipo_users_on_escola_id"
   end
 
+  create_table "tipos_users", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "tipo_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "transferencia_combos", force: :cascade do |t|
     t.integer "transferencia_id"
     t.datetime "created_at", null: false
@@ -209,7 +216,6 @@ ActiveRecord::Schema.define(version: 2018_11_05_030129) do
     t.string "imagem_content_type"
     t.integer "imagem_file_size"
     t.datetime "imagem_updated_at"
-    t.string "tipo_user_id"
     t.decimal "saldo", precision: 10, scale: 2
     t.integer "usuario_responsavel_id"
     t.integer "escola_id"

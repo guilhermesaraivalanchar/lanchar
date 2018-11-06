@@ -1,7 +1,7 @@
 class TipoUser < ApplicationRecord
   belongs_to :escola
-  has_many :users
   has_many :permissoes_users
+  has_many :tipos_users
 
   attr_accessor :permissao_ids
 

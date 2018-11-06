@@ -10,11 +10,13 @@ class UsersController < ApplicationController
 
   def show
     init_current
+    @user_responsavel = current_user.id == @user.usuario_responsavel_id
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_usuario") && current_user.id != @user.usuario_responsavel_id && current_user != @user
   end
 
   def edit
     init_current
+    @user_responsavel = current_user.id == @user.usuario_responsavel_id
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_usuarios") && current_user.id != @user.usuario_responsavel_id && current_user != @user
 
     if @user.imagem_file_name != nil
@@ -26,11 +28,23 @@ class UsersController < ApplicationController
 
   end
 
+  def resetar_senha
+    u = User.find(params[:user_id])
+    u.password = "123456"
+    u.save
+    render json: { status: "OK" }
+  end
+
   def update
     init_current
+    @user_responsavel = current_user.id == @user.usuario_responsavel_id
     respond_to do |format|
-      if current_user.tem_permissao("editar_usuarios") && @user.update_attributes(user_params)
-        format.html { redirect_to(users_path, :notice => "Usuário editado com sucesso.") }
+      if (current_user.tem_permissao("editar_usuarios") || @user_responsavel) && @user.update_attributes(user_params)
+        if !@user_responsavel
+          format.html { redirect_to(users_path, :notice => "Usuário editado com sucesso.") }
+        else
+          format.html { redirect_to(user_path(@user.id), :notice => "Usuário editado com sucesso.") }
+        end
       else
         format.html do
           render :action => "edit"
@@ -53,7 +67,7 @@ class UsersController < ApplicationController
     @user.password = "123456"
     @user.email = "none#{@user.codigo}@none.com"
     @user.saldo = 0
-    @user.credito = 0
+    @user.credito = 30
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }

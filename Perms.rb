@@ -5,9 +5,10 @@ Permissao.create(permissao_nome: "Criar Usuários", permissao_codigo: "criar_usu
 Permissao.create(permissao_nome: "Editar Usuários", permissao_codigo: "editar_usuarios", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Deletar Usuários", permissao_codigo: "deletar_usuarios", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Creditar Usuários", permissao_codigo: "creditar_usuarios_tabela", permissao_grupo: "Usuários")
-Permissao.create(permissao_nome: "Creditar Usuários Dependentes", permissao_codigo: "creditar_usuarios_dependentes", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Ver Usuario", permissao_codigo: "ver_usuario", permissao_grupo: "Usuários")
-Permissao.create(permissao_nome: "Auto Creditar", permissao_codigo: "auto_creditar", permissao_grupo: "Usuários")
+
+
+
 
 # Tipo de Usuário
 Permissao.create(permissao_nome: "Ver Tipo de Usuários", permissao_codigo: "ver_tipo_usuarios", permissao_grupo: "Tipo de Usuários")
@@ -65,5 +66,14 @@ Permissao.create(permissao_nome: "Cancelar Transação", permissao_codigo: "canc
 
 
 ################################# NOVAS 
+Permissao.create(permissao_nome: "Resetar Senha", permissao_codigo: "resetar_senha_usuario", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Bloquear Produtos", permissao_codigo: "bloquear_produtos", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Editar Funções Credito", permissao_codigo: "editar_funcoes_credito", permissao_grupo: "Usuários")
+
+
+################################# SUSPENSOS
+Permissao.create(permissao_nome: "Auto Creditar", permissao_codigo: "auto_creditar", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Creditar Usuários Dependentes", permissao_codigo: "creditar_usuarios_dependentes", permissao_grupo: "Usuários")
+
 Permissao.create(permissao_nome: "Alterar Limite de Credito", permissao_codigo: "limite_credito", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Editar Saldo Diário", permissao_codigo: "editar_saldo_diario", permissao_grupo: "Usuários")
