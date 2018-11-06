@@ -27,8 +27,9 @@ class User < ApplicationRecord
   attr_accessor :produto_ids
   attr_accessor :tipo_users
   attr_accessor :enable_after_save
-  
+
   after_save :att_bloqueio_produto, :salvar_tipo_produtos, :if => :enable_after_save
+  
 
   def att_bloqueio_produto
 
