@@ -18,7 +18,6 @@ class Combo < ApplicationRecord
 
   def salvar_produtos
 
-    if 
     self.combo_produtos.destroy_all
   	self.produtos.split(",").each do |produto_id|
   		ComboProduto.create(combo_id: self.id, produto_id: produto_id)
