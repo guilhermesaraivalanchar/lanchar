@@ -60,7 +60,7 @@
           h3.m-b-0
             = @escola.nome
           p 
-            = current_user.tipo_user.nome
+            = TipoUser.where(id: current_user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
         .row
           .col-lg-12.col-md-12
             h4.box-title.m-t-10
@@ -75,7 +75,7 @@
               div.col-lg-4.col-md-6
                 div.show_input  
                   = "Tipo"
-                = current_user.tipo_user.nome
+                = TipoUser.where(id: current_user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
               div.col-lg-4.col-md-6
                 div.show_input  
                   = "Cartao"
