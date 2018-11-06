@@ -10,7 +10,7 @@ class User < ApplicationRecord
   validates_presence_of :nome
   validates_presence_of :codigo
   validates_uniqueness_of :codigo
-  
+
   validates :codigo, uniqueness: true
 
   has_many :transferencia_gerais, :dependent => :destroy
@@ -26,8 +26,9 @@ class User < ApplicationRecord
 
   attr_accessor :produto_ids
   attr_accessor :tipo_users
-
-  after_save :att_bloqueio_produto, :salvar_tipo_produtos
+  attr_accessor :enable_after_save
+  
+  after_save :att_bloqueio_produto, :salvar_tipo_produtos, :if => :enable_after_save
 
   def att_bloqueio_produto
 

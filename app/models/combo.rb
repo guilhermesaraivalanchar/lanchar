@@ -12,10 +12,13 @@ class Combo < ApplicationRecord
 
   attr_accessor :produtos
   attr_accessor :tipo_produtos
-
-  after_save :salvar_produtos, :salvar_tipo_produtos
+  attr_accessor :enable_after_save
+  
+  after_save :salvar_produtos, :salvar_tipo_produtos, :if => :enable_after_save
 
   def salvar_produtos
+
+    if 
     self.combo_produtos.destroy_all
   	self.produtos.split(",").each do |produto_id|
   		ComboProduto.create(combo_id: self.id, produto_id: produto_id)

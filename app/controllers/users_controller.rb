@@ -38,6 +38,7 @@ class UsersController < ApplicationController
   def update
     init_current
     @user_responsavel = current_user.id == @user.usuario_responsavel_id
+    user_params[:enable_after_save] = true
     respond_to do |format|
       if (current_user.tem_permissao("editar_usuarios") || @user_responsavel) && @user.update_attributes(user_params)
         if !@user_responsavel
@@ -68,6 +69,7 @@ class UsersController < ApplicationController
     @user.email = "none#{@user.codigo}@none.com"
     @user.saldo = 0
     @user.credito = 30
+    @user.enable_after_save = true
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }

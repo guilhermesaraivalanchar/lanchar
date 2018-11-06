@@ -28,6 +28,7 @@ class CombosController < ApplicationController
 
   def create
     init_new
+    combo_params[:enable_after_save] = true
     combo_params[:escola_id] = current_user.escola_id
     respond_to do |format|
       if current_user.tem_permissao("criar_combos") && @combo.update_attributes(combo_params)
@@ -42,6 +43,7 @@ class CombosController < ApplicationController
 
   def update
     init_current
+    combo_params[:enable_after_save] = true
     respond_to do |format|
       if current_user.tem_permissao("editar_combos") && @combo.update_attributes(combo_params)
         format.html { redirect_to(combos_path, :notice => "Combo editado com sucesso.") }
