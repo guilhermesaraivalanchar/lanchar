@@ -142,7 +142,10 @@ css:
     = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
     br
     = "Aluno: "
-    = "#{@transferencia_geral.user.nome}"
+    - if @transferencia_geral.tipo == "VENDA_DIRETA"
+      = "VENDA DIRETA"
+    - else
+      = "#{@transferencia_geral.user.nome}"
     br
     = "Itens: "
     br
