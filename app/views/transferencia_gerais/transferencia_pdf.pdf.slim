@@ -99,7 +99,7 @@ css:
     br
     = "Saldo Adicionado: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor)}"
     br
-    = "Responsável: #{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
+    = "Operador: #{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
     br
     = "Tipo Entrada: #{@transferencia_geral.tipo_entrada.upcase}"
     br
