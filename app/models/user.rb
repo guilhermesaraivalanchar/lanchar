@@ -13,7 +13,7 @@ class User < ApplicationRecord
 
   validates :codigo, uniqueness: true
 
-  has_many :responsavel_users
+  has_many :responsavel_users, :dependent => :destroy 
   has_many :transferencia_gerais, :dependent => :destroy
   has_many :entrada_produtos
   has_many :bloqueio_produtos, :dependent => :destroy
@@ -23,6 +23,8 @@ class User < ApplicationRecord
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"
   #validates_attachment_content_type :imagem, :message => "O arquivo enviado não é uma imagem", :content_type => %w( image/jpeg image/png image/gif image/pjpeg image/x-png )
 
+  before_destroy :delete_relacao_dependentes
+
   validate :tipo_foto
 
   attr_accessor :produto_ids
@@ -30,7 +32,15 @@ class User < ApplicationRecord
   attr_accessor :responsavel_ids
   attr_accessor :enable_after_save
 
-  after_save :att_bloqueio_produto, :salvar_tipo_users, :salvar_responsavel, :if => :enable_after_save
+  after_save :salvar_responsavel, :if => :enable_after_save
+
+  after_save :att_bloqueio_produto, :salvar_tipo_users, :if => :enable_after_save
+
+  def delete_relacao_dependentes
+    if self.sem_compra
+      ResponsavelUser.where(responsavel_id: self.id).destroy_all
+    end
+  end
 
   def salvar_responsavel
     self.responsavel_users.destroy_all
