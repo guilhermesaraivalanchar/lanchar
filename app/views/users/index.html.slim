@@ -33,7 +33,7 @@
                   td 
                     = user.codigo
                   td 
-                    = TipoUser.where(id: user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
+                    = user.tipos rescue ""
                   td 
                     = user.turma rescue ""
                   td style="color: #{user.saldo < 0 ? 'red' : 'black'}"

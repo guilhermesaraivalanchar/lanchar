@@ -57,10 +57,14 @@ class User < ApplicationRecord
   end
 
   def salvar_tipo_users
+    tipos_ids = []
     self.tipos_users.destroy_all
     self.tipo_users.split(",").each do |tipo_user_id|
       TiposUser.create(user_id: self.id, tipo_user_id: tipo_user_id)
+      tipos_ids << tipo_user_id.to_i
     end
+    self.enable_after_save = false
+    self.update_attribute(:tipos, (TipoUser.where(id: tipos_ids).map(&:nome).join(', ') rescue "") )
   end
 
   def tipo_foto

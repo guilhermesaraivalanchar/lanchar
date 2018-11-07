@@ -8,6 +8,15 @@ class UsersController < ApplicationController
     @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
   end
 
+  def index_responsavel
+    @users = User.where(escola_id: current_user.escola_id)
+    @can_criar_usuarios = current_user.tem_permissao("criar_usuarios")
+    @can_ver_usuario = current_user.tem_permissao("ver_usuario")
+    @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
+    @can_creditar_usuarios_tabela = current_user.tem_permissao("creditar_usuarios_tabela")
+    @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
+  end
+
   def show
     init_current
     @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)

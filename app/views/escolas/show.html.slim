@@ -60,7 +60,7 @@
           h3.m-b-0
             = @escola.nome
           p 
-            = TipoUser.where(id: current_user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
+            = current_user.tipos rescue ""
         .row
           .col-lg-12.col-md-12
             h4.box-title.m-t-10
@@ -75,7 +75,7 @@
               div.col-lg-4.col-md-6
                 div.show_input  
                   = "Tipo"
-                = TipoUser.where(id: current_user.tipos_users.map(&:tipo_user_id)).map(&:nome).join(', ') rescue ""
+                = current_user.tipos rescue ""
               div.col-lg-4.col-md-6
                 div.show_input  
                   = "Cartao"
@@ -252,9 +252,7 @@ javascript:
 
             $("#quantidade_credito").val("");
             $("#creditado_alerta").hide();
-            console.log("???")
             window.open("/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf")
-            console.log("???")
             //window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
 
           }, 1000);

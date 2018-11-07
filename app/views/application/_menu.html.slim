@@ -18,6 +18,10 @@ ul#sidebarnav.in
           li
             = link_to("Usuários", users_path)
 
+        - if current_user.tem_permissao("ver_usuarios")
+          li
+            = link_to("Responsáveis", index_responsavel_path)
+
         - if current_user.tem_permissao("ver_tipo_usuarios")
           li
             = link_to("Tipos de Usuários", tipo_users_path)

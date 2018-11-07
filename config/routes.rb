@@ -32,5 +32,6 @@ Rails.application.routes.draw do
   match "/pagina_sem_permissao" => "application#pagina_sem_permissao", as: :pagina_sem_permissao, via: [:get, :post]
   match "/cancelar_transferencia/:id" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
   match "/resetar_senha" => "users#resetar_senha", as: :resetar_senha, via: [:get, :post]
+  match "/index_responsavel" => "users#index_responsavel", as: :index_responsavel, via: [:get, :post]
 
 end

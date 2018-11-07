@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_06_235245) do
+ActiveRecord::Schema.define(version: 2018_11_07_012034) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["produto_id"], name: "index_bloqueio_produtos_on_produto_id"
+    t.index ["user_id"], name: "index_bloqueio_produtos_on_user_id"
   end
 
   create_table "cardapio_combos", force: :cascade do |t|
@@ -113,6 +115,7 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.string "permissao_grupo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["permissao_codigo"], name: "index_permissoes_on_permissao_codigo"
   end
 
   create_table "permissoes_users", force: :cascade do |t|
@@ -121,6 +124,9 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.integer "permissao_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["permissao_id"], name: "index_permissoes_users_on_permissao_id"
+    t.index ["tipo_user_id"], name: "index_permissoes_users_on_tipo_user_id"
+    t.index ["user_id"], name: "index_permissoes_users_on_user_id"
   end
 
   create_table "produtos", force: :cascade do |t|
@@ -144,6 +150,8 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["responsavel_id"], name: "index_responsavel_users_on_responsavel_id"
+    t.index ["user_id"], name: "index_responsavel_users_on_user_id"
   end
 
   create_table "tipo_produtos", force: :cascade do |t|
@@ -168,6 +176,8 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.integer "tipo_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["tipo_user_id"], name: "index_tipos_users_on_tipo_user_id"
+    t.index ["user_id"], name: "index_tipos_users_on_user_id"
   end
 
   create_table "transferencia_combos", force: :cascade do |t|
@@ -203,7 +213,9 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.integer "escola_id"
     t.string "tipo"
     t.boolean "cancelada"
+    t.index ["combo_id"], name: "index_transferencias_on_combo_id"
     t.index ["escola_id"], name: "index_transferencias_on_escola_id"
+    t.index ["produto_id"], name: "index_transferencias_on_produto_id"
     t.index ["transferencia_geral_id"], name: "index_transferencias_on_transferencia_geral_id"
   end
 
@@ -230,6 +242,8 @@ ActiveRecord::Schema.define(version: 2018_11_06_235245) do
     t.string "turma"
     t.decimal "saldo_diario", precision: 10, scale: 2
     t.boolean "sem_compra"
+    t.string "tipos"
+    t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
