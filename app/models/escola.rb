@@ -24,4 +24,8 @@ class Escola < ApplicationRecord
 	def faturamento_mensal
 		self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
 	end
+
+	def saldo_em_caixa
+		self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).sum(:valor)
+	end
 end

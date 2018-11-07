@@ -10,7 +10,7 @@
               = "#{I18n.t(Date.today.strftime("%B"))}, #{Date.today.strftime("%Y")}"
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
-            = "R$ #{@escola.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).sum(:valor)}"
+            = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_em_caixa)}"
             button.btn.btn-sm.btn-youtube data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
@@ -139,7 +139,7 @@
                     th
                     th valor
                 tbody
-                  - @escola.transferencia_gerais.where(tipo: ["ENTRADA","SAIDA","SAIDA CANCELADA"]).order("created_at DESC").each do |transferencia_geral|
+                  - @escola.transferencia_gerais.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).order("created_at DESC").each do |transferencia_geral|
                     - transferencia_geral.transferencias.each do |transferencia|
                       - if transferencia.tipo == "ENTRADA"
                         tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
@@ -192,6 +192,22 @@
                             = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
                           td.text-green
                             = "#{transferencia.valor}"
+                      - if transferencia.tipo == "VENDA_DIRETA"
+                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
+                          td
+                            = User.find(transferencia.user_movimentou_id).nome
+                          td
+                            = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
+                          td
+                            = ""
+                          td
+                            = ""
+                          td 
+                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
+                          td.text-green
+                            = "#{transferencia.valor}"
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
@@ -229,14 +245,14 @@ javascript:
       drawCallback: function () {
         var api = this.api();
         try {
-            valor_total = api.column( 5, {page:'all', search:'applied'} ).data().sum()
+            valor_total = api.column( 6, {page:'all', search:'applied'} ).data().sum()
         }
         catch(err) {
             valor_total = 0
         }
         
         console.log(valor_total) 
-        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
+        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
       }
   });
 
