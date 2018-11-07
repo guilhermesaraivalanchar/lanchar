@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   def index
-  	@users = User.where(escola_id: current_user.escola_id)
+  	@users = User.where(escola_id: current_user.escola_id, sem_compra: [nil,false])
     @can_criar_usuarios = current_user.tem_permissao("criar_usuarios")
     @can_ver_usuario = current_user.tem_permissao("ver_usuario")
     @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   end
 
   def index_responsavel
-    @users = User.where(escola_id: current_user.escola_id)
+    @users = User.where(escola_id: current_user.escola_id, sem_compra: true)
     @can_criar_usuarios = current_user.tem_permissao("criar_usuarios")
     @can_ver_usuario = current_user.tem_permissao("ver_usuario")
     @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
