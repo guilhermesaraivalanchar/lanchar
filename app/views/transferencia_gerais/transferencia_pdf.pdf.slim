@@ -51,12 +51,89 @@ css:
   td {
     padding: 5px 0;
   }
+- if @transferencia_geral.tipo == "ENTRADA"
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | ------------------------------------------------
+    br
+    | LANCHE PRO
+    br
+    | ------------------------------------------------
+    br
+    | VIA DO CLIENTE
+    br
+    | ------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Destinatario: #{@transferencia_geral.user.nome}"
+    br
+    - saldo_ant = (@transferencia_geral.user.saldo.to_d - @transferencia_geral.valor.to_d)
+    = "Saldo Anterior: #{ActionController::Base.helpers.number_to_currency(saldo_ant)}"
+    br
+    = "Saldo Adicionado: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor)}"
+    br
+    = "Saldo Atual: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.user.saldo)}"
+    br
+    | ------------------------------------------------
 
-- if @transferencia_geral.tipo != "SAIDA"
+  br
+  br
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | ------------------------------------------------
+    br
+    | LANCHE PRO
+    br
+    | ------------------------------------------------
+    br
+    | VIA DO ESTABELECIMENTO
+    br
+    | ------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Destinatario: #{@transferencia_geral.user.nome}"
+    br
+    = "Saldo Adicionado: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor)}"
+    br
+    = "Responsável: #{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
+    br
+    = "Tipo Entrada: #{@transferencia_geral.tipo_entrada.upcase}"
+    br
+    | ------------------------------------------------
+
+
+- elsif @transferencia_geral.tipo == "SAIDA"
+  div style="font-size: 15px; max-width: 245px; text-align:center"
+    | ------------------------------------------------
+    br
+    | LANCHE PRO
+    br
+    | ------------------------------------------------
+    br
+    | SANGRIA
+    br
+    | ------------------------------------------------
+  div style="font-size: 15px; max-width: 245px"
+    = "Empresa: #{current_user.escola.nome}"
+    br
+    = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
+    br
+    = "Responsável: "
+    = "#{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
+    br
+    br
+    div style="font-weight: bold;font-size: 20px;"
+      = "Valor: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f * -1)}"
+    | ------------------------------------------------
+- else
   div style="font-size: 15px; max-width: 245px; text-align:center"
     | -------------------------------------------------
     br
-    | NOME LEGAL
+    | LANCHE PRO
     br
     | -------------------------------------------------
   div style="font-size: 15px; max-width: 245px"
@@ -82,26 +159,3 @@ css:
     div style="font-weight: bold;font-size: 20px;"
       = "Total: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
     | -------------------------------------------------
-- else
-  div style="font-size: 15px; max-width: 245px; text-align:center"
-    | ------------------------------------------------
-    br
-    | NOME LEGAL
-    br
-    | ------------------------------------------------
-    br
-    | SANGRIA
-    br
-    | ------------------------------------------------
-  div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user.escola.nome}"
-    br
-    = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
-    br
-    = "Responsável: "
-    = "#{User.find(@transferencia_geral.transferencias.first.user_movimentou_id).nome}"
-    br
-    br
-    div style="font-weight: bold;font-size: 20px;"
-      = "Valor: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f * -1)}"
-    | ------------------------------------------------

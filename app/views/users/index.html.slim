@@ -97,6 +97,7 @@ javascript:
           if (d.resultado == "OK"){
             $("#creditado_alerta").show();
             setTimeout(function(){
+              window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf")
 
               $("#quantidade_credito").val("");
               $("#creditado_alerta").hide();

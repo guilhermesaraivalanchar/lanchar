@@ -10,14 +10,14 @@ class UsersController < ApplicationController
 
   def show
     init_current
-    @user_responsavel = current_user.id == @user.usuario_responsavel_id
-    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_usuario") && current_user.id != @user.usuario_responsavel_id && current_user != @user
+    @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_usuario") && !@user_responsavel && current_user != @user
   end
 
   def edit
     init_current
-    @user_responsavel = current_user.id == @user.usuario_responsavel_id
-    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_usuarios") && current_user.id != @user.usuario_responsavel_id && current_user != @user
+    @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
+    redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("editar_usuarios") && !@user_responsavel && current_user != @user
 
     if @user.imagem_file_name != nil
       @imagem = @user.imagem.url.split("?")
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
 
   def update
     init_current
-    @user_responsavel = current_user.id == @user.usuario_responsavel_id
+    @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
     user_params[:enable_after_save] = true
     respond_to do |format|
       if (current_user.tem_permissao("editar_usuarios") || @user_responsavel) && @user.update_attributes(user_params)
@@ -122,7 +122,7 @@ class UsersController < ApplicationController
               })
               transf_geral.save
             end
-            render json:  { resultado: "OK" }
+            render json:  { resultado: "OK", transf_id: transf_geral.id }
           else
             render json:  { resultado: "ERRO_ADD" }
           end

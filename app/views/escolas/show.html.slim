@@ -80,7 +80,7 @@
                 div.show_input  
                   = "Cartao"
                 = current_user.cartao_id
-    - dependentes = User.where(usuario_responsavel_id: current_user.id)
+    - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
     - if !dependentes.empty?
       .card.earning-widget
         .card-header
@@ -98,12 +98,12 @@
               - dependentes.each do |dep|
                 tr
                   td style="width:40px" 
-                    img.img-circle alt="logo" src="#{dep.imagem.url != '/imagens/original/missing.png' ? dep.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
+                    img.img-circle alt="logo" src="#{dep.user.imagem.url != '/imagens/original/missing.png' ? dep.user.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
                   td
-                    = link_to(dep.nome, user_path(dep.id))
+                    = link_to(dep.user.nome, user_path(dep.user.id))
                   td align="right" 
                     span.label.label-light-info
-                      = "R$#{dep.saldo}"
+                      = "R$#{dep.user.saldo}"
 
 
          

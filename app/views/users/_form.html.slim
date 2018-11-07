@@ -13,7 +13,6 @@
         = f.input :codigo, label: "Codigo", input_html: { nome_validacao: "Código" }
         = f.input :cartao_id, label: "Cartão", input_html: { nome_validacao: "Código" }
         = f.input :turma, label: "Turma", input_html: { nome_validacao: "Turma" }
-        = f.input :usuario_responsavel_id, as: :select, label: "Usuário Responsável", prompt: "Selecione" , collection: @users, input_html: { class: "select2 m-b-10 select2-multiple", nome_validacao: "Tipo Usuário" }
         = f.input :tipo_users, as: :hidden, input_html: { value: @user.tipos_users.map(&:tipo_user_id).join(',') }
         h5.m-t-20 Tipo Produtos
         select#select_tipo_users.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
@@ -25,6 +24,18 @@
             - else
               option value="#{tipo_user.id}"
                 = "#{tipo_user.nome}"
+        br
+        = f.input :responsavel_ids, as: :hidden, input_html: { value: @user.tipos_users.map(&:tipo_user_id).join(',') }
+        h5.m-t-20 Responsáveis
+        select#select_responsavel_ids.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
+          - user_responsaveis = @user.responsavel_users.map(&:responsavel_id)
+          - User.where(escola_id: current_user.escola_id).each do |responsavel|
+            - if user_responsaveis.include?(responsavel.id)
+              option selected="true" value="#{responsavel.id}"
+                = "#{responsavel.nome}"
+            - else
+              option value="#{responsavel.id}"
+                = "#{responsavel.nome}"
         br
         - if current_user.tem_permissao("resetar_senha_usuario")
           br
@@ -76,6 +87,11 @@ javascript:
   $("#select_tipo_users").change(function(){
     console.log($(this).val())
     $("#user_tipo_users").val($(this).val())
+  })
+
+  $("#select_responsavel_ids").change(function(){
+    console.log($(this).val())
+    $("#user_responsavel_ids").val($(this).val())
   })
 
   $('.dropify').dropify({

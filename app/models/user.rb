@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
   validates :codigo, uniqueness: true
 
+  has_many :responsavel_users
   has_many :transferencia_gerais, :dependent => :destroy
   has_many :entrada_produtos
   has_many :bloqueio_produtos, :dependent => :destroy
@@ -26,15 +27,20 @@ class User < ApplicationRecord
 
   attr_accessor :produto_ids
   attr_accessor :tipo_users
+  attr_accessor :responsavel_ids
   attr_accessor :enable_after_save
 
-  after_save :att_bloqueio_produto, :salvar_tipo_produtos, :if => :enable_after_save
-  
+  after_save :att_bloqueio_produto, :salvar_tipo_users, :salvar_responsavel, :if => :enable_after_save
+
+  def salvar_responsavel
+    self.responsavel_users.destroy_all
+    self.responsavel_ids.split(",").each do |responsavel_id|
+      ResponsavelUser.create(user_id: self.id, responsavel_id: responsavel_id)
+    end
+  end
 
   def att_bloqueio_produto
-
     self.bloqueio_produtos.destroy_all
-
     if produto_ids
       self.produto_ids.each do |produto_id|
         per = BloqueioProduto.create(user_id: self.id, produto_id: produto_id.to_i)
@@ -50,7 +56,7 @@ class User < ApplicationRecord
     end
   end
 
-  def salvar_tipo_produtos
+  def salvar_tipo_users
     self.tipos_users.destroy_all
     self.tipo_users.split(",").each do |tipo_user_id|
       TiposUser.create(user_id: self.id, tipo_user_id: tipo_user_id)
@@ -86,6 +92,9 @@ class User < ApplicationRecord
     end
     
     return false
+  end
+
+  def user_responsavel(user)
   end
 
   def saldo_diario_atual

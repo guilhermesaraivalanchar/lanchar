@@ -10,7 +10,7 @@
             = @user.nome
           p style="font-size: 20px" class="#{@user.saldo >= 0 ? 'text-green' : 'text-danger'}"
             = "#{ActionController::Base.helpers.number_to_currency(@user.saldo)}"
-          - if current_user.id == @user.usuario_responsavel_id || current_user.tem_permissao("editar_usuarios")
+          - if @user_responsavel || current_user.tem_permissao("editar_usuarios")
             button.btn.btn-sm.btn-success type="button" style="margin-right: 10px" onclick="window.location='#{edit_user_path(@user.id)}'" Editar
         .row
           .col-lg-12.col-md-12

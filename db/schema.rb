@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_06_211321) do
+ActiveRecord::Schema.define(version: 2018_11_06_235245) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -139,6 +139,13 @@ ActiveRecord::Schema.define(version: 2018_11_06_211321) do
     t.integer "escola_id"
   end
 
+  create_table "responsavel_users", force: :cascade do |t|
+    t.integer "responsavel_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tipo_produtos", force: :cascade do |t|
     t.string "nome"
     t.datetime "created_at", null: false
@@ -217,7 +224,6 @@ ActiveRecord::Schema.define(version: 2018_11_06_211321) do
     t.integer "imagem_file_size"
     t.datetime "imagem_updated_at"
     t.decimal "saldo", precision: 10, scale: 2
-    t.integer "usuario_responsavel_id"
     t.integer "escola_id"
     t.boolean "admin"
     t.integer "credito"
