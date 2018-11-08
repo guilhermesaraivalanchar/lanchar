@@ -26,6 +26,6 @@ class Escola < ApplicationRecord
 	end
 
 	def saldo_em_caixa
-		self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).sum(:valor)
+		self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO']).sum(:valor)
 	end
 end
