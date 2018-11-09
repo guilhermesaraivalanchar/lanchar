@@ -131,7 +131,7 @@ class ComprasController < ApplicationController
             debitar = true
             if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
               debitar = false
-              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "caixa")
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro")
               transf_geral_entrada.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
