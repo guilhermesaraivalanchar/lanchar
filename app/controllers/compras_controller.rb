@@ -77,7 +77,96 @@ class ComprasController < ApplicationController
 
   end
 
+
+
+
+
+
+
+
   def enviar_confirmacao_compra
+    
+    if current_user.tem_permissao("comprar_sistema")
+      cardapio_ativo = Cardapio.where(ativo: true).last
+
+      resposta = []
+
+      if params[:confirmacao]
+        params[:confirmacao].each do |conf|
+
+          user_id = conf.last[:user_id]
+
+          if user_id
+            tipo_transacao = "VENDA"
+            tipo_transacao = "VENDA_DIRETA" if user_id == "0"
+
+            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao)
+            preco_total = 0
+
+            if conf && conf.last && conf.last[:produtos]
+              conf.last[:produtos].each do |prod_combo|
+
+                if prod_combo.last[:tipo] == "p"
+                  prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
+                  transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco)
+                  produto = Produto.find(prod_combo.last[:id])
+                  produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                  preco_total += prod_preco
+                elsif prod_combo.last[:tipo] == "c"
+                  combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+                  transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, combo_id: prod_combo.last[:id], valor: combo_preco)
+                  preco_total += combo_preco
+
+                  prod_combo.last[:produtos].each do |prod_id|
+                    transf.transferencia_combos.new(produto_id: prod_id)
+                    produto = Produto.find(prod_id)
+                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                  end
+
+                end
+              end
+            end
+
+            transf_geral.valor = preco_total
+            debitar = true
+            if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
+              debitar = false
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "caixa")
+              transf_geral_entrada.transferencias.new({
+                escola_id: current_user.escola_id,
+                user_movimentou_id: current_user.id,
+                valor: preco_total.to_d,
+                tipo: "ENTRADA"
+              })
+              transf_geral_entrada.save
+            end
+            if transf_geral.save
+              transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d) if transf_geral.user && debitar
+              resposta << {
+                div_confirmacao_id: conf.last[:div_confirmacao_id],
+                transf_geral_id: transf_geral.id
+              }
+            end
+          end
+        end
+      end
+
+      render json: { status: "OK", resposta: resposta}
+    else
+      render json: { status: "NEGADO", resposta: ""}
+    end
+
+  end
+
+
+
+
+
+
+
+
+
+  def enviar_confirmacao_compra_old
     
     if current_user.tem_permissao("comprar_sistema")
       cardapio_ativo = Cardapio.where(ativo: true).last

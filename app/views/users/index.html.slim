@@ -90,6 +90,7 @@ javascript:
     });
 
     $("#botao_creditar").click(function(){
+      $(this).prop( "disabled", true );
 
       $.getJSON("/creditar", { user_id: user_id, valor: $("#quantidade_credito").val(), tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
         if (d) {
@@ -97,11 +98,13 @@ javascript:
           if (d.resultado == "OK"){
             $("#creditado_alerta").show();
             setTimeout(function(){
-              window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf")
 
               $("#quantidade_credito").val("");
               $("#creditado_alerta").hide();
 
+              window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf")
+
+              $("#botao_creditar").prop( "disabled", false );
             }, 1000);
           }
         } else {

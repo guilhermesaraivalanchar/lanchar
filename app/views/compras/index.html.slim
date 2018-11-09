@@ -13,9 +13,13 @@
             option value="" Escolha um usuário
             option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
             - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false]).order(:nome).each do |user|
-              option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
+              option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" tem_saldo_diario="#{user.saldo_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
                 = "#{user.nome}"
           br
+          br
+          .checkbox.checkbox-success
+            input#venda_com_entrada type="checkbox" /
+            label for="venda_com_entrada"  Venda com Entrada
           br
           div.div_saldo.alert.alert-info style="display: none"
             span
@@ -192,88 +196,47 @@ javascript:
     $("div.div_erro_bloqueio").hide()
     $("div.div_erro_selecao").hide()
     $("div.erro_saldo").hide()
-    //<div class="d-flex flex-row comment-row"><div class="w-100"><h5>Ricardo Martins Rodriguez</h5><div class="m-b-5" id="div_obs"><div>Combo - R$ 12,20</div><div>Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div>Combo - R$ 12,20</div></div><div class="comment-footer"><span class="text-muted">Total : R$ 56,52</span></div></div></div>
-    produtos = []
-    produtos_atual_quantidade = []
-    for (i in produtos_all_quantidade){
-      produtos_atual_quantidade[i] = produtos_all_quantidade[i]
-    }
-    user_id = $("#select_usuario").val()
 
-    user_nome = document.getElementById("option_usu_"+user_id).getAttribute("usuario_nome");
-    user_saldo_disponivel = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_disponivel");
-    produtos_bloqueados = document.getElementById("option_usu_"+user_id).getAttribute("produtos_bloqueados");
-
-    produtos_bloqueados_ids = []
-
-    if (produtos_bloqueados != ""){
-      prod_blo_split = produtos_bloqueados.split(",")
-      
-      for(i in prod_blo_split){
-        produtos_bloqueados_ids[prod_blo_split[i]] = ""
+    console.log($('[id^=select_combo_]').length)
+    console.log($('[id^=select_prod_]').length)
+    if ($('[id^=select_prod_]').length > 0 || $('[id^=select_combo_]').length > 0){
+      //<div class="d-flex flex-row comment-row"><div class="w-100"><h5>Ricardo Martins Rodriguez</h5><div class="m-b-5" id="div_obs"><div>Combo - R$ 12,20</div><div>Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div style="padding-left: 20px">Combo - R$ 12,20</div><div>Combo - R$ 12,20</div></div><div class="comment-footer"><span class="text-muted">Total : R$ 56,52</span></div></div></div>
+      produtos = []
+      produtos_atual_quantidade = []
+      for (i in produtos_all_quantidade){
+        produtos_atual_quantidade[i] = produtos_all_quantidade[i]
       }
-    }
+      user_id = $("#select_usuario").val()
 
+      user_nome = document.getElementById("option_usu_"+user_id).getAttribute("usuario_nome");
+      user_saldo_disponivel = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_disponivel");
+      tem_saldo_diario = document.getElementById("option_usu_"+user_id).getAttribute("tem_saldo_diario");
+      produtos_bloqueados = document.getElementById("option_usu_"+user_id).getAttribute("produtos_bloqueados");
 
-    erro_selecao = false
-    erro_quantidade = []
-    erro_bloqueio = []
-    elemento_confirmacao = '<div id="div_confirmacao_usu_'+div_confirmacao_num+'" class="d-flex flex-row comment-row"><div class="w-100"><h5>'+user_nome+'</h5><div class="m-b-5">'
-    total = 0
-    $('[id^=select_prod_]').each(function(){
-      elemento_confirmacao += '<div>'+produtos_all[$(this).val()]+' - R$ '+produtos_all_preco[$(this).val()]+'</div>'
-      if ($(this).val() == 0){ erro_selecao = true }
-      if (produtos_atual_quantidade[$(this).val()] > 0){
-        console.log("AQUI 1"+$(this).val())
-        if(produtos_bloqueados_ids[$(this).val()] == undefined){
-          total = total + produtos_all_preco[$(this).val()]
-          produtos.push({tipo: 'p', id: $(this).val()})
-          produtos_atual_quantidade[$(this).val()] = parseInt(produtos_atual_quantidade[$(this).val()]) - 1
-        }else{
-          erro_bloqueio.push($(this).val())
+      produtos_bloqueados_ids = []
+
+      if (produtos_bloqueados != ""){
+        prod_blo_split = produtos_bloqueados.split(",")
+        
+        for(i in prod_blo_split){
+          produtos_bloqueados_ids[prod_blo_split[i]] = ""
         }
-      }else{
-        erro_quantidade.push($(this).val())
       }
-    })
-    $('[id^=select_combo_]').each(function(){
-      produtos_combo = []
-      combo_param = this.getAttribute("combo_param");
-      if ($(this).val() == 0){ erro_selecao = true }
-      elemento_confirmacao += '<div>'+combos_all[$(this).val()]+' - R$ '+combos_all_preco[$(this).val()]+'</div>'
-      $('[id^=input_prod_combo_'+combo_param+'_]').each(function(){
-        prd_id = this.getAttribute("produto_id");
-        
+
+
+      erro_selecao = false
+      erro_quantidade = []
+      erro_bloqueio = []
+      elemento_confirmacao = '<div id="div_confirmacao_usu_'+div_confirmacao_num+'" class="d-flex flex-row comment-row"><div class="w-100"><h5>'+user_nome+'</h5><div class="m-b-5">'
+      total = 0
+      $('[id^=select_prod_]').each(function(){
+        elemento_confirmacao += '<div>'+produtos_all[$(this).val()]+' - R$ '+produtos_all_preco[$(this).val()]+'</div>'
         if ($(this).val() == 0){ erro_selecao = true }
-        if (produtos_atual_quantidade[prd_id] > 0){
-          console.log("AQUI 2 - "+prd_id)
-
-          if(produtos_bloqueados_ids[prd_id] == undefined){
-
-            elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[prd_id]+'</div>'
-            produtos_combo.push(prd_id)
-            produtos_atual_quantidade[prd_id] = parseInt(produtos_atual_quantidade[prd_id]) - 1
-            
-          }else{
-            erro_bloqueio.push(prd_id)
-          }
-
-        }else{
-          erro_quantidade.push(prd_id)
-        }
-      
-      })
-      $('[id^=select_nested_prod_combo_'+combo_param+'_]').each(function(){
-        
-        if ($(this).val() == 0){ erro_selecao = true }
-
         if (produtos_atual_quantidade[$(this).val()] > 0){
-          console.log("AQUI 3 - "+$(this).val())
-
+          console.log("AQUI 1"+$(this).val())
           if(produtos_bloqueados_ids[$(this).val()] == undefined){
-            prd_id = this.getAttribute("produto_id");
-            elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[$(this).val()]+'</div>'
-            produtos_combo.push($(this).val())
+            total = total + produtos_all_preco[$(this).val()]
+            produtos.push({tipo: 'p', id: $(this).val()})
             produtos_atual_quantidade[$(this).val()] = parseInt(produtos_atual_quantidade[$(this).val()]) - 1
           }else{
             erro_bloqueio.push($(this).val())
@@ -281,67 +244,122 @@ javascript:
         }else{
           erro_quantidade.push($(this).val())
         }
-
-
       })
-      total = total + combos_all_preco[$(this).val()]
-      produtos.push({tipo: 'c', id: $(this).val(), produtos: produtos_combo})
-    })
+      $('[id^=select_combo_]').each(function(){
+        produtos_combo = []
+        combo_param = this.getAttribute("combo_param");
+        if ($(this).val() == 0){ erro_selecao = true }
+        elemento_confirmacao += '<div>'+combos_all[$(this).val()]+' - R$ '+combos_all_preco[$(this).val()]+'</div>'
+        $('[id^=input_prod_combo_'+combo_param+'_]').each(function(){
+          prd_id = this.getAttribute("produto_id");
+          
+          if ($(this).val() == 0){ erro_selecao = true }
+          if (produtos_atual_quantidade[prd_id] > 0){
+            console.log("AQUI 2 - "+prd_id)
 
-    elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+'</span></div></div>'
+            if(produtos_bloqueados_ids[prd_id] == undefined){
 
-    elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="" target="_blank">Imprimir</a></div></div>'
-  
-    console.log("ZUANO")
-    console.log(parseFloat(user_saldo_disponivel))
-    console.log(parseFloat(total))
+              elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[prd_id]+'</div>'
+              produtos_combo.push(prd_id)
+              produtos_atual_quantidade[prd_id] = parseInt(produtos_atual_quantidade[prd_id]) - 1
+              
+            }else{
+              erro_bloqueio.push(prd_id)
+            }
 
-    if (parseFloat(user_saldo_disponivel) >= parseFloat(total)){
+          }else{
+            erro_quantidade.push(prd_id)
+          }
+        
+        })
+        $('[id^=select_nested_prod_combo_'+combo_param+'_]').each(function(){
+          
+          if ($(this).val() == 0){ erro_selecao = true }
 
-      if (erro_quantidade.length == 0 && erro_bloqueio.length == 0 && !erro_selecao){
-        $('#div_confirmacao').append(elemento_confirmacao)
-        confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos})
-        div_confirmacao_num++
-        $("#add_produtos").html("")
-        $("#add_combos").html("")
-        $("div.div_erro_quantidade").hide()
-        $("div.div_erro_bloqueio").hide()
-        $("div.div_erro_selecao").hide()
-        $("div.erro_saldo").hide()
-        produtos_all_quantidade = produtos_atual_quantidade
+          if (produtos_atual_quantidade[$(this).val()] > 0){
+            console.log("AQUI 3 - "+$(this).val())
 
-      }else if(erro_selecao){
-        $("div.div_erro_selecao span").html("Favor selecionar seu produto.")
-        $("div.div_erro_selecao").show()
-      }else if(erro_quantidade.length != 0){
-        erro_quantidade = jQuery.unique(erro_quantidade)
-        erro_quantidade_content = ""
-        for(i in erro_quantidade){
-          erro_quantidade_content = erro_quantidade_content + "<div>Quantidade de "+produtos_all[erro_quantidade[i]]+" altrapassada. Quantidade atual: "+produtos_all_quantidade[erro_quantidade[i]]+"</div>"
-        }
-        $("div.div_erro_quantidade span").html(erro_quantidade_content)
-        $("div.div_erro_quantidade").show()
-      }else if(erro_bloqueio.length != 0){
-        erro_bloqueio = jQuery.unique(erro_bloqueio)
-        erro_bloqueio_content = ""
-        for(i in erro_bloqueio){
-          erro_bloqueio_content = erro_bloqueio_content + "<div>Produto "+produtos_all[erro_bloqueio[i]]+" bloqueado para o usuário.</div>"
-        }
-        $("div.div_erro_bloqueio span").html(erro_bloqueio_content)
-        $("div.div_erro_bloqueio").show()
+            if(produtos_bloqueados_ids[$(this).val()] == undefined){
+              prd_id = this.getAttribute("produto_id");
+              elemento_confirmacao += '<div style="padding-left: 20px">'+produtos_all[$(this).val()]+'</div>'
+              produtos_combo.push($(this).val())
+              produtos_atual_quantidade[$(this).val()] = parseInt(produtos_atual_quantidade[$(this).val()]) - 1
+            }else{
+              erro_bloqueio.push($(this).val())
+            }
+          }else{
+            erro_quantidade.push($(this).val())
+          }
+
+
+        })
+        total = total + combos_all_preco[$(this).val()]
+        produtos.push({tipo: 'c', id: $(this).val(), produtos: produtos_combo})
+      })
+
+      com_entrada = ""
+      if ($( "#venda_com_entrada" ).prop( "checked")){
+        com_entrada = "(Venda Com Entrada)"
       }
-      
 
-    } else {
-      if (erro_selecao){
-        $("div.div_erro_selecao span").html("Favor selecionar seu combo.")
-        $("div.div_erro_selecao").show()
-      }else{
-        $("div.erro_saldo span").html("Saldo Insuficiente.")
-        $("div.erro_saldo").show()
+      elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+' '+com_entrada+'</span></div></div>'
+
+      elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="" target="_blank">Imprimir</a></div></div>'
+    
+      console.log("ZUANO")
+      console.log(parseFloat(user_saldo_disponivel))
+      console.log(parseFloat(total))
+
+      if (parseFloat(user_saldo_disponivel) >= parseFloat(total) || ($( "#venda_com_entrada" ).prop( "checked") && tem_saldo_diario == "n") ){
+
+        if (erro_quantidade.length == 0 && erro_bloqueio.length == 0 && !erro_selecao){
+          $('#div_confirmacao').append(elemento_confirmacao)
+          confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos, venda_com_entrada: $( "#venda_com_entrada" ).prop( "checked")})
+          if ($( "#venda_com_entrada" ).prop( "checked")){
+            $( "#venda_com_entrada" ).click()
+          }
+
+          div_confirmacao_num++
+          $("#add_produtos").html("")
+          $("#add_combos").html("")
+          $("div.div_erro_quantidade").hide()
+          $("div.div_erro_bloqueio").hide()
+          $("div.div_erro_selecao").hide()
+          $("div.erro_saldo").hide()
+          produtos_all_quantidade = produtos_atual_quantidade
+
+        }else if(erro_selecao){
+          $("div.div_erro_selecao span").html("Favor selecionar seu produto.")
+          $("div.div_erro_selecao").show()
+        }else if(erro_quantidade.length != 0){
+          erro_quantidade = jQuery.unique(erro_quantidade)
+          erro_quantidade_content = ""
+          for(i in erro_quantidade){
+            erro_quantidade_content = erro_quantidade_content + "<div>Quantidade de "+produtos_all[erro_quantidade[i]]+" altrapassada. Quantidade atual: "+produtos_all_quantidade[erro_quantidade[i]]+"</div>"
+          }
+          $("div.div_erro_quantidade span").html(erro_quantidade_content)
+          $("div.div_erro_quantidade").show()
+        }else if(erro_bloqueio.length != 0){
+          erro_bloqueio = jQuery.unique(erro_bloqueio)
+          erro_bloqueio_content = ""
+          for(i in erro_bloqueio){
+            erro_bloqueio_content = erro_bloqueio_content + "<div>Produto "+produtos_all[erro_bloqueio[i]]+" bloqueado para o usuário.</div>"
+          }
+          $("div.div_erro_bloqueio span").html(erro_bloqueio_content)
+          $("div.div_erro_bloqueio").show()
+        }
+        
+
+      } else {
+        if (erro_selecao){
+          $("div.div_erro_selecao span").html("Favor selecionar seu combo.")
+          $("div.div_erro_selecao").show()
+        }else{
+          $("div.erro_saldo span").html("Saldo Insuficiente.")
+          $("div.erro_saldo").show()
+        }
       }
     }
-
 
   })
 
@@ -374,10 +392,11 @@ javascript:
 
   $("#enviar_confirmacao").click(function(){
 
-    $.getJSON("/enviar_confirmacao_compra", { confirmacao: confirmacao },function(resultado) {
+    $.getJSON("/enviar_confirmacao_compra", { confirmacao: confirmacao, venda_com_entrada: $( "#venda_com_entrada" ).prop( "checked") },function(resultado) {
       if (resultado) {
         console.log(resultado)
-        if (resultado.status == "OK"){
+        console.log(resultado.resposta.length)
+        if (resultado.status == "OK" && resultado.resposta.length > 0){
           transferencia_ids = "" 
           for(i in resultado.resposta){
             div_confirmacao_id = resultado.resposta[i].div_confirmacao_id

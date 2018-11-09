@@ -216,6 +216,8 @@ javascript:
 
   $("#botao_retirar").click(function(){
 
+    $(this).prop( "disabled", true );
+
     $.getJSON("/creditar", { valor: $("#quantidade_credito").val(), status: "sangria" },function(d){
       if (d) {
         console.log(d);
@@ -225,7 +227,9 @@ javascript:
 
             $("#quantidade_credito").val("");
             $("#creditado_alerta").hide();
+
             window.open("/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf")
+            $("#botao_retirar").prop( "disabled", false );
             //window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
 
           }, 1000);
