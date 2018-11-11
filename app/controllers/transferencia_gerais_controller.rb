@@ -54,7 +54,7 @@ class TransferenciaGeraisController < ApplicationController
 
   def index
     @can_cancelar = current_user.tem_permissao("cancelar_transacao")
-    @transferencia_gerais = TransferenciaGeral.where(tipo: ["VENDA","VENDA_DIRETA","ENTRADA","SAIDA"]).order("created_at DESC")
+    @transferencia_gerais = TransferenciaGeral.where(tipo: ["VENDA","VENDA_DIRETA","ENTRADA","SAIDA"], escola_id: current_user.escola_id).order("created_at DESC")
   end
 
   def cancelar_transferencia

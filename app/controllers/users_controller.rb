@@ -104,11 +104,12 @@ class UsersController < ApplicationController
   def creditar
 
     if params[:status] == "sangria"
-      transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, valor: (params[:valor].to_d * -1), tipo: "SAIDA")
+      transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, valor: (params[:valor].to_d * -1), tipo: "SAIDA", user_movimentou_id: current_user.id, user_caixa_id: params[:user_caixa].to_i)
       transf_geral.transferencias.new({
         escola_id: current_user.escola_id,
         user_movimentou_id: current_user.id,
         valor: (params[:valor].to_d * -1),
+        user_caixa_id: params[:user_caixa].to_i,
         tipo: "SAIDA"
       })
       
@@ -122,7 +123,7 @@ class UsersController < ApplicationController
       if user
         if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
             if params[:status] == "caixa"
-              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo])
+              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo], user_movimentou_id: current_user.id)
               transf_geral.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,

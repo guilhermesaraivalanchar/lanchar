@@ -1,0 +1,124 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Parametros do Relatório
+        .row.col-12
+
+          .col-4
+            h5.m-t-20 Usuarios
+            select#select_tipo_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha os usuários" multiple="multiple" style=("width: 100%") 
+              - TipoUser.where(escola_id: current_user.escola_id).order(:nome).each do |tipo_user|
+                - if params[:tipo_user_id] && params[:tipo_user_id].split(",").include?(tipo_user.id.to_s)
+                  option selected="true" value="#{tipo_user.id}"
+                    = "#{tipo_user.nome}"
+                - else
+                  option value="#{tipo_user.id}"
+                    = "#{tipo_user.nome}"  
+          .col-4
+            .row
+              .col-6
+            	h6.m-t-20 Saldo Maior que
+                input#input_maior_que.numeric.decimal.form-control type="number" step="any" aria-invalid="false" value="#{params[:maior]}"
+              .col-6
+            	h6.m-t-20 Menor que
+                input#input_menor_que.numeric.decimal.form-control type="number" step="any" aria-invalid="false" value="#{params[:menor]}"
+        br
+        div.col-12
+          button#buscar_relatorio.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Filtrar
+
+
+
+
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Ralatório Usuários
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Matricula
+                th Tipo
+                th Turma
+                th Saldo
+                th Credito
+            tbody
+              - @users.each do |user|
+                tr
+                  td 
+                    - if @can_ver_usuario
+                      = link_to(user.nome, user_path(user.id))
+                    - else
+                      = user.nome
+                  td 
+                    = user.codigo
+                  td 
+                    = user.tipos rescue ""
+                  td 
+                    = user.turma rescue ""
+                  td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
+                    = "#{ActionController::Base.helpers.number_to_currency(user.saldo)}"
+                  td
+                    = "#{ActionController::Base.helpers.number_to_currency(user.credito)}"
+javascript:
+
+  $("#buscar_relatorio").click(function(){
+
+    var location = "/relatorio_transferencia?"
+
+    string_tipo_usuario = ""
+    if ($("#select_tipo_usuario").val().length > 0){
+      tipo_usuarios = $("#select_tipo_usuario").val()
+      string_tipo_usuario = "tipo_user_id="
+      for(i in tipo_usuarios){
+        string_tipo_usuario = string_tipo_usuario + tipo_usuarios[i] + ","
+      }
+      string_tipo_usuario = string_tipo_usuario.substring(0, string_tipo_usuario.length-1)
+      string_tipo_usuario = string_tipo_usuario + "&"
+    }
+
+    string_maior_que = ""
+    maior_que = $("#input_maior_que").val()
+    if (maior_que != ""){
+      string_maior_que = "maior="+maior_que+"&"
+    }
+
+    string_menor_que = ""
+    menor_que = $("#input_menor_que").val()
+    if (menor_que != ""){
+      string_menor_que = "menor="+menor_que+"&"
+    }
+
+    console.log(string_tipo_usuario)
+    console.log(string_maior_que)
+    console.log(string_menor_que)
+    
+    string_busca = string_tipo_usuario + string_menor_que + string_maior_que
+    console.log(string_busca)
+
+    string_busca = string_busca.substring(0, string_busca.length-1)
+
+    window.location = "/relatorio_usuario?"+string_busca
+
+  })
+
+  $(".mask-data").setMask("99/99/9999");
+
+  $(".select2").select2();
+
+  $('#example23').DataTable({
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
+

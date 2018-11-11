@@ -11,7 +11,16 @@
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_em_caixa)}"
-            button.btn.btn-sm.btn-youtube data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
+        hr
+        - user_caixas = @escola.transferencias.where(tipo: ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO']).group_by { |d| d[:user_movimentou_id] }
+        - user_caixas.each do |user_movimentou_id, tranfs|
+          - sum = tranfs.map(&:valor).inject(0, :+) + @escola.transferencias.where(tipo: ['SAIDA','SAIDA CANCELADA'], user_caixa_id: user_movimentou_id).sum(:valor)
+          div style="color: white"
+            = User.find(user_movimentou_id).nome
+          .d-flex
+            div.font-light.text-white style="font-size: 20px;"
+              = "#{ActionController::Base.helpers.number_to_currency(sum)}"
+              button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{user_movimentou_id}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
@@ -213,12 +222,18 @@ javascript:
       }
   });
 
+  var user_caixa = 0
+
+  $(".botao_retirar_caixa_user").click(function(){
+    user_caixa = parseInt(this.getAttribute("user_caixa"))
+  })
 
   $("#botao_retirar").click(function(){
 
+
     $(this).prop( "disabled", true );
 
-    $.getJSON("/creditar", { valor: $("#quantidade_credito").val(), status: "sangria" },function(d){
+    $.getJSON("/creditar", { valor: $("#quantidade_credito").val(), status: "sangria", user_caixa: user_caixa },function(d){
       if (d) {
         console.log(d);
         if (d.resultado == "OK"){

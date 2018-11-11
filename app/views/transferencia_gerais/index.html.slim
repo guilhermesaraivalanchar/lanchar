@@ -26,11 +26,12 @@
                 - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA"
                 - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA"
                 - nome = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
+                - tipo =  transferencia_geral.tipo 
                 tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                   td 
                     = transferencia_geral.id
                   td 
-                    = transferencia_geral.tipo
+                    = transferencia_geral.tipo == "SAIDA" ? "#{transferencia_geral.tipo} (#{User.find(transferencia_geral.user_caixa_id).nome})" : transferencia_geral.tipo
                   td 
                     = nome
                   td 

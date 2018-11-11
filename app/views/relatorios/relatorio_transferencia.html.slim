@@ -1,0 +1,198 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Parametros do Relatório
+        .row.col-12
+          .col-4
+            h5.m-t-20 Tipos
+            select#select_tipo.select2.m-b-10.select2-multiple data-placeholder="Escolha os tipos" multiple="multiple" style=("width: 100%") 
+              - if params[:tipo] && params[:tipo].split(",").include?('venda')
+                option selected="true" value="venda" Venda
+              - else
+                option value="venda" Venda
+              - if params[:tipo] && params[:tipo].split(",").include?('entrada')
+                option selected="true" value="entrada" Entrada
+              - else
+                option value="entrada" Entrada
+              - if params[:tipo] && params[:tipo].split(",").include?('saida')
+                option selected="true" value="saida" Saida
+              - else
+                option value="saida" Saida
+              - if params[:tipo] && params[:tipo].split(",").include?('venda_direta')
+                option selected="true" value="venda_direta" Venda Direta
+              - else
+                option value="venda_direta" Venda Direta
+              - if params[:tipo] && params[:tipo].split(",").include?('deposito cancelado')
+                option selected="true" value="deposito cancelado" Deposito Cancelado
+              - else
+                option value="deposito cancelado" Deposito Cancelado
+              - if params[:tipo] && params[:tipo].split(",").include?('saida cancelada')
+                option selected="true" value="saida cancelada" Saida Cancelada
+              - else
+                option value="saida cancelada" Saida Cancelada
+
+          .col-4
+            h5.m-t-20 Usuarios
+            select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha os usuários" multiple="multiple" style=("width: 100%") 
+              - User.where(escola_id: current_user.escola_id).order(:nome).each do |user|
+                - if params[:user_id] && params[:user_id].split(",").include?(user.id.to_s)
+                  option selected="true" value="#{user.id}"
+                    = "#{user.nome}"
+                - else
+                  option value="#{user.id}"
+                    = "#{user.nome}"  
+          .col-4
+            h5.m-t-20 Usuarios
+            select#select_cancelada.select2.m-b-10 data-placeholder="Escolha os usuários" style=("width: 100%")
+              - if params[:cancelada]
+                option value="0" Todos
+                - if params[:cancelada] && params[:cancelada] == 'true'
+                  option selected="true" value="true" Cancelada
+                - else
+                  option value="true" Cancelada
+                - if params[:cancelada] && params[:cancelada] == 'false'
+                  option selected="true" value="false" Não Cancelada
+                - else
+                  option value="false" Não Cancelada
+              - else
+                option selected="true" value="0" Todos
+                option value="true" Cancelada
+                option value="false" Não Cancelada
+          .col-4
+            h5.m-t-20 Período
+            .row
+              .col-6
+                input#input_data_inicio.string.form-control.mask-data placeholder="Data Inicio" type="text" value="#{params[:data_inicio]}"
+              .col-6
+                input#input_data_fim.string.form-control.mask-data placeholder="Data Fim" type="text" value="#{params[:data_fim]}"
+                     
+        br
+        div.col-12
+          button#buscar_relatorio.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Filtrar
+
+
+
+
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Ralatório Transações
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="30%"
+            col width="5%"
+            thead
+              tr
+                th ID
+                th Tipo
+                th Comprador
+                th Vendedor
+                th Data
+                th Mês
+                th Valor
+            tbody
+              - @transferencia_gerais.each do |transferencia_geral|
+                - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA"
+                - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA" || transferencia_geral.tipo == "SAIDA CANCELADA" || transferencia_geral.tipo == "DEPOSITO CANCELADO"
+                - nome = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
+                tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
+                  td 
+                    = transferencia_geral.id
+                  td 
+                    = transferencia_geral.tipo
+                  td 
+                    = nome
+                  td 
+                    = User.find(transferencia_geral.transferencias.first.user_movimentou_id).nome rescue "-"
+                  td 
+                    = transferencia_geral.created_at.strftime("%d/%m/%Y %H:%M")
+                  td 
+                    = I18n.t(transferencia_geral.created_at.strftime("%B"))
+                  td
+                    = ActionController::Base.helpers.number_to_currency(transferencia_geral.valor)
+javascript:
+
+  $("#buscar_relatorio").click(function(){
+
+    var location = "/relatorio_transferencia?"
+
+    console.log($("#select_tipo").val().length)
+    console.log($("#select_usuario").val())
+    console.log($("#select_cancelada").val())
+    console.log($("#input_data_inicio").val())
+    console.log($("#input_data_fim").val())
+
+    string_tipo = ""
+    if ($("#select_tipo").val().length){
+      tipos = $("#select_tipo").val()
+      string_tipo = "tipo="
+      for(i in tipos){
+        string_tipo = string_tipo + tipos[i] + ","
+      }
+      string_tipo = string_tipo.substring(0, string_tipo.length-1)
+      string_tipo = string_tipo + "&"
+    }
+
+    string_usuario = ""
+    if ($("#select_usuario").val().length > 0){
+      usuarios = $("#select_usuario").val()
+      string_usuario = "user_id="
+      for(i in usuarios){
+        string_usuario = string_usuario + usuarios[i] + ","
+      }
+      string_usuario = string_usuario.substring(0, string_usuario.length-1)
+      string_usuario = string_usuario + "&"
+    }
+
+    string_cancelada = ""
+    cancelada = $("#select_cancelada").val()
+    if (cancelada == "true"){
+      string_cancelada = "cancelada=true&"
+    }else if(cancelada == "false"){
+      string_cancelada = "cancelada=false&"
+    }
+
+    string_data_inicio = ""
+    data_inicio = $("#input_data_inicio").val()
+    data_fim = $("#input_data_fim").val()
+    if (data_inicio != ""){
+      string_data_inicio = "data_inicio="+data_inicio+"&"
+      if(data_fim != ""){
+        string_data_inicio = string_data_inicio + "data_fim="+data_fim+"&"
+      }
+
+    }
+
+
+    console.log(string_tipo)
+    console.log(string_usuario)
+    console.log(string_cancelada)
+    console.log(string_data_inicio)
+    
+    string_busca = string_tipo + string_usuario + string_cancelada + string_data_inicio
+    console.log(string_busca)
+
+    string_busca = string_busca.substring(0, string_busca.length-1)
+
+    window.location = "/relatorio_transferencia?"+string_busca
+
+  })
+
+  $(".mask-data").setMask("99/99/9999");
+
+  $(".select2").select2();
+
+  $('#example23').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
+

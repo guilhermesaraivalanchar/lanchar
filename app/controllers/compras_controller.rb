@@ -100,7 +100,7 @@ class ComprasController < ApplicationController
             tipo_transacao = "VENDA"
             tipo_transacao = "VENDA_DIRETA" if user_id == "0"
 
-            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao)
+            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id)
             preco_total = 0
 
             if conf && conf.last && conf.last[:produtos]
@@ -131,7 +131,7 @@ class ComprasController < ApplicationController
             debitar = true
             if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
               debitar = false
-              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "caixa")
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "caixa", user_movimentou_id: current_user.id)
               transf_geral_entrada.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
@@ -181,7 +181,7 @@ class ComprasController < ApplicationController
         tipo_transacao = "VENDA"
         tipo_transacao = "VENDA_DIRETA" if user_id == "0"
 
-        transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao)
+        transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id)
         preco_total = 0
         if transf_geral.save
 

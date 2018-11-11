@@ -11,7 +11,7 @@ class TransferenciaGeral < ApplicationRecord
       comprador = self.user
 
       if comprador.update_attribute(:saldo, comprador.saldo.to_d + self.valor.to_d)
-        tf = TransferenciaGeral.new(user_id: comprador.id, valor: self.valor.to_d, escola_id: current_user.escola_id, tipo: "REEMBOLSO")
+        tf = TransferenciaGeral.new(user_id: comprador.id, valor: self.valor.to_d, escola_id: current_user.escola_id, tipo: "REEMBOLSO", user_movimentou_id: current_user.id)
         tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d, escola_id: current_user.escola_id, tipo:"REEMBOLSO")
         tf.save
       end
@@ -34,7 +34,7 @@ class TransferenciaGeral < ApplicationRecord
       beneficiado = self.user
 
       if beneficiado.update_attribute(:saldo, beneficiado.saldo.to_d - self.valor.to_d)
-        tf = TransferenciaGeral.new(user_id: beneficiado.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "DEPOSITO CANCELADO")
+        tf = TransferenciaGeral.new(user_id: beneficiado.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "DEPOSITO CANCELADO", user_movimentou_id: current_user.id)
         tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"DEPOSITO CANCELADO")
         tf.save
       end
@@ -43,8 +43,8 @@ class TransferenciaGeral < ApplicationRecord
 
     elsif self.tipo == "SAIDA"
 
-      tf = TransferenciaGeral.new(valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "SAIDA CANCELADA")
-      tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"SAIDA CANCELADA")
+      tf = TransferenciaGeral.new(valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "SAIDA CANCELADA", user_caixa_id: self.user_caixa_id)
+      tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"SAIDA CANCELADA", user_movimentou_id: current_user.id, user_caixa_id: self.user_caixa_id)
       tf.save
 
       self.transferencias.update_all(cancelada: true)

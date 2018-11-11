@@ -67,3 +67,17 @@ ul#sidebarnav.in
       a.waves-effect.waves-dark href="#{transferencia_gerais_path}"
         span.hide-menu
           | Transações
+
+  - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores'])
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Relatórios
+      ul.collapse
+        - if current_user.tem_permissao("relatorio_transferencias")
+          li
+            = link_to("Relatório Transações", relatorio_transferencia_path(busca: false))
+
+        - if current_user.tem_permissao("relatorio_usuario")
+          li
+            = link_to("Relatório Usuarios", relatorio_usuario_path)
