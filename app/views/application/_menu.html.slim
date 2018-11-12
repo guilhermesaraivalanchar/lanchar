@@ -80,4 +80,4 @@ ul#sidebarnav.in
 
         - if current_user.tem_permissao("relatorio_usuario")
           li
-            = link_to("Relatório Usuarios", relatorio_usuario_path)
+            = link_to("Relatório Usuarios", relatorio_usuario_path(busca: false))
