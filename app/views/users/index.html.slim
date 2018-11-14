@@ -1,3 +1,4 @@
+<script src="../javascripts/jquery.inputmask.js"></script>
 .row
   .col-12
     .card
@@ -92,7 +93,7 @@ javascript:
     $("#botao_creditar").click(function(){
       $(this).prop( "disabled", true );
 
-      $.getJSON("/creditar", { user_id: user_id, valor: $("#quantidade_credito").val(), tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
+      $.getJSON("/creditar", { user_id: user_id, valor: $("#quantidade_credito").val().replace("R$ ", ""), tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
         if (d) {
           console.log(d);
           if (d.resultado == "OK"){
@@ -126,4 +127,8 @@ javascript:
       $("#modal_saldo").html("R$ " +saldo_user);
       
     }
+
+  $(function() {
+    $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
+  })
 

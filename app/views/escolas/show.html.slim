@@ -234,7 +234,7 @@ javascript:
 
     $(this).prop( "disabled", true );
 
-    $.getJSON("/creditar", { valor: $("#quantidade_credito").val(), status: "sangria", user_caixa: user_caixa },function(d){
+    $.getJSON("/creditar", { valor: $("#quantidade_credito").val().replace("R$ ", ""), status: "sangria", user_caixa: user_caixa },function(d){
       if (d) {
         console.log(d);
         if (d.resultado == "OK"){
@@ -255,5 +255,9 @@ javascript:
       }
     })
 
+  })
+  
+  $(function() {
+    $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
   })
 

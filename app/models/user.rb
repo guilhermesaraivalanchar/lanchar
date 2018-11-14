@@ -115,8 +115,10 @@ class User < ApplicationRecord
     
     return (self.saldo.to_d + self.credito.to_d) if !self.saldo_diario
 
-    saldo_gasto_hoje = transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
-  
-    return (self.saldo_diario - saldo_gasto_hoje.to_d) 
+    return (self.saldo_diario - self.saldo_gasto_hoje.to_d) 
+  end
+
+  def saldo_gasto_hoje
+    transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
   end
 end

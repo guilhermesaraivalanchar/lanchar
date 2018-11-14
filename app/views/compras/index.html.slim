@@ -13,12 +13,12 @@
             option value="" Escolha um usuário
             option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
             - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false]).order(:nome).each do |user|
-              option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" tem_saldo_diario="#{user.saldo_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
+              option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
                 = "#{user.nome}"
           br
           br
           .checkbox.checkbox-success
-            input#venda_com_entrada type="checkbox" /
+            input#venda_com_entrada type="checkbox"
             label for="venda_com_entrada"  Venda com Entrada
           br
           div.div_saldo.alert.alert-info style="display: none"
@@ -137,7 +137,7 @@ javascript:
           produto_combo_def_num = 0
           
           for(i in resultado.produtos){
-            input_produto_combo = "<div class='row' id='div_input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"'><div class='col-10'><input class='string required form-control' disabled='disabled' type='text' id='input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"' value='"+resultado.produtos[i].nome+"' produto_id='"+resultado.produtos[i].id+"'></div><div class='col-2'><button class='btn btn-danger waves-effect waves-light'  onclick='remover_select_combo_input("+combo_param+","+produto_combo_def_num+")' helper='button'>Não Quero</button></div><br><br><br></div>"
+            input_produto_combo = "<div class='row' id='div_input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"'><div class='col-10'><input class='string required form-control' disabled='disabled' type='text' id='input_prod_combo_"+combo_param+"_"+produto_combo_def_num+"' value='"+resultado.produtos[i].nome+"' produto_id='"+resultado.produtos[i].id+"'></div><div class='col-2'><button class='btn btn-danger waves-effect waves-light' onclick='remover_select_combo_input("+combo_param+","+produto_combo_def_num+")' helper='button'>Não Quero</button></div><br><br><br></div>"
             $("#div_combo_"+combo_param).append(input_produto_combo)
             produto_combo_def_num++
           }
@@ -163,8 +163,14 @@ javascript:
   $("#select_usuario").change(function(){
 
     user_id = $(this).val()
+    user_saldo = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo");
+    user_credito = document.getElementById("option_usu_"+user_id).getAttribute("usuario_credito");
     user_saldo_disponivel = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_disponivel");
     produtos_bloqueados = document.getElementById("option_usu_"+user_id).getAttribute("produtos_bloqueados");
+    tem_saldo_diario = document.getElementById("option_usu_"+user_id).getAttribute("tem_saldo_diario");
+    user_saldo_diario = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_diario");
+    user_saldo_gasto_hoje = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_gasto_hoje");
+    user_saldo_total = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_total");
     produtos_bloqueados_split = produtos_bloqueados.split(",")
     blod_string = ""
     if (produtos_bloqueados_split[0] != ""){
@@ -180,7 +186,14 @@ javascript:
     }
 
     if (user_id != 0){
-      $("div.div_saldo span").html("Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+      if (tem_saldo_diario == "n"){
+        
+        $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+        
+      }else{
+        $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Total: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " <br> Saldo Diário: " + number_to_currency(user_saldo_diario, { unit: "R$ " }) + " | Saldo Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+
+      }
       $("div.div_saldo").show()
     } else {
       $("div.div_saldo").hide()
