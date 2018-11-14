@@ -97,8 +97,8 @@
                 th Valor
             tbody
               - @transferencia_gerais.each do |transferencia_geral|
-                - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA"
-                - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA" || transferencia_geral.tipo == "SAIDA CANCELADA" || transferencia_geral.tipo == "DEPOSITO CANCELADO"
+                - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA" || transferencia_geral.tipo == "SAIDA CANCELADA"
+                - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA" || transferencia_geral.tipo == "DEPOSITO CANCELADO"
                 - nome = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
                 tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                   td 
