@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_11_234734) do
+ActiveRecord::Schema.define(version: 2018_11_22_231623) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 2018_11_11_234734) do
     t.boolean "cancelada"
     t.integer "user_movimentou_id"
     t.integer "user_caixa_id"
+    t.decimal "saldo_anterior", precision: 10, scale: 2
     t.index ["escola_id"], name: "index_transferencia_gerais_on_escola_id"
     t.index ["user_id"], name: "index_transferencia_gerais_on_user_id"
   end
