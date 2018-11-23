@@ -100,11 +100,7 @@ class ComprasController < ApplicationController
             tipo_transacao = "VENDA"
             tipo_transacao = "VENDA_DIRETA" if user_id == "0"
 
-            u = User.find(user_id)
-
-            saldo_ant = u ? u.saldo.to_d : 0
-
-            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d)
+            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id)
             preco_total = 0
 
             if conf && conf.last && conf.last[:produtos]
