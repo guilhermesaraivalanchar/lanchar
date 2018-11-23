@@ -46,8 +46,6 @@
                       = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if @can_creditar_usuarios_tabela
                       button.btn.btn-success id="creditar_#{user.id}" onclick="creditar_user(this)" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
-                    - if @can_deletar_usuarios && user.transferencia_gerais.empty?
-                      = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
