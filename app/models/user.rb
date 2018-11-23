@@ -43,9 +43,11 @@ class User < ApplicationRecord
   end
 
   def salvar_responsavel
-    self.responsavel_users.destroy_all
-    self.responsavel_ids.split(",").each do |responsavel_id|
-      ResponsavelUser.create(user_id: self.id, responsavel_id: responsavel_id)
+    if responsavel_ids
+      self.responsavel_users.destroy_all
+      self.responsavel_ids.split(",").each do |responsavel_id|
+        ResponsavelUser.create(user_id: self.id, responsavel_id: responsavel_id)
+      end
     end
   end
 
