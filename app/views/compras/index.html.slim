@@ -20,6 +20,9 @@
           .checkbox.checkbox-success
             input#venda_com_entrada type="checkbox"
             label for="venda_com_entrada"  Venda com Entrada
+          .checkbox.checkbox-success
+            input#ignorar_saldo type="checkbox"
+            label for="ignorar_saldo"  Ignorar Saldo
           br
           div.div_saldo.alert.alert-info style="display: none"
             span
@@ -311,23 +314,27 @@ javascript:
       })
 
       com_entrada = ""
+      ig_saldo = ""
       if ($( "#venda_com_entrada" ).prop( "checked")){
         com_entrada = "(Venda Com Entrada)"
       }
+      
+      if ($( "#ignorar_saldo" ).prop( "checked")){
+        ig_saldo = "(Saldo Ignorado)"
+      }
 
-      elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+' '+com_entrada+'</span></div></div>'
+      elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+' '+com_entrada+' '+ig_saldo+'</span></div></div>'
 
       elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="" target="_blank">Imprimir</a></div></div>'
     
-      console.log("ZUANO")
       console.log(parseFloat(user_saldo_disponivel))
       console.log(parseFloat(total))
 
-      if (parseFloat(user_saldo_disponivel) >= parseFloat(total) || ($( "#venda_com_entrada" ).prop( "checked") && tem_saldo_diario == "n") ){
+      if ((parseFloat(user_saldo_disponivel) >= parseFloat(total) || $( "#ignorar_saldo" ).prop( "checked")) || ($( "#venda_com_entrada" ).prop( "checked") && tem_saldo_diario == "n") ){
 
         if (erro_quantidade.length == 0 && erro_bloqueio.length == 0 && !erro_selecao){
           $('#div_confirmacao').append(elemento_confirmacao)
-          confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos, venda_com_entrada: $( "#venda_com_entrada" ).prop( "checked")})
+          confirmacao.push({div_confirmacao_id: div_confirmacao_num, user_id: user_id, produtos: produtos, venda_com_entrada: $( "#venda_com_entrada" ).prop( "checked"), ignorar_saldo: $( "#ignorar_saldo" ).prop( "checked")})
           if ($( "#venda_com_entrada" ).prop( "checked")){
             $( "#venda_com_entrada" ).click()
           }
@@ -372,6 +379,10 @@ javascript:
           $("div.erro_saldo").show()
         }
       }
+
+      if($("#ignorar_saldo").prop("checked")){
+        $("#ignorar_saldo").click()
+      }
     }
 
   })
@@ -405,11 +416,16 @@ javascript:
 
   $("#enviar_confirmacao").click(function(){
 
+    $(this).prop( "disabled", true );
+
     $.getJSON("/enviar_confirmacao_compra", { confirmacao: confirmacao, venda_com_entrada: $( "#venda_com_entrada" ).prop( "checked") },function(resultado) {
       if (resultado) {
         console.log(resultado)
         console.log(resultado.resposta.length)
         if (resultado.status == "OK" && resultado.resposta.length > 0){
+          
+          $("#enviar_confirmacao").prop( "disabled", false );
+
           transferencia_ids = "" 
           for(i in resultado.resposta){
             div_confirmacao_id = resultado.resposta[i].div_confirmacao_id

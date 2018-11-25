@@ -6,6 +6,19 @@ class UsersController < ApplicationController
     @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
     @can_creditar_usuarios_tabela = current_user.tem_permissao("creditar_usuarios_tabela")
     @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
+
+
+
+    sql = %Q{
+      SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito  
+      FROM users 
+      WHERE users.escola_id = #{current_user.escola_id}
+      AND (users.sem_compra is null or users.sem_compra = ?) 
+    }
+
+    @users = User.find_by_sql [sql, false]
+
+
   end
 
   def index_responsavel
@@ -21,6 +34,48 @@ class UsersController < ApplicationController
     init_current
     @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_usuario") && !@user_responsavel && current_user != @user
+
+    sql = %Q{
+      SELECT transferencias.produto_id, transferencias.created_at, transferencias.valor, transferencias.saldo_anterior, transferencias.combo_id, transferencias.tipo, combos.nome as combo_nome, 
+      produto_transf.nome as produto_nome, transferencias.id as transferencia_id
+      FROM transferencia_gerais 
+      INNER JOIN transferencias ON transferencias.transferencia_geral_id = transferencia_gerais.id
+      LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
+      LEFT JOIN combos ON combos.id = transferencias.combo_id
+      WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
+      AND transferencia_gerais.user_id = #{@user.id}
+      AND transferencia_gerais.created_at > ? 
+      AND transferencia_gerais.created_at < ?
+      ORDER BY transferencia_gerais.created_at ASC
+    }
+
+    if !params[:p] || params[:p] == "hoje"
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
+    elsif params[:p] == "semana"
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_week, Time.now.at_end_of_week]
+    elsif params[:p] == "mes"
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_month, Time.now.at_end_of_month]
+    elsif params[:p] == "ano"
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_year, Time.now.at_end_of_year]
+    elsif params[:p] == "todos"
+      
+      sql = %Q{
+        SELECT transferencias.produto_id, transferencias.created_at, transferencias.valor, transferencias.saldo_anterior, transferencias.combo_id, transferencias.tipo, combos.nome as combo_nome, 
+        produto_transf.nome as produto_nome, transferencias.id as transferencia_id
+        FROM transferencia_gerais 
+        INNER JOIN transferencias ON transferencias.transferencia_geral_id = transferencia_gerais.id
+        LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
+        LEFT JOIN combos ON combos.id = transferencias.combo_id
+        WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
+        AND transferencia_gerais.user_id = #{@user.id}
+        ORDER BY transferencia_gerais.created_at ASC
+      }
+      
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql]
+    else
+      @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
+    end
+      
   end
 
   def edit
@@ -120,15 +175,19 @@ class UsersController < ApplicationController
     else
       user = User.find(params[:user_id])
       user.saldo = 0 if !user.saldo
+
+      
       if user
+        saldo_ant = user.saldo
         if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
             if params[:status] == "caixa"
-              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo], user_movimentou_id: current_user.id)
+              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo], user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + params[:valor].to_d)
               transf_geral.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
                 valor: params[:valor],
-                tipo: "ENTRADA"
+                tipo: "ENTRADA",
+                saldo_anterior: saldo_ant.to_d + params[:valor].to_d
               })
               transf_geral.save
             end

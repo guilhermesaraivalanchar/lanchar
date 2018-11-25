@@ -28,24 +28,24 @@
                 tr
                   td 
                     - if @can_ver_usuario
-                      = link_to(user.nome, user_path(user.id))
+                      = link_to(user[:nome], user_path(user[:id]))
                     - else
-                      = user.nome
+                      = user[:nome]
                   td 
-                    = user.codigo
+                    = user[:codigo]
                   td 
-                    = user.tipos rescue ""
+                    = user[:tipos] rescue ""
                   td 
-                    = user.turma rescue ""
+                    = user[:turma] rescue ""
                   td style="color: #{user.saldo < 0 ? 'red' : 'black'}"
-                    = "#{ActionController::Base.helpers.number_to_currency(user.saldo)}"
+                    = "#{ActionController::Base.helpers.number_to_currency(user[:saldo])}"
                   td
-                    = "#{ActionController::Base.helpers.number_to_currency(user.credito)}"
+                    = "#{ActionController::Base.helpers.number_to_currency(user[:credito])}"
                   td
                     - if @can_editar_usuarios
-                      = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                      = link_to "Editar", edit_user_path(user[:id]), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if @can_creditar_usuarios_tabela
-                      button.btn.btn-success id="creditar_#{user.id}" onclick="creditar_user(this)" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user.nome}" saldo_user="#{user.saldo}" type="button" style="margin-right: 10px" Creditar
+                      button.btn.btn-success id="creditar_#{user[:id]}" onclick="creditar_user(this)" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user[:nome]}" saldo_user="#{user[:saldo]}" type="button" style="margin-right: 10px" Creditar
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
@@ -88,10 +88,14 @@ javascript:
         ]
     });
 
-    $("#botao_creditar").click(function(){
-      $(this).prop( "disabled", true );
 
-      $.getJSON("/creditar", { user_id: user_id, valor: $("#quantidade_credito").val().replace("R$ ", ""), tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
+    $("#botao_creditar").click(function(){
+  
+      $(this).prop( "disabled", true );
+      valor_credito = $("#quantidade_credito").val().replace("R$ ", "")    
+      valor_credito = valor_credito.replace(/,/g, "");
+
+      $.getJSON("/creditar", { user_id: user_id, valor: valor_credito, tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
         if (d) {
           console.log(d);
           if (d.resultado == "OK"){

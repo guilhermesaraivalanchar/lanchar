@@ -4,6 +4,12 @@
       .card-body
         h2.card-title Lista de Transações
         h6.card-subtitle Visualização e busca de todos as transações.
+        button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
+        button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
+        button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
+        button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
+        button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
+
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
             col width="30%"
@@ -23,29 +29,28 @@
                 th Ação
             tbody
               - @transferencia_gerais.each do |transferencia_geral|
-                - nome = User.find(transferencia_geral.transferencias.last.user_movimentou_id).nome if transferencia_geral.tipo == "SAIDA"
-                - nome = transferencia_geral.user.nome if transferencia_geral.tipo == "VENDA" || transferencia_geral.tipo == "ENTRADA"
-                - nome = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
-                - tipo =  transferencia_geral.tipo 
+                - nome = transferencia_geral[:usuario_movimentou_nome] if transferencia_geral[:tipo] == "SAIDA"
+                - nome = transferencia_geral[:usuario_comprou_nome] if transferencia_geral[:tipo] == "VENDA" || transferencia_geral[:tipo] == "ENTRADA"
+                - nome = "VENDA DIRETA" if transferencia_geral[:tipo] == "VENDA_DIRETA"
                 tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
                   td 
-                    = transferencia_geral.id
+                    = transferencia_geral[:id]
                   td 
-                    = transferencia_geral.tipo == "SAIDA" ? "#{transferencia_geral.tipo} (#{User.find(transferencia_geral.user_caixa_id).nome})" : transferencia_geral.tipo
+                    = transferencia_geral[:tipo] == "SAIDA" ? "#{transferencia_geral[:tipo]} (#{transferencia_geral[:usuario_caixa_nome]})" : transferencia_geral[:tipo]
                   td 
                     = nome
                   td 
-                    = User.find(transferencia_geral.transferencias.first.user_movimentou_id).nome rescue "-"
+                    = transferencia_geral[:usuario_movimentou_nome] rescue "-"
                   td 
-                    = transferencia_geral.created_at.strftime("%d/%m/%Y %H:%M")
+                    = transferencia_geral[:created_at].strftime("%d/%m/%Y %H:%M")
                   td 
-                    = I18n.t(transferencia_geral.created_at.strftime("%B"))
+                    = I18n.t(transferencia_geral[:created_at].strftime("%B"))
                   td
-                    = ActionController::Base.helpers.number_to_currency(transferencia_geral.valor)
+                    = ActionController::Base.helpers.number_to_currency(transferencia_geral[:valor])
                   td
-                    - if @can_cancelar && !transferencia_geral.cancelada && transferencia_geral.tipo != "VENDA_DIRETA"
-                      = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral.id), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
-                    - elsif transferencia_geral.cancelada
+                    - if @can_cancelar && !transferencia_geral[:cancelada] && transferencia_geral[:tipo] != "VENDA_DIRETA"
+                      = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral[:id]), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
+                    - elsif transferencia_geral[:cancelada]
                       = link_to "Cancelada", '', helper: "button", class: "btn waves-effect waves-light btn-secondary", style: "margin-right: 10px"
 javascript:
     $('#example23').DataTable({
@@ -56,4 +61,12 @@ javascript:
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
+
+
+    $("#botao_hoje, #botao_semana, #botao_mes, #botao_ano, #botao_todos").click(function(){
+      part = this.id.split("_")
+      window.location = "/transferencia_gerais?p=" + part[1]
+    })
+
+
 

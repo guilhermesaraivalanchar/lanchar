@@ -96,11 +96,16 @@ class ComprasController < ApplicationController
 
           user_id = conf.last[:user_id]
 
+          ig_saldo = conf.last[:ignorar_saldo] == "true"
+
           if user_id
             tipo_transacao = "VENDA"
             tipo_transacao = "VENDA_DIRETA" if user_id == "0"
 
-            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id)
+            u = User.find(user_id)
+            saldo_ant = u ? u.saldo.to_d : 0
+            transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d, ig_saldo: ig_saldo)
+            valor_transf = 0
             preco_total = 0
 
             if conf && conf.last && conf.last[:produtos]
@@ -108,13 +113,15 @@ class ComprasController < ApplicationController
 
                 if prod_combo.last[:tipo] == "p"
                   prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
-                  transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco)
+                  valor_transf = valor_transf + prod_preco
+                  transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   produto = Produto.find(prod_combo.last[:id])
                   produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
                   preco_total += prod_preco
                 elsif prod_combo.last[:tipo] == "c"
                   combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
-                  transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, combo_id: prod_combo.last[:id], valor: combo_preco)
+                  valor_transf = valor_transf + combo_preco
+                  transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, combo_id: prod_combo.last[:id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   preco_total += combo_preco
 
                   prod_combo.last[:produtos].each do |prod_id|
@@ -131,12 +138,13 @@ class ComprasController < ApplicationController
             debitar = true
             if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
               debitar = false
-              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", user_movimentou_id: current_user.id)
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d - preco_total)
               transf_geral_entrada.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
                 valor: preco_total.to_d,
-                tipo: "ENTRADA"
+                tipo: "ENTRADA",
+                saldo_anterior: saldo_ant.to_d - preco_total
               })
               transf_geral_entrada.save
             end

@@ -43,8 +43,6 @@
                   td
                     - if @can_editar_usuarios
                       = link_to "Editar", edit_user_path(user.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if @can_deletar_usuarios
-                      = link_to "Deletar", user_path(user), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{user.nome}?" }, class: "btn waves-effect waves-light btn-danger"
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 

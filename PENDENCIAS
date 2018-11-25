@@ -1,26 +1,43 @@
 PENDENCIAS
 
-Mensagem de erro no login
-Desativar o usuario
+
+- Selar Botão de compra
+- Autorizar comprar sem saldo
+- Sangria nao pode ficar negativa
+- Distinguir anotaçoes e dinheiro
+- colocar subtotais no extrato
+- trocar ordem do extrato
+- Separar entrada de dinheiro em anotação
+- Colocar Logomarca da escola
+- Padrões de relatório
+-     * relatorio aluno por produto
+-     * relatorio de sangrias
+- Totem
+- Criar categoria banco
+- arrumar pagina ver produtos
+
+- Mensagem de erro no login
+- Desativar o usuario
 
 
-X CANCELAR SANGRIA
-X CANCELAR ENTRADA
-X IMPRIMIR PAPEL SANGRIA
-X Erro produtos e tipo produtos no combo ( DUPLICIDADE )
-X ARRUMAR CREDITAR
-X Função Credito
-X Bloqueio de compra por saldo e quantidade de item
-X Trocar senha
-X Entrada de Produto
-X Cancelar Venda
-X Faturamento So para venda
-X Botao nao quero no combo
-X Adicionar coluna mes
-X colocar menos em transaçao
-X Cantina Baiao Santos
-X Pau dletar usuario com transacao
+
+
+
+
 
 Hostgator
 guilherme.saraivak7@gmail.com
 CANTINAPROS9X5X4Q2
+
+
+
+sudo /etc/init.d/nginx restart
+
+/etc/init.d/postgresql restart
+
+
+PG::ConnectionBad (could not connect to server: No such file or directory Is the server running locally and accepting connections on Unix domain socket "/var/run/postgresql/.s.PGSQL.5432"?
+
+ActionView::Template::Error (PG::ConnectionBad: PQconsumeInput() server closed the connection unexpectedly This probably means the server terminated abnormally before or while processing the request.
+
+bundle exec passenger-config restart-app

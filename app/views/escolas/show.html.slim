@@ -21,7 +21,7 @@
             .d-flex
               div.font-light.text-white style="font-size: 20px;"
                 = "#{ActionController::Base.helpers.number_to_currency(sum)}"
-                button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{user_movimentou_id}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
+                button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{user_movimentou_id}" valor_caixa="#{sum}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
@@ -81,6 +81,11 @@
           .card-body
             h4.card-title Histórico de transação
             h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
+            button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
+            button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
+            button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
+            button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
+            button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
             .table-responsive.m-t-40
               table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
                 col width="30%"
@@ -106,76 +111,75 @@
                     th
                     th valor
                 tbody
-                  - @escola.transferencia_gerais.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA']).order("created_at DESC").each do |transferencia_geral|
-                    - transferencia_geral.transferencias.each do |transferencia|
-                      - if transferencia.tipo == "ENTRADA"
-                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
-                          td
-                            = User.find(transferencia.user_movimentou_id).nome
-                          td
-                            = transferencia_geral.tipo
-                          td
-                            - if current_user.tem_permissao("ver_usuario")
-                              = link_to(transferencia_geral.user.nome, user_path(transferencia_geral.user.id))
-                            - else
-                              = transferencia_geral.user.nome
-                          td 
-                            = "#{I18n.t(transferencia_geral.tipo_entrada)}" if transferencia_geral.tipo_entrada
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-green
-                            = "#{transferencia.valor}"
-                      - if transferencia.tipo == "SAIDA"
-                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
-                          td
-                            = User.find(transferencia.user_movimentou_id).nome
-                          td
-                            = transferencia_geral.tipo
-                          td
-                            = ""
-                          td
-                            = ""
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-danger
-                            = "#{transferencia.valor}"
-                      - if transferencia.tipo == "SAIDA CANCELADA"
-                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
-                          td
-                            = User.find(transferencia.user_movimentou_id).nome
-                          td
-                            = transferencia_geral.tipo
-                          td
-                            = ""
-                          td
-                            = ""
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-green
-                            = "#{transferencia.valor}"
-                      - if transferencia.tipo == "VENDA_DIRETA"
-                        tr style="#{'text-decoration: line-through' if transferencia_geral.cancelada}"
-                          td
-                            = User.find(transferencia.user_movimentou_id).nome
-                          td
-                            = "VENDA DIRETA" if transferencia_geral.tipo == "VENDA_DIRETA"
-                          td
-                            = ""
-                          td
-                            = ""
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-green
-                            = "#{transferencia.valor}"
-
+                  - @transferencia_gerais.each do |transferencia_geral|
+                    - if transferencia_geral[:tipo] == "ENTRADA"
+                      tr style="#{'text-decoration: line-through' if transferencia_geral[:cancelada]}"
+                        td
+                          = transferencia_geral[:usuario_movimentou_nome]
+                        td
+                          = transferencia_geral[:tipo]
+                        td
+                          - if current_user.tem_permissao("ver_usuario")
+                            = link_to(transferencia_geral[:usuario_comprou_nome], user_path(transferencia_geral[:usuario_comprou_id]))
+                          - else
+                            = transferencia_geral[:usuario_comprou_nome]
+                        td 
+                          = "#{I18n.t(transferencia_geral[:tipo_entrada])}" if transferencia_geral[:tipo_entrada]
+                        td 
+                          = transferencia_geral[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia_geral[:created_at].strftime("%B"))}, #{transferencia_geral[:created_at].strftime("%Y")}"
+                        td.text-green
+                          = "#{transferencia_geral[:valor]}"
+                    - if transferencia_geral[:tipo] == "SAIDA"
+                      tr style="#{'text-decoration: line-through' if transferencia_geral[:cancelada]}"
+                        td
+                          = transferencia_geral[:usuario_movimentou_nome]
+                        td
+                          = transferencia_geral[:tipo]
+                        td
+                          = ""
+                        td
+                          = ""
+                        td 
+                          = transferencia_geral[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia_geral[:created_at].strftime("%B"))}, #{transferencia_geral[:created_at].strftime("%Y")}"
+                        td.text-danger
+                          = "#{transferencia_geral[:valor]}"
+                    - if transferencia_geral[:tipo] == "SAIDA CANCELADA"
+                      tr style="#{'text-decoration: line-through' if transferencia_geral[:cancelada]}"
+                        td
+                          = transferencia_geral[:usuario_movimentou_nome]
+                        td
+                          = transferencia_geral[:tipo]
+                        td
+                          = ""
+                        td
+                          = ""
+                        td 
+                          = transferencia_geral[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia_geral[:created_at].strftime("%B"))}, #{transferencia_geral[:created_at].strftime("%Y")}"
+                        td.text-green
+                          = "#{transferencia_geral[:valor]}"
+                    - if transferencia_geral[:tipo] == "VENDA_DIRETA"
+                      tr style="#{'text-decoration: line-through' if transferencia_geral[:cancelada]}"
+                        td
+                          = transferencia_geral[:usuario_movimentou_nome]
+                        td
+                          = "VENDA DIRETA" if transferencia_geral[:tipo] == "VENDA_DIRETA"
+                        td
+                          = ""
+                        td
+                          = ""
+                        td 
+                          = transferencia_geral[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia_geral[:created_at].strftime("%B"))}, #{transferencia_geral[:created_at].strftime("%Y")}"
+                        td.text-green
+                          = "#{transferencia_geral[:valor]}"
+       
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
     .modal-content
@@ -189,6 +193,7 @@
             label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
             input#quantidade_credito.form-control type="text"
         div#creditado_alerta class="alert alert-success" style="display:none" Sangria realizada com sucesso.
+        div#erro_creditado_alerta class="alert alert-danger" style="display:none" Valor requisitado tem que ser maior que a presente no caixa.
       .modal-footer
         div#botoes_modal
           button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
@@ -223,37 +228,77 @@ javascript:
       }
   });
 
-  var user_caixa = 0
+  $('#example234').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ],
+      drawCallback: function () {
+        var api = this.api();
+        try {
+            valor_total = api.column( 6, {page:'all', search:'applied'} ).data().sum()
+        }
+        catch(err) {
+            valor_total = 0
+        }
+        
+        console.log(valor_total) 
+        $( api.table().footer() ).html('<tr><th>Total</th><th></th><th></th><th></th><th></th><th></th><th>' + valor_total + '</th></tr>');
+      }
+  });
 
+  var user_caixa = 0
+  var valor_caixa = 0
   $(".botao_retirar_caixa_user").click(function(){
     user_caixa = parseInt(this.getAttribute("user_caixa"))
+    valor_caixa = parseFloat(this.getAttribute("valor_caixa"))
   })
 
   $("#botao_retirar").click(function(){
 
+    valor_retirado = $("#quantidade_credito").val().replace("R$ ", "")    
+    valor_retirado = valor_retirado.replace(/,/g, "");
 
-    $(this).prop( "disabled", true );
+    valor_retirado_teste = parseFloat(valor_retirado)
 
-    $.getJSON("/creditar", { valor: $("#quantidade_credito").val().replace("R$ ", ""), status: "sangria", user_caixa: user_caixa },function(d){
-      if (d) {
-        console.log(d);
-        if (d.resultado == "OK"){
-          $("#creditado_alerta").show();
-          setTimeout(function(){
+    if ( valor_retirado_teste > valor_caixa ){
 
-            $("#quantidade_credito").val("");
-            $("#creditado_alerta").hide();
+      $("#erro_creditado_alerta").show();
+      setTimeout(function(){
 
-            window.open("/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf")
-            $("#botao_retirar").prop( "disabled", false );
-            //window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
+        $("#quantidade_credito").val("");
+        $("#erro_creditado_alerta").hide();
+        //window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
 
-          }, 1000);
+      }, 5000);
+
+    }else{
+      $(this).prop( "disabled", true );
+
+      $.getJSON("/creditar", { valor: valor_retirado, status: "sangria", user_caixa: user_caixa },function(d){
+        if (d) {
+          console.log(d);
+          if (d.resultado == "OK"){
+            $("#creditado_alerta").show();
+            setTimeout(function(){
+
+              $("#quantidade_credito").val("");
+              $("#creditado_alerta").hide();
+
+              window.open("/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf")
+              $("#botao_retirar").prop( "disabled", false );
+              //window.location = "/transferencia_gerais/transferencia_pdf/"+d.transferencia_sangria+".pdf"
+
+            }, 1000);
+          }
+        } else {
+
         }
-      } else {
+      })
+    }
 
-      }
-    })
 
   })
   
@@ -261,3 +306,8 @@ javascript:
     $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
   })
 
+
+  $("#botao_hoje, #botao_semana, #botao_mes, #botao_ano, #botao_todos").click(function(){
+    part = this.id.split("_")
+    window.location = "/escolas/#{@escola.id}?p=" + part[1]
+  })

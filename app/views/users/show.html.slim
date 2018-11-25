@@ -39,6 +39,11 @@
           .card-body
             h4.card-title Histórico de transação
             h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
+            button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
+            button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
+            button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
+            button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
+            button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
             .table-responsive.m-t-40
               table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
                 col width="30%"
@@ -52,49 +57,70 @@
                     th Data
                     th Mês
                     th Valor (R$)
+                    th Valor Restante
                 tbody
-                  - @user.transferencia_gerais.order("created_at DESC").each do |transferencia_geral|
-                    - transferencia_geral.transferencias.each do |transferencia|
-                      - if transferencia.produto
+                  - @transferencias_gerais_user.each do |transferencia|
+                    - if transferencia[:produto_id]
+                      tr
+                        td
+                          = transferencia[:produto_nome]
+                        td 
+                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                        td.text-danger
+                          = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                          td class="text-green"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                        - else
+                          td class="text-danger"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                    - elsif transferencia[:combo_id]
+                      tr
+                        td
+                          = transferencia[:combo_nome]
+                        td 
+                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                        td.text-danger
+                          = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                          td class="text-green"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                        - else
+                          td class="text-danger"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                      - TransferenciaCombo.where(transferencia_id: transferencia[:transferencia_id]).each do |tranf_combo|
                         tr
+                          td style="padding-left: 20px"
+                            = " #{tranf_combo.produto.nome} (#{transferencia[:combo_nome]})"
+                          td 
+                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
                           td
-                            = transferencia.produto.nome
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-danger
-                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
-                      - elsif transferencia.combo
-                        tr
+                            = 
                           td
-                            = transferencia.combo.nome
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td.text-danger
-                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
-                        - transferencia.transferencia_combos.each do |tranf_combo|
-                          tr
-                            td style="padding-left: 20px"
-                              = " #{tranf_combo.produto.nome} (#{transferencia.combo.nome})"
-                            td 
-                              = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                            td 
-                              = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                            td
-                              = 
-                      - else
-                        tr
-                          td
-                            = transferencia.tipo
-                          td 
-                            = transferencia.created_at.strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia.created_at.strftime("%B"))}, #{transferencia.created_at.strftime("%Y")}"
-                          td class="#{ (transferencia.tipo == 'ENTRADA' || transferencia.tipo == 'REEMBOLSO') ? 'text-green' : 'text-danger'}"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia.valor)}"
+                            = 
+                    - else
+                      tr
+                        td
+                          = transferencia[:tipo]
+                        td 
+                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                        td 
+                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                        td class="#{ (transferencia[:tipo] == 'ENTRADA' || transferencia[:tipo] == 'REEMBOLSO') ? 'text-green' : 'text-danger'}"
+                          = "#{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                          td class="text-green"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                        - else
+                          td class="text-danger"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
     .modal-content
@@ -126,7 +152,7 @@
 javascript:
   $('#example23').DataTable({
       "ordering": false,
-      "displayLength": 15,
+      "displayLength": 99999999,
       dom: 'Bfrtip',
       buttons: [
           'copy', 'csv', 'excel', 'pdf', 'print'
@@ -152,4 +178,9 @@ javascript:
       }
     })
 
+  })
+
+  $("#botao_hoje, #botao_semana, #botao_mes, #botao_ano, #botao_todos").click(function(){
+    part = this.id.split("_")
+    window.location = "/controle_de_usuarios/#{@user.id}?p=" + part[1]
   })
