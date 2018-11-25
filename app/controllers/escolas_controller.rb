@@ -15,14 +15,14 @@ class EscolasController < ApplicationController
       LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
       LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
       WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-      AND transferencia_gerais.tipo IN ("SAIDA CANCELADA","VENDA_DIRETA","ENTRADA","SAIDA")
+      AND (transferencia_gerais.tipo = ? or transferencia_gerais.tipo = ? or transferencia_gerais.tipo = ? or transferencia_gerais.tipo = ?)
       AND transferencia_gerais.created_at > ? 
       AND transferencia_gerais.created_at < ?
       ORDER BY transferencia_gerais.created_at DESC
     }
 
     if !params[:p] || params[:p] == "hoje"
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "VENDA_DIRETA", "SAIDA CANCELADA", "ENTRADA", "SAIDA", Time.now.at_beginning_of_day, Time.now.at_end_of_day]
     elsif params[:p] == "semana"
       @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_week, Time.now.at_end_of_week]
     elsif params[:p] == "mes"
@@ -39,7 +39,7 @@ class EscolasController < ApplicationController
         LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
         LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
         WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-        AND transferencia_gerais.tipo IN ("SAIDA CANCELADA","VENDA_DIRETA","ENTRADA","SAIDA")
+        AND (transferencia_gerais.tipo = "VENDA_DIRETA" or transferencia_gerais.tipo = "SAIDA CANCELADA" or transferencia_gerais.tipo = "ENTRADA" or transferencia_gerais.tipo = "SAIDA")
         ORDER BY transferencia_gerais.created_at DESC
       }
 
