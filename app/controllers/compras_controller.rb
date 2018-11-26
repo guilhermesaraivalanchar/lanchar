@@ -135,16 +135,36 @@ class ComprasController < ApplicationController
             end
 
             transf_geral.valor = preco_total
+
             debitar = true
             if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
+              
+              saldo_ini_ant = saldo_ant.to_d + preco_total
+              transf_geral.transferencias.each do |transf|
+                transf.saldo_anterior = saldo_ini_ant - transf.valor
+                saldo_ini_ant = saldo_ini_ant - transf.valor
+              end
+
+
+              puts "
+
+
+              _______________
+              #{saldo_ant.to_d}
+              #{preco_total}
+
+
+
+              "
+
               debitar = false
-              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d - preco_total)
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + preco_total)
               transf_geral_entrada.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
                 valor: preco_total.to_d,
                 tipo: "ENTRADA",
-                saldo_anterior: saldo_ant.to_d - preco_total
+                saldo_anterior: saldo_ant.to_d + preco_total
               })
               transf_geral_entrada.save
             end
