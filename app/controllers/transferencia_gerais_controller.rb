@@ -62,7 +62,7 @@ class TransferenciaGeraisController < ApplicationController
       LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
       LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
       WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-      AND (transferencia_gerais.tipo = "VENDA" or transferencia_gerais.tipo = "VENDA_DIRETA" or transferencia_gerais.tipo = "ENTRADA" or transferencia_gerais.tipo = "SAIDA")
+      AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA')
       AND transferencia_gerais.created_at > ? 
       AND transferencia_gerais.created_at < ?
       ORDER BY transferencia_gerais.created_at DESC
@@ -86,7 +86,7 @@ class TransferenciaGeraisController < ApplicationController
         LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
         LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
         WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-        AND (transferencia_gerais.tipo = "VENDA" or transferencia_gerais.tipo = "VENDA_DIRETA" or transferencia_gerais.tipo = "ENTRADA" or transferencia_gerais.tipo = "SAIDA")
+        AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA')
         ORDER BY transferencia_gerais.created_at DESC
       }
 
