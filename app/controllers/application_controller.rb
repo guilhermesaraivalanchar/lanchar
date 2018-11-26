@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
         AND transferencia_gerais.user_id = #{current_user.id}
         AND transferencia_gerais.created_at > ? 
         AND transferencia_gerais.created_at < ?
-        ORDER BY transferencia_gerais.id ASC
+        ORDER BY transferencias.id ASC
       }
 
       if !params[:p] || params[:p] == "hoje"
@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
           LEFT JOIN combos ON combos.id = transferencias.combo_id
           WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
           AND transferencia_gerais.user_id = #{current_user.id}
-          ORDER BY transferencia_gerais.id ASC
+          ORDER BY transferencias.id ASC
         }
         
         @transferencias_gerais_user = TransferenciaGeral.find_by_sql [sql]
