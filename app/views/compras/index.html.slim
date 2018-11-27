@@ -359,13 +359,6 @@ javascript:
 
             if (resultado.status == "OK"){
 
-
-
-              alert((parseFloat(user_saldo_disponivel) >= parseFloat(total)))
-                alert($( "#ignorar_saldo" ).prop( "checked"))
-
-
-
               if ((parseFloat(user_saldo_disponivel) >= parseFloat(total) || $( "#ignorar_saldo" ).prop( "checked")) || ($( "#venda_com_entrada" ).prop( "checked") && tem_saldo_diario == "n") ){
 
                 if (erro_quantidade.length == 0 && erro_bloqueio.length == 0 && !erro_selecao){
