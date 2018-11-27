@@ -110,12 +110,7 @@ class ComprasController < ApplicationController
                   transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   produto = Produto.find(prod_combo.last[:id])
 
-                  if produto.quantidade > 0
-                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
-                  else
-                    render json: { status: "ERRO_PRODUTO", produto: produto.nome, resposta: resposta}
-                    return false
-                  end
+                  produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
 
                   preco_total += prod_preco
                 elsif prod_combo.last[:tipo] == "c"
@@ -127,14 +122,9 @@ class ComprasController < ApplicationController
                   prod_combo.last[:produtos].each do |prod_id|
                     transf.transferencia_combos.new(produto_id: prod_id)
                     produto = Produto.find(prod_id)
-
-                    if produto.quantidade > 0
-                      produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
-                    else
-                      render json: { status: "ERRO_PRODUTO", produto: produto.nome, resposta: resposta}
-                      return false
-                    end
-
+                    
+                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                  
                   end
 
                 end
