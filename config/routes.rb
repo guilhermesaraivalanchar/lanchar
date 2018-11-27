@@ -35,5 +35,6 @@ Rails.application.routes.draw do
   match "/index_responsavel" => "users#index_responsavel", as: :index_responsavel, via: [:get, :post]
   match "/relatorio_transferencia" => "relatorios#relatorio_transferencia", as: :relatorio_transferencia, via: [:get, :post]
   match "/relatorio_usuario" => "relatorios#relatorio_usuario", as: :relatorio_usuario, via: [:get, :post]
+  match "/verificar_quantidade_produto" => "compras#verificar_quantidade_produto", as: :verificar_quantidade_produto, via: [:get, :post]
 
 end

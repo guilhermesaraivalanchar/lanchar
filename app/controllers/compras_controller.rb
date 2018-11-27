@@ -77,13 +77,6 @@ class ComprasController < ApplicationController
 
   end
 
-
-
-
-
-
-
-
   def enviar_confirmacao_compra
     
     if current_user.tem_permissao("comprar_sistema")
@@ -116,7 +109,14 @@ class ComprasController < ApplicationController
                   valor_transf = valor_transf + prod_preco
                   transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   produto = Produto.find(prod_combo.last[:id])
-                  produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+
+                  if produto.quantidade > 0
+                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                  else
+                    render json: { status: "ERRO_PRODUTO", produto: produto.nome, resposta: resposta}
+                    return false
+                  end
+
                   preco_total += prod_preco
                 elsif prod_combo.last[:tipo] == "c"
                   combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
@@ -127,7 +127,14 @@ class ComprasController < ApplicationController
                   prod_combo.last[:produtos].each do |prod_id|
                     transf.transferencia_combos.new(produto_id: prod_id)
                     produto = Produto.find(prod_id)
-                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+
+                    if produto.quantidade > 0
+                      produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                    else
+                      render json: { status: "ERRO_PRODUTO", produto: produto.nome, resposta: resposta}
+                      return false
+                    end
+
                   end
 
                 end
@@ -186,6 +193,23 @@ class ComprasController < ApplicationController
 
   end
 
+  def verificar_quantidade_produto
+
+
+    puts "
+
+
+___________
+      #{params.inspect}
+______________
+
+      #{params[:produtos]}
+___________
+
+      #{Produto.where(id: params[:produtos].uniq).inspect}
+    
+
+_______________
 
 
 
@@ -193,6 +217,28 @@ class ComprasController < ApplicationController
 
 
 
+
+    "
+
+
+    flag_erro_quantidade = false
+    produtos = []
+    Produto.where(id: params[:produtos].uniq).each do |produto|
+      
+
+      if produto.quantidade <= 0
+        produtos << produto.nome
+        flag_erro_quantidade = true
+      end
+
+    end
+
+    if flag_erro_quantidade
+      render json: { status: "ERRO", produtos: produtos.join(", ")}
+    else
+      render json: { status: "OK"}
+    end
+  end
 
   def enviar_confirmacao_compra_old
     
