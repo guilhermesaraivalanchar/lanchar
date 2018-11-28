@@ -10,6 +10,25 @@ class ProdutosController < ApplicationController
 
   def show
     init_current
+
+    sql = %Q{
+      SELECT transferencias.id, transferencias.produto_id, transferencia_combos.produto_id as combo_produto_id, produto_transf.nome as produto_transf_nome, produto_combo_transf.nome as produto_combo_transf_nome, 
+      transferencias.created_at as transf_created_at, transferencia_combos.created_at as transf_combo_created_at, comprador.nome as comprador_nome, vendedor_gerais.nome as vendedor_gerais_nome,
+      vendedor_transf.nome as vendedor_transf_nome
+      FROM transferencias 
+      LEFT JOIN transferencia_combos ON transferencia_combos.transferencia_id = transferencias.id
+      LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
+      LEFT JOIN produtos AS produto_combo_transf ON produto_combo_transf.id = transferencia_combos.produto_id
+      LEFT JOIN transferencia_gerais ON transferencia_gerais.id = transferencias.transferencia_geral_id
+      LEFT JOIN users AS comprador ON comprador.id = transferencia_gerais.user_id
+      LEFT JOIN users AS vendedor_gerais ON vendedor_gerais.id = transferencia_gerais.user_movimentou_id
+      LEFT JOIN users AS vendedor_transf ON vendedor_transf.id = transferencias.user_movimentou_id
+      WHERE transferencias.produto_id = #{params[:id]} OR transferencia_combos.produto_id = #{params[:id]}
+    }
+
+    @transferencias_produtos = Transferencia.find_by_sql [sql]
+
+
   end
 
   def edit

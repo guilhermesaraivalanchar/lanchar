@@ -23,17 +23,24 @@
                 thead
                   tr
                     th Produto
-                    th Fornecedor
-                    th Preço de Custo
+                    th Comprador
+                    th Vendedor
+                    th Mês
+                    th Data
                 tbody
-                  - @produto.entrada_produtos.each do |entrada|
+                  - @transferencias_produtos.each do |produto|
                     tr
                       td 
-                        = @produto.nome
+                        = produto[:produto_transf_nome] ? produto[:produto_transf_nome] : produto[:produto_combo_transf_nome]
+                        = produto[:produto_combo_transf_nome] ? ' (Combo)' : ''
                       td 
-                        = entrada.fornecedor.nome
+                        = produto[:comprador_nome]
                       td 
-                        = (entrada.preco_custo.to_d / entrada.quantidade.to_d).to_f.round(2)
+                        = produto[:vendedor_gerais_nome] ? produto[:vendedor_gerais_nome] : produto[:vendedor_transf_nome]
+                      td 
+                        = "#{I18n.t(Date.today.strftime("%B"))}"
+                      td
+                        = produto[:transf_created_at] ? produto[:transf_created_at].to_datetime.strftime('%d/%m/%Y %H:%M') : produto[:transf_combo_created_at].to_datetime.strftime('%d/%m/%Y %H:%M')
 javascript:
   $('#example23').DataTable({
       "ordering": false,
