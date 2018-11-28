@@ -326,7 +326,7 @@ javascript:
           ig_saldo = "(Saldo Ignorado)"
         }
 
-        elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+' '+com_entrada+' '+ig_saldo+'</span></div></div>'
+        elemento_confirmacao += '</div><div class="comment-footer"><span class="text-muted">Total : R$ '+total.toFixed(2)+' '+com_entrada+' '+ig_saldo+'</span></div><div id="erro_produto_div_confirmacao_usu_'+div_confirmacao_num+'" style="display:none" class="alert alert-danger"><span></span></div></div>'
 
         elemento_confirmacao += '<div style="padding-left: 17px"><button class="btn btn-danger waves-effect waves-light m-r-10" id="remover_confirmacao_'+div_confirmacao_num+'" onclick="remover_div_confirmacao('+div_confirmacao_num+')" type="button">Remover</button><a helper="button" style="display:none" id="imprimir_confirmacao_'+div_confirmacao_num+'" class="btn waves-effect waves-light btn-info" style="margin-right: 10px" href="" target="_blank">Imprimir</a></div></div>'
       
@@ -469,6 +469,8 @@ javascript:
         console.log(resultado)
         console.log(resultado.resposta.length)
         if (resultado.status == "OK" && resultado.resposta.length > 0){
+
+          console.log(resultado)
           
           $("#enviar_confirmacao").prop( "disabled", false );
 
@@ -476,15 +478,24 @@ javascript:
           for(i in resultado.resposta){
             div_confirmacao_id = resultado.resposta[i].div_confirmacao_id
             transf_geral_id = resultado.resposta[i].transf_geral_id
+            erro_produtos = resultado.resposta[i].erro_produto
+            if (erro_produtos == "SEM_PROBLEMAS"){
 
-            $("#remover_confirmacao_"+div_confirmacao_id).hide()
-            $("#imprimir_confirmacao_"+div_confirmacao_id).attr("href","/transferencia_gerais/transferencia_pdf/"+transf_geral_id+".pdf");
-            $("#imprimir_confirmacao_"+div_confirmacao_id).show()
-            transferencia_ids = transferencia_ids + transf_geral_id + ","
-            for(i in confirmacao){
-              if (confirmacao[i].div_confirmacao_id == div_confirmacao_id){
-                confirmacao.splice(i, 1);
+              $("#remover_confirmacao_"+div_confirmacao_id).hide()
+              $("#imprimir_confirmacao_"+div_confirmacao_id).attr("href","/transferencia_gerais/transferencia_pdf/"+transf_geral_id+".pdf");
+              $("#imprimir_confirmacao_"+div_confirmacao_id).show()
+              transferencia_ids = transferencia_ids + transf_geral_id + ","
+              for(i in confirmacao){
+                if (confirmacao[i].div_confirmacao_id == div_confirmacao_id){
+                  confirmacao.splice(i, 1);
+                }
               }
+
+            }else{
+              $("#erro_produto_div_confirmacao_usu_"+div_confirmacao_id+" span").html('<b style="font-size: 15px">'+erro_produtos+' esgotado(s).</b>');
+              $("#erro_produto_div_confirmacao_usu_"+div_confirmacao_id).show();
+              $("#div_confirmacao_usu_"+div_confirmacao_id).addClass("alert-danger")
+
             }
 
           }

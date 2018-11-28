@@ -87,6 +87,8 @@ class ComprasController < ApplicationController
       if params[:confirmacao]
         params[:confirmacao].each do |conf|
 
+
+          erro_produtos_quantidade = []
           user_id = conf.last[:user_id]
 
           ig_saldo = conf.last[:ignorar_saldo] == "true"
@@ -95,8 +97,15 @@ class ComprasController < ApplicationController
             tipo_transacao = "VENDA"
             tipo_transacao = "VENDA_DIRETA" if user_id == "0"
 
-            u = User.find(user_id)
-            saldo_ant = u ? u.saldo.to_d : 0
+            
+            if user_id != "0"
+              u = User.find(user_id)
+              saldo_ant = u ? u.saldo.to_d : 0
+            else
+              saldo_ant = 0
+            end
+
+
             transf_geral = TransferenciaGeral.new(user_id: user_id, escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d, ig_saldo: ig_saldo)
             valor_transf = 0
             preco_total = 0
@@ -109,9 +118,11 @@ class ComprasController < ApplicationController
                   valor_transf = valor_transf + prod_preco
                   transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   produto = Produto.find(prod_combo.last[:id])
-
-                  produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
-
+                  if produto.quantidade > 0
+                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                  else
+                    erro_produtos_quantidade << produto.nome
+                  end
                   preco_total += prod_preco
                 elsif prod_combo.last[:tipo] == "c"
                   combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
@@ -122,9 +133,11 @@ class ComprasController < ApplicationController
                   prod_combo.last[:produtos].each do |prod_id|
                     transf.transferencia_combos.new(produto_id: prod_id)
                     produto = Produto.find(prod_id)
-                    
-                    produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
-                  
+                    if produto.quantidade > 0
+                      produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+                    else
+                      erro_produtos_quantidade << produto.nome
+                    end
                   end
 
                 end
@@ -134,7 +147,7 @@ class ComprasController < ApplicationController
             transf_geral.valor = preco_total
 
             debitar = true
-            if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true"
+            if tipo_transacao == "VENDA" && conf.last[:venda_com_entrada] == "true" && erro_produtos_quantidade.empty?
               
               saldo_ini_ant = saldo_ant.to_d + preco_total
               transf_geral.transferencias.each do |transf|
@@ -165,13 +178,26 @@ class ComprasController < ApplicationController
               })
               transf_geral_entrada.save
             end
-            if transf_geral.save
-              transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d) if transf_geral.user && debitar
+            if erro_produtos_quantidade.empty?
+              if transf_geral.save
+                transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d) if transf_geral.user && debitar
+                resposta << {
+                  div_confirmacao_id: conf.last[:div_confirmacao_id],
+                  transf_geral_id: transf_geral.id,
+                  erro_produto: "SEM_PROBLEMAS"
+                }
+              end
+            else
               resposta << {
                 div_confirmacao_id: conf.last[:div_confirmacao_id],
-                transf_geral_id: transf_geral.id
+                transf_geral_id: "-",
+                erro_produto: erro_produtos_quantidade.join(",")
               }
             end
+
+
+
+
           end
         end
       end
