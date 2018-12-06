@@ -52,8 +52,8 @@ class User < ApplicationRecord
   end
 
   def att_bloqueio_produto
+    self.bloqueio_produtos.destroy_all
     if produto_ids
-      self.bloqueio_produtos.destroy_all
       self.produto_ids.each do |produto_id|
         per = BloqueioProduto.create(user_id: self.id, produto_id: produto_id.to_i)
         if per
