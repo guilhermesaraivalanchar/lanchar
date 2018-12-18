@@ -37,4 +37,8 @@ Rails.application.routes.draw do
   match "/relatorio_usuario" => "relatorios#relatorio_usuario", as: :relatorio_usuario, via: [:get, :post]
   match "/verificar_quantidade_produto" => "compras#verificar_quantidade_produto", as: :verificar_quantidade_produto, via: [:get, :post]
 
+
+  # TOTEM
+  match "/totem/login" => "totens#login", via: [:get, :post]
+
 end

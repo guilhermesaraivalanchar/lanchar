@@ -1,0 +1,2 @@
+module TotensHelper
+end
