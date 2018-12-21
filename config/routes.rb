@@ -40,5 +40,6 @@ Rails.application.routes.draw do
 
   # TOTEM
   match "/totem/login" => "totens#login", via: [:get, :post]
+  match "/totem/g_p" => "totens#get_produtos", via: [:get, :post]
 
 end
