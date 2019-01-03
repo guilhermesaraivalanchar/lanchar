@@ -30,7 +30,7 @@ class TotensController < ApplicationController
 
       @produtos_cardapio_string = ""
       @produtos_cardapio.each do |produto|
-        @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}..."
+        @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}::#{produto.imagem.url}..."
       end
       
       @combos_cardapio_string = ""
@@ -67,7 +67,7 @@ class TotensController < ApplicationController
 
     @produtos_cardapio_string = ""
     @produtos_cardapio.each do |produto|
-      @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}..."
+      @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}::#{produto.imagem.url}..."
     end
     
     @combos_cardapio_string = ""
