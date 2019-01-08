@@ -14,14 +14,14 @@
         hr
         - user_caixas = @escola.transferencias.where(tipo: ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO']).group_by { |d| d[:user_movimentou_id] }
         - user_caixas.each do |user_movimentou_id, tranfs|
-          - sum = tranfs.map(&:valor).inject(0, :+) + @escola.transferencias.where(tipo: ['SAIDA','SAIDA CANCELADA'], user_caixa_id: user_movimentou_id).sum(:valor)
+          - sum = (tranfs.map(&:valor).inject(0, :+)).to_d + @escola.transferencias.where(tipo: ['SAIDA','SAIDA CANCELADA'], user_caixa_id: user_movimentou_id).sum(:valor).to_d
           - if sum != 0
             div style="color: white"
               = User.find(user_movimentou_id).nome
             .d-flex
               div.font-light.text-white style="font-size: 20px;"
                 = "#{ActionController::Base.helpers.number_to_currency(sum)}"
-                button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{user_movimentou_id}" valor_caixa="#{sum.round(2)}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
+                button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{user_movimentou_id}" valor_caixa="#{sum}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
   .col-lg-3.col-md-6
     .card.card-inverse.card-info
