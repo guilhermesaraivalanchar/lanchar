@@ -5,13 +5,13 @@ class ComprasController < ApplicationController
 
   	cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
-		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
+		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0 and produtos.ativo = ?',true).map(&:produto_id)
 		cardapio_combo_ids = []
 
     cardapio_ativo.cardapio_combos.each do |cardapio_combo|
       nao_entrar = false
       cardapio_combo.combo.combo_produtos.each do |combo_produto|
-        if combo_produto.produto.quantidade <= 0
+        if combo_produto.produto.quantidade <= 0 || !combo_produto.produto.ativo
           nao_entrar = true
         end
       end
@@ -154,19 +154,7 @@ class ComprasController < ApplicationController
                 transf.saldo_anterior = saldo_ini_ant - transf.valor
                 saldo_ini_ant = saldo_ini_ant - transf.valor
               end
-
-
-              puts "
-
-
-              _______________
-              #{saldo_ant.to_d}
-              #{preco_total}
-
-
-
-              "
-
+              
               debitar = false
               transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + preco_total)
               transf_geral_entrada.transferencias.new({

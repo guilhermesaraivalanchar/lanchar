@@ -22,6 +22,7 @@
                 th Turma
                 th Saldo
                 th Credito
+                th Status
                 th Ação
             tbody
               - @users.each do |user|
@@ -41,11 +42,16 @@
                     = "#{ActionController::Base.helpers.number_to_currency(user[:saldo])}"
                   td
                     = "#{ActionController::Base.helpers.number_to_currency(user[:credito])}"
+                  td id="ativo_td_#{user[:id]}"
+                    = "#{user[:ativo] ? 'Ativo' : 'Desativado'}"
                   td
                     - if @can_editar_usuarios
                       = link_to "Editar", edit_user_path(user[:id]), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if @can_creditar_usuarios_tabela
                       button.btn.btn-success id="creditar_#{user[:id]}" onclick="creditar_user(this)" data-target="#modal_creditar" data-toggle="modal" nome_user="#{user[:nome]}" saldo_user="#{user[:saldo]}" type="button" style="margin-right: 10px" Creditar
+                    - if @can_ativar_desativar_usuarios
+                      button.btn class="#{user[:ativo] ? 'btn-danger' : 'btn-primary'}" id="desativar_ativar_#{user[:id]}" onclick="desativar_ativar(this)" user_id="#{user[:id]}" type="button" style="margin-right: 10px"
+                        = "#{user[:ativo] ? 'Desativar' : 'Ativar'}"
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
@@ -128,6 +134,30 @@ javascript:
       $("#modal_nome").html(user_nome);
       $("#modal_saldo").html("R$ " +saldo_user);
       
+    }
+
+    function desativar_ativar(t){
+      user_id = t.getAttribute("user_id")
+
+      $.getJSON("/desativar_ativar", { user_id: user_id },function(d){
+        if (d) {
+          console.log(d);
+          if (d.resultado == "desativo"){
+            $("#desativar_ativar_" + user_id).removeClass("btn-danger")
+            $("#desativar_ativar_" + user_id).addClass("btn-primary")
+            $("#desativar_ativar_" + user_id).html("Ativar")
+            $("#ativo_td_" + user_id).html("Desativado")
+          }else if(d.resultado == "ativo"){
+            $("#desativar_ativar_" + user_id).removeClass("btn-primary")
+            $("#desativar_ativar_" + user_id).addClass("btn-danger")
+            $("#desativar_ativar_" + user_id).html("Desativar")
+            $("#ativo_td_" + user_id).html("Ativo")
+          }
+        }
+      })
+
+
+
     }
 
   $(function() {

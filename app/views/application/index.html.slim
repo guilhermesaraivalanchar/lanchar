@@ -7,7 +7,7 @@
           .pro-img
             img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
           h3.m-b-0
-            = current_user.nome
+            = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
           p 
             = current_user.tipos rescue ""
         .row

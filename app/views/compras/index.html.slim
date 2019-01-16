@@ -12,7 +12,7 @@
           select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
             option value="" Escolha um usuário
             option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
-            - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false]).order(:nome).each do |user|
+            - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false], ativo: true).order(:nome).each do |user|
               option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
                 = "#{user.nome}"
           br

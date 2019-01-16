@@ -63,12 +63,14 @@ Permissao.create(permissao_nome: "Ver Produto", permissao_codigo: "ver_produto",
 Permissao.create(permissao_nome: "Ver Transação", permissao_codigo: "ver_transacoes", permissao_grupo: "Transação")
 Permissao.create(permissao_nome: "Cancelar Transação", permissao_codigo: "cancelar_transacao", permissao_grupo: "Transação")
 
-
+# Relatórios
+Permissao.create(permissao_nome: "Relatório Transação", permissao_codigo: "relatorio_transferencias", permissao_grupo: "Relatórios")
+Permissao.create(permissao_nome: "Relatório Usuário", permissao_codigo: "relatorio_usuario", permissao_grupo: "Relatórios")
 
 ################################# NOVAS 
 
-Permissao.create(permissao_nome: "Relatório Transação", permissao_codigo: "relatorio_transferencias", permissao_grupo: "Relatórios")
-Permissao.create(permissao_nome: "Relatório Usuário", permissao_codigo: "relatorio_usuario", permissao_grupo: "Relatórios")
+Permissao.create(permissao_nome: "Ativar/Desativar Usuários", permissao_codigo: "ativar_desativar_usuarios", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Ativar/Desativar Produtos", permissao_codigo: "ativar_desativar_produtos", permissao_grupo: "Produtos")
 
 
 ################################# SUSPENSOS

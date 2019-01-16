@@ -6,11 +6,10 @@ class UsersController < ApplicationController
     @can_editar_usuarios = current_user.tem_permissao("editar_usuarios")
     @can_creditar_usuarios_tabela = current_user.tem_permissao("creditar_usuarios_tabela")
     @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
-
-
+    @can_ativar_desativar_usuarios = current_user.tem_permissao("ativar_desativar_usuarios")
 
     sql = %Q{
-      SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito  
+      SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito, users.ativo
       FROM users 
       WHERE users.escola_id = #{current_user.escola_id}
       AND (users.sem_compra is null or users.sem_compra = ?) 
@@ -134,6 +133,7 @@ class UsersController < ApplicationController
     @user.saldo = 0
     @user.credito = 30
     @user.enable_after_save = true
+    @user.ativo = true
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
@@ -157,7 +157,6 @@ class UsersController < ApplicationController
   end
 
   def creditar
-
     if params[:status] == "sangria"
       transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, valor: (params[:valor].to_d * -1), tipo: "SAIDA", user_movimentou_id: current_user.id, user_caixa_id: params[:user_caixa].to_i)
       transf_geral.transferencias.new({
@@ -199,7 +198,20 @@ class UsersController < ApplicationController
         render json:  { resultado: "USU_INEXISTENTE" }
       end
     end
+  end
 
+  def desativar_ativar
+    user = User.find(params[:user_id])
+    resp = ""
+    if user.ativo
+      resp = "desativo"
+      user.update_attribute(:ativo, false)
+    else
+      resp = "ativo"
+      user.update_attribute(:ativo, true)
+    end
+
+    render json:  { resultado: resp }
 
   end
 

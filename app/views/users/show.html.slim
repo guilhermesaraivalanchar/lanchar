@@ -7,7 +7,7 @@
           .pro-img
             img alt="user" src="#{@user.imagem.url != '/imagens/original/missing.png' ? @user.imagem.url : '../imagens/user.jpg'}"
           h3.m-b-0
-            = @user.nome
+            = "#{@user.nome} #{'(DESATIVADO)' if !@user.ativo}"
           p style="font-size: 20px" class="#{@user.saldo >= 0 ? 'text-green' : 'text-danger'}"
             = "#{ActionController::Base.helpers.number_to_currency(@user.saldo)}"
           - if @user_responsavel || current_user.tem_permissao("editar_usuarios")

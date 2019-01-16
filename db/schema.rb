@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_21_005144) do
+ActiveRecord::Schema.define(version: 2019_01_16_001913) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2018_12_21_005144) do
     t.datetime "imagem_updated_at"
     t.integer "tipo_produto_id"
     t.integer "escola_id"
+    t.boolean "ativo"
   end
 
   create_table "responsavel_users", force: :cascade do |t|
@@ -255,6 +256,7 @@ ActiveRecord::Schema.define(version: 2018_12_21_005144) do
     t.decimal "saldo_diario", precision: 10, scale: 2
     t.boolean "sem_compra"
     t.string "tipos"
+    t.boolean "ativo"
     t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

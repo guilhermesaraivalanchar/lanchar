@@ -29,15 +29,17 @@
                     = produto.codigo
                   td 
                     = produto.quantidade
-                  td
-                    = produto.status
+                  td id="ativo_td_#{produto.id}"
+                    = "#{produto.ativo ? 'Ativo' : 'Desativado'}"
                   td
                     - if @can_ver_produto
                       = link_to "Ver", produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
                     - if @can_editar_produtos
                       = link_to "Editar", edit_produto_path(produto.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
-                    - if @can_deletar_produtos && produto.transferencias.empty? && produto.transferencia_combos.empty?
-                      = link_to "Deletar", produto_path(produto), helper: "button", method: :delete, data: { confirm: "Realmente quer deletar o #{produto.nome}?" }, class: "btn waves-effect waves-light btn-danger"
+                    - if @can_ativar_desativar_produtos
+                      button.btn class="#{produto.ativo ? 'btn-danger' : 'btn-primary'}" id="desativar_ativar_#{produto.id}" onclick="desativar_ativar(#{produto.id})" type="button" style="margin-right: 10px"
+                        = "#{produto.ativo ? 'Desativar' : 'Ativar'}"
+
 javascript:
     $('#example23').DataTable({
         "displayLength": 15,
@@ -46,3 +48,22 @@ javascript:
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
+
+    function desativar_ativar(produto_id){
+      $.getJSON("/desativar_ativar_produto", { produto_id: produto_id },function(d){
+        if (d) {
+          console.log(d);
+          if (d.resultado == "desativo"){
+            $("#desativar_ativar_" + produto_id).removeClass("btn-danger")
+            $("#desativar_ativar_" + produto_id).addClass("btn-primary")
+            $("#desativar_ativar_" + produto_id).html("Ativar")
+            $("#ativo_td_" + produto_id).html("Desativado")
+          }else if(d.resultado == "ativo"){
+            $("#desativar_ativar_" + produto_id).removeClass("btn-primary")
+            $("#desativar_ativar_" + produto_id).addClass("btn-danger")
+            $("#desativar_ativar_" + produto_id).html("Desativar")
+            $("#ativo_td_" + produto_id).html("Ativo")
+          }
+        }
+      })
+    }

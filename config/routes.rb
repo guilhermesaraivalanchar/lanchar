@@ -23,6 +23,8 @@ Rails.application.routes.draw do
 
   # Ajax
   match "/creditar" => "users#creditar", via: [:get, :post]
+  match "/desativar_ativar" => "users#desativar_ativar", via: [:get, :post]
+  match "/desativar_ativar_produto" => "produtos#desativar_ativar_produto", via: [:get, :post]
   
   match "/setar_cardapio" => "cardapios#setar_cardapio", as: :setar_cardapio, via: [:get, :post]
   match "/get_dados_combo" => "compras#get_dados_combo", as: :get_dados_combo, via: [:get, :post]

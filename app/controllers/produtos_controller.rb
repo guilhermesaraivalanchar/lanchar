@@ -6,6 +6,9 @@ class ProdutosController < ApplicationController
     @can_ver_produto = current_user.tem_permissao("ver_produto")
     @can_editar_produtos = current_user.tem_permissao("editar_produtos")
     @can_deletar_produtos = current_user.tem_permissao("deletar_produtos")
+    @can_ativar_desativar_produtos = current_user.tem_permissao("ativar_desativar_produtos")
+
+
   end
 
   def show
@@ -49,6 +52,7 @@ class ProdutosController < ApplicationController
   def create
     init_new
     produto_params[:escola_id] = current_user.escola_id
+    produto_params[:ativo] = true
     respond_to do |format|
       if current_user.tem_permissao("criar_produtos") && @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto criado com sucesso.") }
@@ -82,6 +86,22 @@ class ProdutosController < ApplicationController
         format.html { redirect_to(produtos_path, :notice => "Ocorreu um erro ao apagar o produto.") }
       end
     end
+  end
+
+  def desativar_ativar_produto
+
+    produto = Produto.find(params[:produto_id])
+    resp = ""
+    if produto.ativo
+      resp = "desativo"
+      produto.update_attribute(:ativo, false)
+    else
+      resp = "ativo"
+      produto.update_attribute(:ativo, true)
+    end
+
+    render json:  { resultado: resp }
+
   end
 
 private
