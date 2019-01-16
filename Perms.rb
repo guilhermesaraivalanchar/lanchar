@@ -9,6 +9,7 @@ Permissao.create(permissao_nome: "Ver Usuario", permissao_codigo: "ver_usuario",
 Permissao.create(permissao_nome: "Resetar Senha", permissao_codigo: "resetar_senha_usuario", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Bloquear Produtos", permissao_codigo: "bloquear_produtos", permissao_grupo: "Usuários")
 Permissao.create(permissao_nome: "Editar Funções Credito", permissao_codigo: "editar_funcoes_credito", permissao_grupo: "Usuários")
+Permissao.create(permissao_nome: "Ativar/Desativar Usuários", permissao_codigo: "ativar_desativar_usuarios", permissao_grupo: "Usuários")
 
 # Tipo de Usuário
 Permissao.create(permissao_nome: "Ver Tipo de Usuários", permissao_codigo: "ver_tipo_usuarios", permissao_grupo: "Tipo de Usuários")
@@ -21,6 +22,7 @@ Permissao.create(permissao_nome: "Ver Produtos", permissao_codigo: "ver_produtos
 Permissao.create(permissao_nome: "Criar Produtos", permissao_codigo: "criar_produtos", permissao_grupo: "Produtos")
 Permissao.create(permissao_nome: "Editar Produtos", permissao_codigo: "editar_produtos", permissao_grupo: "Produtos")
 Permissao.create(permissao_nome: "Deletar Produtos", permissao_codigo: "deletar_produtos", permissao_grupo: "Produtos")
+Permissao.create(permissao_nome: "Ativar/Desativar Produtos", permissao_codigo: "ativar_desativar_produtos", permissao_grupo: "Produtos")
 
 # Combo
 Permissao.create(permissao_nome: "Ver Combos", permissao_codigo: "ver_combos", permissao_grupo: "Combos")
@@ -69,8 +71,6 @@ Permissao.create(permissao_nome: "Relatório Usuário", permissao_codigo: "relat
 
 ################################# NOVAS 
 
-Permissao.create(permissao_nome: "Ativar/Desativar Usuários", permissao_codigo: "ativar_desativar_usuarios", permissao_grupo: "Usuários")
-Permissao.create(permissao_nome: "Ativar/Desativar Produtos", permissao_codigo: "ativar_desativar_produtos", permissao_grupo: "Produtos")
 
 
 ################################# SUSPENSOS
