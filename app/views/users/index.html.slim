@@ -1,4 +1,29 @@
 <script src="../javascripts/jquery.inputmask.js"></script>
+
+button.btn.btn-primary.waves-effect.waves-light.botao_filtro type="button"
+  i.fa.fa-filter
+  |  Filtro
+br
+br
+.card.card-outline-info.div_filtro.card.m-t-10 style="display:none"
+  .card-header
+    h4.m-b-0.text-white Filtro
+  .card-body
+    = simple_form_for @filtro do |f|
+      div.row 
+        .col-lg-3.col-md-6
+          = f.input :filtro_1, as: :string, label: "Nome", input_html: { class: "input_filtro" }
+        .col-lg-3.col-md-6
+          = f.input :filtro_1, as: :string, label: "Matrícula", input_html: { class: "input_filtro" }
+        .col-lg-3.col-md-6
+          = f.input :filtro_3, collection: @tipo_users, include_blank: false, label: "Tipo", input_html: { multiple: true, class: "chosen-select" }
+        .col-lg-3.col-md-6
+          = f.input :filtro_4, collection: [["Ativo", 1], ["Inativo", 0]], include_blank: false, label: "Status", input_html: { class: "chosen-select input_filtro" }
+
+        .col-12
+          div.m-b-10 style="text-align: right"
+            button#salvar_filtro.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Salvar
+
 .row
   .col-12
     .card
@@ -164,3 +189,27 @@ javascript:
     $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
   })
 
+  var filtro_3 = '#{@filtro.filtro_3}'
+  $("#filtro_filtro_3").val(filtro_3.split("||")).trigger("chosen:updated")
+
+  $("#salvar_filtro").click(function(){
+    filtro_nome = $("#filtro_filtro_1").val()
+    filtro_matricula = $("#filtro_filtro_2").val()
+    filtro_tipos = $("#filtro_filtro_3").val().join("||")
+    filtro_ativo = $("#filtro_filtro_4").val()
+
+    $.getJSON("/salvar_filtro", { filtro_local: "user_index", filtro_1: filtro_nome, filtro_2: filtro_matricula, filtro_3: filtro_tipos, filtro_4: filtro_ativo },function(d) {
+      if (d) {
+        console.log(d)
+        
+        if (d.status == "salvo"){
+          location.reload()
+        }
+
+      } else {
+        
+      }
+    })
+
+
+  })

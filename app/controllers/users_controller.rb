@@ -8,15 +8,49 @@ class UsersController < ApplicationController
     @can_deletar_usuarios = current_user.tem_permissao("deletar_usuarios")
     @can_ativar_desativar_usuarios = current_user.tem_permissao("ativar_desativar_usuarios")
 
+    @filtro = Filtro.where(user_id: current_user.id, local: "user_index").first
+    @filtro ||= Filtro.new(user_id: current_user.id)
+
+    @tipo_users = TipoUser.all.collect{|n| [n.nome,n.id]}
+    
+    where_nome_filtro = ""
+    where_nome_filtro = "AND users.nome LIKE '%#{@filtro.filtro_1}%'" if @filtro.filtro_1.present?
+    where_codigo_filtro = ""
+    where_codigo_filtro = "AND users.codigo LIKE '%#{@filtro.filtro_2}%'" if @filtro.filtro_2.present?
+    where_tipo_filtro = ""
+    where_tipo_filtro = "AND tipo_users.id in (#{@filtro.filtro_3.split('||').join(',')})" if @filtro.filtro_3.present?
+    where_ativo_filtro = true
+    where_ativo_filtro = false if @filtro.filtro_4.present? && @filtro.filtro_4 == "0"
+
     sql = %Q{
       SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito, users.ativo
       FROM users 
-      WHERE users.escola_id = #{current_user.escola_id}
+      LEFT JOIN tipos_users on tipos_users.user_id == users.id
+      LEFT JOIN tipo_users on tipo_users.id == tipos_users.tipo_user_id
+      WHERE users.escola_id = #{current_user.escola_id} #{where_nome_filtro} #{where_codigo_filtro} #{where_tipo_filtro}
+      AND users.ativo = ?
       AND (users.sem_compra is null or users.sem_compra = ?) 
     }
 
-    @users = User.find_by_sql [sql, false]
+    @users = User.find_by_sql [sql, where_ativo_filtro, false]
 
+  end
+
+  def salvar_filtro_index
+
+    filtro_user_index = FiltroDatatable.where(datatable_nome: "user_index", user_id: current_user.id).last
+
+    if filtro_user_index
+      salvo = filtro_user_index.update_attributes(filtro_1: params[:filtro_centros], visivel_dash: params[:filtro_visivel].downcase)
+    else
+      salvo = FiltroDatatable.create(user_id: current_user.id, datatable_nome: "user_index", filtro_1: params[:filtro_centros], visivel_dash: params[:filtro_visivel])
+    end
+
+    if salvo
+      render json: { status: "salvo" }
+    else
+      render json: { status: "erro" }
+    end
 
   end
 

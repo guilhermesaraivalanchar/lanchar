@@ -26,16 +26,16 @@ class TotensController < ApplicationController
 
 
       @produtos_cardapio = Produto.where(id: cardapio_produto_ids)
-      @combos_cardapio = Combo.where(id: cardapio_combo_ids).collect { |m| [m.nome, m.id] }
+      @combos_cardapio = Combo.where(id: cardapio_combo_ids)
 
       @produtos_cardapio_string = ""
       @produtos_cardapio.each do |produto|
-        @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}::#{produto.imagem.url}..."
+        @produtos_cardapio_string += "#{produto.nome}::#{produto.id}::#{cardapio_ativo.cardapio_produtos.where(produto_id: produto.id).last.preco.to_f}::#{produto.quantidade}::#{produto.imagem.url}::#{produto.tipo_produto.id}..."
       end
       
       @combos_cardapio_string = ""
       @combos_cardapio.each do |combo|
-        @combos_cardapio_string += "#{combo.first}::#{combo.last}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.last).last.preco.to_f}..."
+        @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}::#{combo.combo_produto_ids.join(',')}::#{combo.combo_tipo_produto_ids.join(',')}..."
       end
 
       render json: { status: 200, saldo_disponivel: user.saldo_diario_atual, p: @produtos_cardapio_string, c: @combos_cardapio_string }
@@ -63,7 +63,7 @@ class TotensController < ApplicationController
 
 
     @produtos_cardapio = Produto.where(id: cardapio_produto_ids)
-    @combos_cardapio = Combo.where(id: cardapio_combo_ids).collect { |m| [m.nome, m.id] }
+    @combos_cardapio = Combo.where(id: cardapio_combo_ids)
 
     @produtos_cardapio_string = ""
     @produtos_cardapio.each do |produto|
@@ -72,7 +72,7 @@ class TotensController < ApplicationController
     
     @combos_cardapio_string = ""
     @combos_cardapio.each do |combo|
-      @combos_cardapio_string += "#{combo.first}::#{combo.last}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.last).last.preco.to_f}..."
+      @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}..."
     end
 
     render json: { status: 200, p: @produtos_cardapio_string, c: @combos_cardapio_string }

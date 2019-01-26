@@ -53,6 +53,12 @@ function toggle_menu(){
 }
 $(document).ready(function() {
 
+
+  $('.botao_filtro').click(function(){
+    $(".div_filtro").toggle();
+    $('.chosen-select').select2();
+  })
+
   $("form").validate({
     errorClass: "validate_invalid",
     validClass: "validate_valid",

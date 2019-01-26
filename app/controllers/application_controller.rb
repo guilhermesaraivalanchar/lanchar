@@ -1,4 +1,15 @@
 class ApplicationController < ActionController::Base
+  
+  before_action :active_user, :except => [:login, :get_produtos, :authenticate_totem, :aut_cross]
+  
+
+  def active_user
+    #Não deixa logar se estiver desativado
+    if current_user
+      render :plain => "Usuário desativado(a)" if !current_user.ativo
+    end
+  end
+
   def index
     if !current_user
       #redirect_to "http://www.rubyonrails.org"

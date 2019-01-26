@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_16_002907) do
+ActiveRecord::Schema.define(version: 2019_01_25_174440) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -74,7 +74,7 @@ ActiveRecord::Schema.define(version: 2019_01_16_002907) do
     t.datetime "updated_at", null: false
     t.string "imagem_file_name"
     t.string "imagem_content_type"
-    t.integer "imagem_file_size"
+    t.bigint "imagem_file_size"
     t.datetime "imagem_updated_at"
     t.integer "escola_id"
     t.index ["escola_id"], name: "index_combos_on_escola_id"
@@ -102,6 +102,25 @@ ActiveRecord::Schema.define(version: 2019_01_16_002907) do
     t.string "nome"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "filtros", force: :cascade do |t|
+    t.string "local"
+    t.string "filtro_1"
+    t.string "filtro_2"
+    t.string "filtro_3"
+    t.string "filtro_4"
+    t.string "filtro_5"
+    t.string "filtro_6"
+    t.string "filtro_7"
+    t.string "filtro_8"
+    t.string "filtro_9"
+    t.string "filtro_10"
+    t.string "visiveis"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_filtros_on_user_id"
   end
 
   create_table "fornecedores", force: :cascade do |t|
