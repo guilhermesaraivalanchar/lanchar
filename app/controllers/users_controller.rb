@@ -25,8 +25,8 @@ class UsersController < ApplicationController
     sql = %Q{
       SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito, users.ativo
       FROM users 
-      LEFT JOIN tipos_users on tipos_users.user_id == users.id
-      LEFT JOIN tipo_users on tipo_users.id == tipos_users.tipo_user_id
+      LEFT JOIN tipos_users on tipos_users.user_id = users.id
+      LEFT JOIN tipo_users on tipo_users.id = tipos_users.tipo_user_id
       WHERE users.escola_id = #{current_user.escola_id} #{where_nome_filtro} #{where_codigo_filtro} #{where_tipo_filtro}
       AND users.ativo = ?
       AND (users.sem_compra is null or users.sem_compra = ?) 
