@@ -3,22 +3,26 @@
 button.btn.btn-primary.waves-effect.waves-light.botao_filtro type="button"
   i.fa.fa-filter
   |  Filtro
+  - filtro_ocupado = @filtro.filtro_1.present? || @filtro.filtro_2.present? || @filtro.filtro_3.present? || @filtro.filtro_4 != "1"
+br
+span.label.label-danger id="span__finalizado" style="#{'display: none' if !filtro_ocupado}" Filtro Ativo
 br
 br
 .card.card-outline-info.div_filtro.card.m-t-10 style="display:none"
   .card-header
     h4.m-b-0.text-white Filtro
+
   .card-body
     = simple_form_for @filtro do |f|
       div.row 
         .col-lg-3.col-md-6
           = f.input :filtro_1, as: :string, label: "Nome", input_html: { class: "input_filtro" }
         .col-lg-3.col-md-6
-          = f.input :filtro_1, as: :string, label: "Matrícula", input_html: { class: "input_filtro" }
+          = f.input :filtro_2, as: :string, label: "Matrícula", input_html: { class: "input_filtro" }
         .col-lg-3.col-md-6
           = f.input :filtro_3, collection: @tipo_users, include_blank: false, label: "Tipo", input_html: { multiple: true, class: "chosen-select" }
         .col-lg-3.col-md-6
-          = f.input :filtro_4, collection: [["Ativo", 1], ["Inativo", 0]], include_blank: false, label: "Status", input_html: { class: "chosen-select input_filtro" }
+          = f.input :filtro_4, collection: [["Todos", 2], ["Ativo", 1], ["Inativo", 0]], include_blank: false, label: "Status", input_html: { class: "chosen-select input_filtro" }
 
         .col-12
           div.m-b-10 style="text-align: right"

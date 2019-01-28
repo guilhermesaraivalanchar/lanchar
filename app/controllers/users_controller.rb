@@ -19,8 +19,10 @@ class UsersController < ApplicationController
     where_codigo_filtro = "AND users.codigo LIKE '%#{@filtro.filtro_2}%'" if @filtro.filtro_2.present?
     where_tipo_filtro = ""
     where_tipo_filtro = "AND tipo_users.id in (#{@filtro.filtro_3.split('||').join(',')})" if @filtro.filtro_3.present?
-    where_ativo_filtro = true
-    where_ativo_filtro = false if @filtro.filtro_4.present? && @filtro.filtro_4 == "0"
+    where_filtro_ativo = "AND users.ativo = ?"
+    where_filtro_ativo = "" if @filtro.filtro_4 == "2"
+    tem_filtro_ativo = true
+    tem_filtro_ativo = false if @filtro.filtro_4.present? && @filtro.filtro_4 == "0"
 
     sql = %Q{
       SELECT users.nome, users.id, users.codigo, users.nome, users.tipos, users.turma, users.saldo, users.credito, users.ativo
@@ -28,11 +30,15 @@ class UsersController < ApplicationController
       LEFT JOIN tipos_users on tipos_users.user_id = users.id
       LEFT JOIN tipo_users on tipo_users.id = tipos_users.tipo_user_id
       WHERE users.escola_id = #{current_user.escola_id} #{where_nome_filtro} #{where_codigo_filtro} #{where_tipo_filtro}
-      AND users.ativo = ?
+      #{where_filtro_ativo}
       AND (users.sem_compra is null or users.sem_compra = ?) 
     }
 
-    @users = User.find_by_sql [sql, where_ativo_filtro, false]
+    if where_filtro_ativo.present?
+      @users = User.find_by_sql [sql, tem_filtro_ativo, false]
+    else
+      @users = User.find_by_sql [sql, false]
+    end
 
   end
 
@@ -121,6 +127,7 @@ class UsersController < ApplicationController
       @user_imagem = @imagem[0]
     end
 
+    @produtos_bloqueados = []
     @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
 
   end
@@ -155,6 +162,7 @@ class UsersController < ApplicationController
     init_new
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_usuarios")
     
+    @produtos_bloqueados = []
     @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
   end
 
