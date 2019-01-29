@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @tipo_users = TipoUser.all.collect{|n| [n.nome,n.id]}
     
     where_nome_filtro = ""
-    where_nome_filtro = "AND users.nome LIKE '%#{@filtro.filtro_1}%'" if @filtro.filtro_1.present?
+    where_nome_filtro = "AND users.nome LIKE '%#{@filtro.filtro_1.upcase}%'" if @filtro.filtro_1.present?
     where_codigo_filtro = ""
     where_codigo_filtro = "AND users.codigo LIKE '%#{@filtro.filtro_2}%'" if @filtro.filtro_2.present?
     where_tipo_filtro = ""
@@ -143,6 +143,7 @@ class UsersController < ApplicationController
     init_current
     @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
     user_params[:enable_after_save] = true
+    user_params[:nome] = user_params[:nome].upcase
     respond_to do |format|
       if (current_user.tem_permissao("editar_usuarios") || @user_responsavel) && @user.update_attributes(user_params)
         if !@user_responsavel
@@ -176,6 +177,7 @@ class UsersController < ApplicationController
     @user.credito = 30
     @user.enable_after_save = true
     @user.ativo = true
+    @user.nome = @user.nome.upcase
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
