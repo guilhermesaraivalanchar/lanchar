@@ -252,9 +252,22 @@ class UsersController < ApplicationController
     if user.ativo
       resp = "desativo"
       user.update_attribute(:ativo, false)
+
+      ResponsavelUser.where(user_id: user.id).each do |responsavel_id|
+        responsavel = User.find(responsavel_id)
+        flag_ainda_ativo = ResponsavelUser.where(responsavel_id: responsavel_id).map(&:user).map(&:ativo).include?(true)
+        responsavel.update_attribute(:ativo, false) if responsavel && !flag_ainda_ativo
+      end
+
     else
       resp = "ativo"
       user.update_attribute(:ativo, true)
+
+      ResponsavelUser.where(user_id: user.id).each do |responsavel_id|
+        responsavel = User.find(responsavel_id)
+        responsavel.update_attribute(:ativo, true) if responsavel
+      end
+
     end
 
     render json:  { resultado: resp }
