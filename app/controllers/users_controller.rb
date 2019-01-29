@@ -129,9 +129,9 @@ class UsersController < ApplicationController
       @user_imagem = @imagem[0]
     end
 
-    @produtos_bloqueados = []
     @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
-
+    @produtos_bloqueados = [] if !@produtos_bloqueados
+    
   end
 
   def resetar_senha
@@ -165,8 +165,8 @@ class UsersController < ApplicationController
     init_new
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_usuarios")
     
-    @produtos_bloqueados = []
     @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
+    @produtos_bloqueados = [] if !@produtos_bloqueados
   end
 
   def create
