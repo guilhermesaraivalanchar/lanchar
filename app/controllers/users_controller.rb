@@ -40,6 +40,8 @@ class UsersController < ApplicationController
       @users = User.find_by_sql [sql, false]
     end
 
+    @users.uniq!
+
   end
 
   def salvar_filtro_index
