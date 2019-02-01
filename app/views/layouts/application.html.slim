@@ -8,7 +8,10 @@ html
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' 
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
     = content_for :head
-  - if current_user
+  - if params[:totem] && params[:totem] == "1"
+    body
+      = yield
+  - elsif current_user
     body.fix-header.fix-sidebar.card-no-border
       .main-wrapper
         header.topbar
@@ -52,6 +55,12 @@ html
           footer.footer style="text-align: center"
             = "developed by Eu®".html_safe
 
-  - if !current_user
+  - elsif !current_user
     body
       = yield
+
+
+javascript:
+  function go_page(){
+    window.loca
+  }

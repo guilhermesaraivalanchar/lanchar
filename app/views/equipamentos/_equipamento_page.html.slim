@@ -1,0 +1,286 @@
+
+.row style="margin-top: 10px;margin-left: 10px"
+  .col-1
+    div#botao_senha_3.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+      = "1"
+  .col-9
+    .row
+      /! Column
+      div#botao_favoritos.col-lg-3.col-md-6
+        .card
+          .card-body
+            .d-flex.flex-row
+              .round.round-lg.align-self-center.round-info
+                i.ti-wallet
+              .m-l-10.align-self-center
+                h3.m-b-0.font-light Favoritos
+                h5.text-muted.m-b-0 Em Breve
+      /! Column
+      /! Column
+      div#botao_produtos.col-lg-3.col-md-6
+        .card
+          .card-body
+            .d-flex.flex-row
+              .round.round-lg.align-self-center.round-warning
+                i.mdi.mdi-cellphone-link
+              .m-l-10.align-self-center
+                h3.m-b-0.font-lgiht Produtos
+      /! Column
+      /! Column
+      div#botao_combos.col-lg-3.col-md-6
+        .card
+          .card-body
+            .d-flex.flex-row
+              .round.round-lg.align-self-center.round-primary
+                i.mdi.mdi-cart-outline
+              .m-l-10.align-self-center
+                h3.m-b-0.font-lgiht Combos
+      /! Column
+      /! Column
+      div#botao_carrinho.col-lg-3.col-md-6
+        .card
+          .card-body
+            .d-flex.flex-row
+              .round.round-lg.align-self-center.round-danger
+                i.mdi.mdi-bullseye
+              .m-l-10.align-self-center
+                h3.m-b-0.font-lgiht Carrinho (0)
+      /! Column
+
+    div#table_all
+    div#table_combos_all style="display:none"
+
+  .col-2
+    = "OII"
+
+
+.card style="position:fixed; top: 20px; left:20px; display:none"
+  .card-body
+    h2.card-title Combo 1
+    h6.card-subtitle Escolha seu Produtos
+    div#table_combos_produtos_all
+
+
+.card style="position:fixed; top: 200px; left:200px; display:none"
+  .card-body
+    h2.card-title Combo Tipo 1
+    h6.card-subtitle Escolha seu Produtos
+    div#table_combos_tipos_produtos_all
+
+
+javascript:
+
+  function iniciar_produto(){
+    criar_tabelas_tipo_produtos()
+    criar_tabelas_combos()
+  }
+
+  $("#botao_produtos").click(function(){
+    $("#table_all").show()
+    $("#table_combos_all").hide()
+  })
+
+  $("#botao_combos").click(function(){
+    $("#table_combos_all").show()
+    $("#table_all").hide()
+  })
+
+  function criar_tabelas_tipo_produtos(){
+    console.log("-----")
+    console.log(tipos_all)
+
+    tables = "" 
+
+    for( j in tipos_all ){
+      produtos_tipo = produtos_all.filter(x => x.tipo_produto === tipos_all[j].id)
+
+      var x;
+      var ths = ""
+      var quantidade_total_produtos = produtos_tipo.length
+      if (quantidade_total_produtos < 9){
+        num_max = produtos_tipo.length
+      }else{
+        num_max = 9
+      }
+      for (x = 0; x < num_max - 1; x++) { 
+        ths += "<th></th>";
+      }
+
+      tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">'+tipos_all[j].nome+'</th>'+ths+'</tr></thead><tbody>'
+      
+      var produtos_table_string = ""
+      var produtos_table_string_total = ""
+
+      for( i in produtos_tipo){
+
+        produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br> R$ '+produtos_tipo[i].preco+'</div></div></td>'
+
+        var ii = parseInt(i)+1
+        if ( ii % 9 == 0 ){
+          produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
+          produtos_table_string_total += produtos_table_string
+          produtos_table_string = ""
+        }
+      }
+
+      if (produtos_table_string != "")
+      {
+        var tds = ""
+
+        if (quantidade_total_produtos > 9){
+          resto = 9 - (quantidade_total_produtos % 9)
+          for (x = 0; x < resto; x++) { 
+            tds += "<td></td>";
+          }
+        }
+        produtos_table_string_total += "<tr>" + produtos_table_string + tds +"</tr>"
+      }
+
+      tables += produtos_table_string_total + '</tbody></table>'
+    }
+
+    $("#table_all").html(tables)
+
+  }
+
+  lista = []
+  function add_produto(produto_id) {
+    console.log(produto_id)
+    
+    produto = produtos_all.find(x => x.id === produto_id)
+
+    lista.push({produto_id: produto_id, produto_nome: produto.nome, quantidade: 1, preco: produto.preco})
+      
+
+    //listar_produtos()
+  }
+
+  function criar_tabelas_combos(){
+    console.log("-----")
+    console.log(combos_all)
+
+    tables = "" 
+
+
+    var x;
+    var ths = ""
+    var quantidade_total_combos = combos_all.length
+    if (quantidade_total_combos < 9){
+      num_max = combos_all.length
+    }else{
+      num_max = 9
+    }
+    for (x = 0; x < num_max - 1; x++) { 
+      ths += "<th></th>";
+    }
+
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">Combos</th>'+ths+'</tr></thead><tbody>'
+    
+    var table_string = ""
+    var table_string_total = ""
+
+    for( i in combos_all){
+
+      table_string += '<td><div onclick="add_combo('+combos_all[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combos_all[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combos_all[i].nome+'<br> R$ '+combos_all[i].preco+'</div></div></td>'
+
+      var ii = parseInt(i)+1
+      if ( ii % 9 == 0 ){
+        table_string = "<tr>" + table_string + "</tr>" 
+        table_string_total += table_string
+        table_string = ""
+      }
+    }
+
+    if (table_string != "")
+    {
+      var tds = ""
+
+      if (quantidade_total_combos > 9){
+        resto = 9 - (quantidade_total_combos % 9)
+        for (x = 0; x < resto; x++) { 
+          tds += "<td></td>";
+        }
+      }
+      table_string_total += "<tr>" + table_string + tds +"</tr>"
+    }
+
+    tables += table_string_total + '</tbody></table>'
+
+    $("#table_combos_all").html(tables)
+
+  }
+
+  function add_combo(combo_id){
+
+    popular_combo_produto(combo_id)
+
+
+  }
+
+  function popular_combo_produto(combo_id){
+    combo = combos_all.find(x => x.id === combo_id)
+
+    combo_produtos = combo.produtos
+    combo_tipo_produtos = combo.tipo_produtos
+
+    tables = "" 
+
+    var x;
+    var ths = ""
+    var quantidade_total_no_combo = combo_produtos.length + combo_tipo_produtos.length
+    if (quantidade_total_no_combo < 9){
+      num_max = combo_produtos.length
+    }else{
+      num_max = 9
+    }
+    for (x = 0; x < num_max - 1; x++) { 
+      ths += "<th></th>";
+    }
+
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">Combos</th>'+ths+'</tr></thead><tbody>'
+    
+    var table_string = ""
+    var table_string_total = ""
+
+    for( i in combo_produtos){
+
+      table_string += '<td><div onclick="add_combo('+combo_produtos[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_produtos[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_produtos[i].nome+'<br> R$ '+combo_produtos[i].preco+'</div></div></td>'
+
+      var ii = parseInt(i)+1
+      if ( ii % 9 == 0 ){
+        table_string = "<tr>" + table_string + "</tr>" 
+        table_string_total += table_string
+        table_string = ""
+      }
+    }
+
+    for( i in combo_tipo_produtos){
+
+      table_string += '<td><div onclick="add_combo('+combo_produtos[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_produtos[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_produtos[i].nome+'<br> R$ '+combo_produtos[i].preco+'</div></div></td>'
+
+      var ii = parseInt(i)+1
+      if ( ii % 9 == 0 ){
+        table_string = "<tr>" + table_string + "</tr>" 
+        table_string_total += table_string
+        table_string = ""
+      }
+    }
+
+    if (table_string != "")
+    {
+      var tds = ""
+
+      if (quantidade_total_no_combo > 9){
+        resto = 9 - (quantidade_total_no_combo % 9)
+        for (x = 0; x < resto; x++) { 
+          tds += "<td></td>";
+        }
+      }
+      table_string_total += "<tr>" + table_string + tds +"</tr>"
+    }
+
+    tables += table_string_total + '</tbody></table>'
+
+    $("#table_combos_all").html(tables)
+
+  }

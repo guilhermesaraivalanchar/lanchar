@@ -3,7 +3,7 @@ class TotensController < ApplicationController
   
   before_action :aut_cross
   before_action :authenticate_totem
-  
+
   def login
     user = User.where(escola_id: params[:e], codigo: params[:c]).first
 

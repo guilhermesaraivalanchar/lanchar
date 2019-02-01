@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon.png">
+    <title>Totem</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="css/bootstrap-reboot.min.css" rel="stylesheet">
+    <link href="css/prism.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link href="css/blue.css" id="theme" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style type="text/css">
+  
+  #div_carrinho::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #card_produtos_scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #card_combos_scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #card_combo_scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #card_tipo_produto_scroll::-webkit-scrollbar { 
+    display: none; 
+  }
+</style>
+</head>
+
+<body id="dddd" style="overflow: hidden; height: 100%; width: 100%;">
+
+  <div id="card_login">
+    <section id="wrapper">
+      <div class="login-register" style="display: block;">
+        <div class="login-box card">
+          <div class="card-body">
+            <form class="form-horizontal form-material" id="loginform" action="">
+              <h3 class="box-title m-b-20">Entrar</h3>
+              <div class="form-group ">
+                <div class="col-xs-12">
+                  <input class="form-control" type="text" required="true" id="user_codigo" placeholder="Username"> 
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <input class="form-control" type="password" required="true" id="user_pass" placeholder="Password"> 
+                </div>
+              </div>
+
+              <div class="form-group text-center m-t-20">
+                <div class="col-xs-12">
+                  <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" id="log_in" type="button">Log In</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+
+
+
+  <div id="card_produtos" style="display:none;">
+    <div style="height: 50px; background-color: white; width: 100%;">
+      <table style="border-spacing: 15px;border-collapse: separate;width: 100%;">
+        <tr>
+          <td>
+            <div id="menu_favoritos" style="height: 40px; text-align: center;">Favoritos</div>
+          </td>
+          <td>
+            <div id="menu_produtos" style="height: 40px; text-align: center;">Produtos</div>
+          </td>
+          <td>
+            <div id="menu_combos" style="height: 40px; text-align: center;">Combos</div>
+          </td>
+          <td>
+            <div id="contador_carrinho" style="height: 40px; text-align: center;">Carrinho (0)</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="card_produtos_scroll" style="padding: 0px 20px 20px 20px; overflow-y: scroll; max-height: 440px;" >
+      <table id="table_produtos" style="border-spacing: 15px; border-collapse: separate; padding-left: 15px">
+       
+      </table>
+    </div>
+    <div id="card_combos_scroll" style="padding: 0px 20px 20px 20px; overflow-y: scroll; max-height: 440px;" >
+      <table id="table_combos" style="border-spacing: 15px; border-collapse: separate; padding-left: 15px">
+       
+      </table>
+    </div>
+  </div>
+
+
+
+  <div id="div_carrinho" class="card" style="max-height: 430px; overflow-y: scroll; width: 600px;position: fixed; top: 50px; left: 20px; background-color: white; padding: 5px; display:none;">
+    <div style="font-size: 19px;">
+
+      Lista de Compras 
+
+      <span onclick="fechar_lista()" style="font-size: 48px;">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+    <div>
+      <ul id="lista_produtos" class="b" style="padding: 20px">
+
+      </ul>
+    </div>
+    <div id="div_total_lista" style="font-size: 17px;">
+      Total (R$ 20,00)
+    </div>
+    <div>
+      <button type='button' class='btn btn-sm waves-effect waves-light btn-success' onclick='finalizar_compra()'>Comprar</button>
+    </div>  
+
+    <br>
+    <br>  
+    
+    
+  </div>
+
+
+
+
+
+  <!-- ============================================================== -->
+  <!-- End Wrapper -->
+  <!-- ============================================================== -->
+  <!-- ===================================  =========================== -->
+  <!-- All Jquery -->
+  <!-- ============================================================== -->
+  <script src="js/jquery.min.js"></script>
+  <!-- Bootstrap tether Core JavaScript -->
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <!-- slimscrollbar scrollbar JavaScript -->
+  <script src="js/jquery.slimscroll.js"></script>
+  <!--Wave Effects -->
+  <script src="js/waves.js"></script>
+  <!--Menu sidebar -->
+  <script src="js/sidebarmenu.js"></script>
+  <!--stickey kit -->
+  <script src="js/sticky-kit.min.js"></script>
+  <script src="js/jquery.sparkline.min.js"></script>
+  <!--Custom JavaScript -->
+  <script src="js/custom.min.js"></script>
+  <!-- ============================================================== -->
+  <!-- Style switcher -->
+  <!-- ============================================================== -->
+  <script src="js/jQuery.style.switcher.js"></script>
+  
+
+  <script type="text/javascript">
+
+    var combo = 0
+
+    var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
+    var e_id = 1
+    //var server = "http://localhost:3000"
+    var server = "http://www.cantinapro.com.br"
+    lista = []
+    $.getJSON(server+"/totem/g_p", { e: e_id, t: totem_token },function(d) {
+      //console.log(d)
+    })
+    $("#log_in").click(function(){
+      $.post(server+"/totem/login",
+      {
+        c: $("#user_codigo").val(),
+        p: $("#user_pass").val(),
+        e: e_id,
+        t: totem_token
+      },
+      function(data, status){
+        console.log(data)
+        console.log(status)
+
+        if (data.status == "200"){
+          prod_init(data.p, data.c)
+          $("#card_login").hide()
+          $("#card_produtos").show()
+          $("#card_combos").show()
+        }
+      });
+    })
+
+
+    function fechar_lista() {
+      $("#div_carrinho").hide()
+    }
+
+
+    function prod_init(produtos_all_string, combos_all_string){
+
+      produtos_all = []
+      produtos_all_preco = []
+      produtos_all_quantidade = []
+      produtos_all_url = []
+      produtos = []
+
+      prod_card = produtos_all_string.split("...")
+
+      for(i in prod_card){
+        prod_dados = prod_card[i].split("::")
+        produtos_all[prod_dados[1]] = prod_dados[0]
+        produtos_all_preco[prod_dados[1]] = parseFloat(prod_dados[2])
+        produtos_all_quantidade[prod_dados[1]] = parseFloat(prod_dados[3])
+        produtos_all_url[prod_dados[1]] = prod_dados[4]
+        if (prod_dados[1] != undefined){
+          produtos.push({id: prod_dados[1], nome: prod_dados[0], preco: parseFloat(prod_dados[2]), quantidade: parseFloat(prod_dados[3]), url: prod_dados[4]})
+        }
+      }
+
+      combos_all = []
+      combos_all_preco = []
+
+      combos = []
+
+      comb_card = combos_all_string.split("...")  
+
+      for(i in comb_card){
+        comb_dados = comb_card[i].split("::")
+        combos_all[comb_dados[1]] = comb_dados[0]
+        combos_all_preco[comb_dados[1]] = parseFloat(comb_dados[2])
+        if (comb_dados[1] != undefined){
+          combos.push({id: comb_dados[1], nome: comb_dados[0], preco: parseFloat(comb_dados[2]), url: comb_dados[3], produtos: comb_dados[4], tipo_produtos: comb_dados[5]})
+        }
+      }
+
+      popular_produtos()
+      popular_combos()
+
+    }
+
+
+    function popular_produtos() {
+
+      produtos_count = 1
+      produtos_table_string = ""
+      produtos_table_string_total = ""
+
+      for (i in produtos){
+        produtos_table_string += 
+          "<td>"+    
+            "<div style='width: 120px; height: 180px;' onclick='add_produto("+produtos[i].id+")'>"+
+              "<img src='"+server+produtos[i].url+"' width='120' height='120' style='border-radius: 50%;'>"+
+              "<div style='text-align: center;'>"+produtos[i].nome+"<br>R$ "+produtos[i].preco+"</div>"+
+            "</div>"+
+          "</td>"
+
+        var ii = parseInt(i)+1
+        if ( ii % 9 == 0 ){
+          produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
+          produtos_table_string_total += produtos_table_string
+          produtos_table_string = ""
+        }
+      }
+      if (produtos_table_string != "")
+      {
+        produtos_table_string_total += "<tr>" + produtos_table_string + "</tr>"
+      }
+
+
+      $("#table_produtos").html("")
+      $("#table_produtos").append(produtos_table_string_total)
+
+    }
+
+    function popular_combos() {
+
+      combos_count = 1
+      combos_table_string = ""
+      combos_table_string_total = ""
+
+      for (i in combos){
+        combos_table_string += 
+          "<td>"+    
+            "<div style='width: 120px; height: 180px;' onclick='add_combo("+combos[i].id+")'>"+
+              "<img src='"+server+combos[i].url+"' width='120' height='120' style='border-radius: 50%;'>"+
+              "<div style='text-align: center;'>"+combos[i].nome+"<br>R$ "+combos[i].preco+"</div>"+
+            "</div>"+
+          "</td>"
+
+        var ii = parseInt(i)+1
+        if ( ii % 9 == 0 ){
+          combos_table_string = "<tr>" + combos_table_string + "</tr>" 
+          combos_table_string_total += combos_table_string
+          combos_table_string = ""
+        }
+      }
+      if (combos_table_string != "")
+      {
+        combos_table_string_total += "<tr>" + combos_table_string + "</tr>"
+      }
+
+
+      $("#table_combos").html("")
+      $("#table_combos").append(combos_table_string_total)
+    }
+
+    function add_combo(combo_id) {
+      combo = combo_id
+      console.log(combo_id)
+      popular_combo_produtos(combo_id)
+    }
+
+    function popular_combo_produtos(combo_id) {
+      produtos_table_string = ""
+      produtos_table_string_total = ""
+      for(i in combos){
+        if (combos[i].id == combo_id){
+
+          console.log("entro")
+
+          prods = combos[i].produtos.split(",")
+
+          console.log(prods)
+
+          for (i in prods){
+            console.log(prods[i])
+            produtos_table_string += 
+              "<td>"+    
+                "<div style='width: 120px; height: 180px;' onclick='add_produto("+prods[i]+")'>"+
+                  "<img src='"+server+produtos_all_url[prods[i]]+"' width='120' height='120' style='border-radius: 50%;'>"+
+                  "<div style='text-align: center;'>"+produtos_all[prods[i]]+"<br>R$ "+produtos_all_preco[prods[i]]+"</div>"+
+                "</div>"+
+              "</td>"
+
+            var ii = parseInt(i)+1
+            if ( ii % 9 == 0 ){
+              produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
+              produtos_table_string_total += produtos_table_string
+              produtos_table_string = ""
+            }
+          }
+          if (produtos_table_string != "")
+          {
+            produtos_table_string_total += "<tr>" + produtos_table_string + "</tr>"
+          }
+
+          console.log(produtos_table_string)
+          console.log(produtos_table_string_total)
+
+          $("#table_produtos").html("")
+          console.log()
+          $("#table_produtos").append(produtos_table_string_total)
+
+        }
+      }
+    }
+
+
+    function replaceAll(str, find, replace) {
+      return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    function f(){
+
+        produtos_table_string += 
+          "<td>"+    
+            "<div style='width: 120px; height: 180px;'>"+
+              "<img src='https://img.cybercook.uol.com.br/receitas/18/pao-de-queijo-5.jpeg?w=583&h=350&fit=max' width='120' height='120' style='border-radius: 50%;'>"+
+              "<div style='text-align: center;'>Pao de Queijo<br>R$ 2,00</div>"+
+            "</div>"+
+          "</td>"
+    }
+
+    function listar_produtos() {
+
+
+      lista_string = ""
+      total_lista = 0
+      for(i in lista){
+        total_lista = total_lista + (lista[i].preco * lista[i].quantidade)
+        lista_string = lista_string + "<li>"+lista[i].produto_nome+" ("+lista[i].quantidade+") <span class='label label-danger' onclick='remover_produto_lista("+lista[i].produto_id+")'>Remover</span></li> "
+      }
+      $("#lista_produtos").html(lista_string)
+      $("#contador_carrinho").html("Carrinho ("+lista.length+") <button type='button' class='btn btn-sm waves-effect waves-light btn-danger' onclick='mostrar_lista_compras()'>Confirmar</button>")
+      $("#div_total_lista").html("Total (R$ "+total_lista+" )")
+    }
+
+    function remover_produto_lista(produto_id) {
+      for(i in lista){
+        if(lista[i].produto_id == produto_id){
+          if (lista[i].quantidade > 1){
+            lista[i].quantidade = lista[i].quantidade - 1 
+          }else{
+            lista.splice(i, 1)
+          }
+        }
+      }
+      listar_produtos()
+    }
+
+    function mostrar_lista_compras(){
+      $("#div_carrinho").show()
+    }
+
+    function add_produto(produto_id) {
+      console.log(produto_id)
+      var add_novo = true
+      for(i in lista){
+        if (lista[i].produto_id == produto_id){
+          lista[i].quantidade = lista[i].quantidade + 1
+          add_novo = false
+        }
+      }
+      if (add_novo){
+        lista.push({produto_id: produto_id, produto_nome: produtos_all[produto_id], quantidade: 1, preco: produtos_all_preco[produto_id]})
+        
+      }
+
+      listar_produtos()
+    }
+
+
+      $.post("/totem/login",
+      {
+        c: "123456",
+        p: "123456",
+        e: e_id,
+        t: totem_token
+      },
+      function(data, status){
+        console.log(data)
+        console.log(status)
+
+        if (data.status == "200"){
+          prod_init(data.p, data.c)
+          $("#card_login").hide()
+          $("#card_produtos").show()
+          $("#card_produtos_scroll").show()
+          $("#card_combos_scroll").hide()
+        }
+      });
+
+
+      function finalizar_compra() {
+        
+      }
+
+      $("#menu_produtos").click(function(){
+        $("#card_produtos_scroll").show()
+        $("#card_combos_scroll").hide()
+      })
+      
+      $("#menu_combos").click(function(){
+        $("#card_produtos_scroll").hide()
+        $("#card_combos_scroll").show()
+      })
+
+  </script>
+</body>
+
+</html> 
