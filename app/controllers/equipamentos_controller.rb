@@ -73,7 +73,7 @@ class EquipamentosController < ApplicationController
 
     all_combos = []
     @combos_cardapio.each do |combo|
-      all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: combo.imagem.url, produtos: combo.combo_produto_ids, tipo_produtos: combo.combo_tipo_produto_ids}
+      all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: combo.imagem.url, produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
     end
     
     all_tipos = []

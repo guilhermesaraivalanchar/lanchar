@@ -54,10 +54,10 @@
     = "OII"
 
 
-.card style="position:fixed; top: 20px; left:20px; display:none"
+div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display:none"
   .card-body
     h2.card-title Combo 1
-    h6.card-subtitle Escolha seu Produtos
+    h6.card-subtitle Escolha seu Produtosgit p
     div#table_combos_produtos_all
 
 
@@ -89,7 +89,7 @@ javascript:
     console.log("-----")
     console.log(tipos_all)
 
-    tables = "" 
+    var tables = "" 
 
     for( j in tipos_all ){
       produtos_tipo = produtos_all.filter(x => x.tipo_produto === tipos_all[j].id)
@@ -106,7 +106,7 @@ javascript:
         ths += "<th></th>";
       }
 
-      tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">'+tipos_all[j].nome+'</th>'+ths+'</tr></thead><tbody>'
+      tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'">'+tipos_all[j].nome+'</th></tr></thead><tbody>'
       
       var produtos_table_string = ""
       var produtos_table_string_total = ""
@@ -159,7 +159,7 @@ javascript:
     console.log("-----")
     console.log(combos_all)
 
-    tables = "" 
+    var tables = "" 
 
 
     var x;
@@ -174,7 +174,7 @@ javascript:
       ths += "<th></th>";
     }
 
-    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">Combos</th>'+ths+'</tr></thead><tbody>'
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'">Combos</th></tr></thead><tbody>'
     
     var table_string = ""
     var table_string_total = ""
@@ -210,18 +210,50 @@ javascript:
 
   }
 
+  var edicao_combo = ""
+  var edicao_salgado = ""
+
   function add_combo(combo_id){
 
-    popular_combo_produto(combo_id)
+    $("#div_combo_produtos").hide()
+    
+    var combo = combos_all.find(x => x.id === combo_id)
+
+    edicao_combo = { id: combo.id, nome: combo.nome, preco: combo.preco, produtos: combo.produtos.slice(), tipo_produtos: combo.tipo_produtos.slice(), url: combo.url }
+
+    popular_combo_produto(combo)
 
 
   }
 
-  function popular_combo_produto(combo_id){
-    combo = combos_all.find(x => x.id === combo_id)
+  function add_tipo_produto_combo(combo_id, ipo_produto_id){
 
-    combo_produtos = combo.produtos
-    combo_tipo_produtos = combo.tipo_produtos
+    popular_combo_produto_tipo(combo_id, ipo_produto_id)
+
+
+  }
+
+  function add_tipo_produto_edicao(tipo_id, produto_id){
+
+    console.log("AQKK")
+
+    index = edicao_combo.tipo_produtos.findIndex(x => x === tipo_id);
+    edicao_combo.tipo_produtos.splice(index, 1);
+
+    edicao_combo.produtos.push(produto_id)
+
+    popular_combo_produto(edicao_combo)
+
+  }
+
+  function popular_combo_produto(combo){
+
+    var combo_produtos = combo.produtos
+    var combo_tipo_produtos = combo.tipo_produtos
+
+
+    console.log(combo_produtos)
+    console.log(combo_tipo_produtos)
 
     tables = "" 
 
@@ -229,7 +261,7 @@ javascript:
     var ths = ""
     var quantidade_total_no_combo = combo_produtos.length + combo_tipo_produtos.length
     if (quantidade_total_no_combo < 9){
-      num_max = combo_produtos.length
+      num_max = quantidade_total_no_combo
     }else{
       num_max = 9
     }
@@ -237,14 +269,16 @@ javascript:
       ths += "<th></th>";
     }
 
-    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th rowspan="'+num_max+'">Combos</th>'+ths+'</tr></thead><tbody>'
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'"><button type="button" onclick="reset_combo()" class="btn btn-xs waves-effect waves-light btn-primary"><</button> Combos > '+combo.nome+'</th></tr></thead><tbody>'
     
     var table_string = ""
     var table_string_total = ""
 
     for( i in combo_produtos){
 
-      table_string += '<td><div onclick="add_combo('+combo_produtos[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_produtos[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_produtos[i].nome+'<br> R$ '+combo_produtos[i].preco+'</div></div></td>'
+      var combo_prod = produtos_all.find(x => x.id === combo_produtos[i])
+
+      table_string += '<td><div onclick="add_produto_combo('+combo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_prod.url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_prod.nome+'<br>  </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" style="margin-left: 25px">Remover</button></td>'
 
       var ii = parseInt(i)+1
       if ( ii % 9 == 0 ){
@@ -255,8 +289,77 @@ javascript:
     }
 
     for( i in combo_tipo_produtos){
+      
+      var combo_tipo_prod = tipos_all.find(x => x.id === combo_tipo_produtos[i])
 
-      table_string += '<td><div onclick="add_combo('+combo_produtos[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_produtos[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_produtos[i].nome+'<br> R$ '+combo_produtos[i].preco+'</div></div></td>'
+      table_string += '<td><div onclick="add_tipo_produto_combo('+combo.id+','+combo_tipo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="/imagens/original/missing.png" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_tipo_prod.nome+'<br> </div></div></td>'
+
+      var ii = parseInt(i)+1
+      if ( ii % 9 == 0 ){
+        table_string = "<tr>" + table_string + "</tr>" 
+        table_string_total += table_string
+        table_string = ""
+      }
+    }
+
+    if (table_string != "")
+    {
+      var tds = ""
+
+      if (quantidade_total_no_combo > 9){
+        resto = 9 - (quantidade_total_no_combo % 9)
+        for (x = 0; x < resto; x++) { 
+          tds += "<td></td>";
+        }
+      }
+      table_string_total += "<tr>" + table_string + tds +"</tr>"
+    }
+
+    bottuns_tds = ""
+    for (x = 0; x < quantidade_total_no_combo - 1; x++) { 
+      bottuns_tds += "<td></td>";
+    }
+
+
+
+    //tables += bottuns_tds + '<td><button type="button" class="btn waves-effect waves-light btn-primary">Confirmar</button><br><button type="button" class="btn waves-effect waves-light btn-danger" style="margin-left: 10px">Cancelar</button></td>'
+
+
+    tables += table_string_total + '</tbody></table>'
+
+
+    $("#table_combos_all").html(tables)
+
+  }
+
+  function popular_combo_produto_tipo(combo_id, tipo_produto_id){
+
+    var produtos_tipo = produtos_all.filter(x => x.tipo_produto === tipo_produto_id)
+    var tipo = tipos_all.find(x => x.id === tipo_produto_id)
+    var combo = combos_all.find(x => x.id === combo_id)
+
+    var tables = "" 
+
+    var x;
+    var ths = ""
+    var quantidade_total_no_combo = produtos_tipo.length
+    if (quantidade_total_no_combo < 9){
+      num_max = quantidade_total_no_combo
+    }else{
+      num_max = 9
+    }
+    for (x = 0; x < num_max - 1; x++) { 
+      ths += "<th></th>";
+    }
+
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'"><button type="button" onclick="reset_combo()" class="btn btn-xs waves-effect waves-light btn-primary"><</button> Combos > '+combo.nome+' > '+tipo.nome+'</th></tr></thead><tbody>'
+    
+    var table_string = ""
+    var table_string_total = ""
+
+    for( i in produtos_tipo){
+
+      table_string += '<td><div onclick="add_tipo_produto_edicao('+tipo_produto_id+','+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br></div></div></td>'
 
       var ii = parseInt(i)+1
       if ( ii % 9 == 0 ){
@@ -283,4 +386,8 @@ javascript:
 
     $("#table_combos_all").html(tables)
 
+  }
+
+  function reset_combo(){
+    criar_tabelas_combos()
   }
