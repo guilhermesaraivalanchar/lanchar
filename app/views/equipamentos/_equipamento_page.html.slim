@@ -584,9 +584,10 @@ javascript:
         console.log(status)
 
         if(data.status == 'OK'){
+          console.log("WIDJEMSEF")
           window.open("/transferencia_gerais/transferencia_pdf/"+data.transferencia+".pdf?totem=1")
 
-          location.reload();
+          //location.reload();
 
         }else if(data.status == 'ERRO_QUANTIDADE_PRODUTO'){
 
