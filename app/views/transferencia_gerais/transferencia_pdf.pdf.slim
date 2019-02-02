@@ -51,7 +51,6 @@ css:
   td {
     padding: 5px 0;
   }
-- current_user = User.find(1) if params[:totem].present?
 - if @transferencia_geral.tipo == "ENTRADA"
   div style="font-size: 15px; max-width: 245px; text-align:center"
     | ------------------------------------------------
@@ -168,4 +167,4 @@ css:
 - if params[:totem] == "1"
   javascript:
     setTimeout(function(){ window.print() }, 500);
-    setTimeout(function(){ window.close() }, 1000);
+    //  setTimeout(function(){ window.close() }, 1000);
