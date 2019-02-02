@@ -116,6 +116,18 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
     /! /.modal-content
   /! /.modal-dialog
 
+#erros_sistema.modal.fade aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h4#myModalLabel.modal-title Erro 
+        button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
+      #erros_sistema_conteudo.modal-body
+      .modal-footer
+        button type="button" class="btn btn-danger waves-effect waves-light" onclick="finalizar_compra()" Confirmar
+        button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Fechar
+    /! /.modal-content
+  /! /.modal-dialog
 
 javascript:
 
@@ -235,6 +247,7 @@ javascript:
 
   }
 
+  var total_compra = 0
   function listar_produtos(){
     
     var conteudo = ""
@@ -268,6 +281,7 @@ javascript:
     }
 
     if(!sem_produto){
+      total_compra = total
       conteudo += '<li></li>'
       conteudo += '<li><b>Total</b><span class="text-muted"><b>'+number_to_currency(total, { unit: "R$ " })+'</b></span></li>'
       conteudo += '<li><button type="button" class="btn btn waves-effect waves-light btn-primary" onclick="finalizar_compra()" style="width: 100%">Confirmar</button></li>'
@@ -551,6 +565,12 @@ javascript:
   }
 
   function finalizar_compra(){
+
+    console.log("TOTAL: "+total_compra)
+    console.log("USER: "+user_saldo)
+
+    if (total_compra < user_saldo){
+
       var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
 
       $.post("/finalizar_compra",
@@ -579,12 +599,11 @@ javascript:
           $("#erro_produto_conteudo").html(conteudo)
 
           $("#erro_compra_produto").modal()
-
-
         }
 
-
-
-
       });
+    }else{
+      $("#erros_sistema_conteudo").html("Saldo insuficiente.")
+      $("#erros_sistema").modal()
+    }
   }

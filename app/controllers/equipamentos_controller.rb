@@ -130,39 +130,6 @@ class EquipamentosController < ApplicationController
 
   def finalizar_compra
 
-    puts "
-
-
-      #{params.inspect}
-
-
-    "
-
-
-
-
-
-    params[:lista].each do |num, lista|
-
-      puts "
-
-
-        #{num}
-
-
-        #{lista.inspect}
-
-        #{lista[:produto_id] ? lista[:produto_id] : "-"}
-
-        #{lista[:produtos]}
-
-
-      "
-    end
-
-
-
-
     usuario_compra = User.find(params[:user_id])
     saldo_ant = usuario_compra ? usuario_compra.saldo.to_d : 0
     user_movimentou_id = # DADGE
@@ -223,17 +190,5 @@ class EquipamentosController < ApplicationController
     else
       render json: { status: "ERRO_QUANTIDADE_PRODUTO", produtos: erro_produtos_quantidade }
     end
-
-
-
-
-
-
-
-
-
-
-
-
   end
 end
