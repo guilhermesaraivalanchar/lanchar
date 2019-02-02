@@ -171,32 +171,33 @@ class EquipamentosController < ApplicationController
     preco_total = 0
     
     produtos_update = []
-
+    erro_produtos_quantidade = []
     params[:lista].each do |num, prod_combo|
 
       if prod_combo[:produto_id]
-        prod_preco = prod_combo[:preco]
+        prod_preco = prod_combo[:preco].to_d
         valor_transf = valor_transf + prod_preco
         transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, produto_id: prod_combo[:produto_id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         produto = Produto.find(prod_combo[:produto_id])
         if produto.quantidade > 0
-          produtos_update << prod_combo[:produto_id]
-          produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+          produtos_update << produto
+          #produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
         else
           erro_produtos_quantidade << produto.nome
         end
         preco_total += prod_preco
-      elsif prod_combo.last[:tipo] == "c"
-        combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+      else
+        combo_preco = prod_combo[:preco].to_d
         valor_transf = valor_transf + combo_preco
-        transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: "VENDA", user_movimentou_id: current_user.id, combo_id: prod_combo.last[:id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
+        transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, combo_id: prod_combo[:produto_id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         preco_total += combo_preco
 
-        prod_combo.last[:produtos].each do |prod_id|
+        prod_combo[:produtos].each do |prod_id|
           transf.transferencia_combos.new(produto_id: prod_id)
           produto = Produto.find(prod_id)
           if produto.quantidade > 0
-            produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+            produtos_update << produto
+            #produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
           else
             erro_produtos_quantidade << produto.nome
           end
@@ -207,6 +208,21 @@ class EquipamentosController < ApplicationController
 
     transf_geral.valor = preco_total
 
+    if erro_produtos_quantidade.empty?
+      if transf_geral.save
+        transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d) if transf_geral.user
+        produtos_update.each do |produto|
+          produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+        end
+
+        render json: { status: "OK", transferencia: transf_geral.id }
+
+      else
+        render json: { status: "ERRO_AO_SALVAR" }
+      end
+    else
+      render json: { status: "ERRO_QUANTIDADE_PRODUTO", produtos: erro_produtos_quantidade }
+    end
 
 
 
@@ -215,7 +231,7 @@ class EquipamentosController < ApplicationController
 
 
 
-    render json: { status: "CODIGO_NAO_ENCONTRADO" }
+
 
 
 

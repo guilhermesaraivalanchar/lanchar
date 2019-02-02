@@ -162,3 +162,9 @@ css:
     div style="font-weight: bold;font-size: 20px;"
       = "Total: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
     | -------------------------------------------------
+
+
+- if params[:totem] == "1"
+  javascript:
+    setTimeout(function(){ window.print() }, 500);
+    setTimeout(function(){ window.close() }, 1000);

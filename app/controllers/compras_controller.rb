@@ -199,32 +199,6 @@ class ComprasController < ApplicationController
 
   def verificar_quantidade_produto
 
-
-    puts "
-
-
-___________
-      #{params.inspect}
-______________
-
-      #{params[:produtos]}
-___________
-
-      #{Produto.where(id: params[:produtos].uniq).inspect}
-    
-
-_______________
-
-
-
-
-
-
-
-
-    "
-
-
     flag_erro_quantidade = false
     produtos = []
     Produto.where(id: params[:produtos].uniq).each do |produto|

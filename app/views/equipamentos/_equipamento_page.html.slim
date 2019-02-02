@@ -103,16 +103,13 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
   /! /.modal-dialog
 
 
-#confirmar_compra_modal.modal.fade aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" 
+#erro_compra_produto.modal.fade aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" 
   .modal-dialog
     .modal-content
       .modal-header
-        h4#myModalLabel.modal-title Confirmação de Compra
+        h4#myModalLabel.modal-title Erro 
         button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
-      .modal-body
-        h4 Overflowing text to show scroll behavior
-        p Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-        p Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
+      #erro_produto_conteudo.modal-body
       .modal-footer
         button type="button" class="btn btn-danger waves-effect waves-light" onclick="finalizar_compra()" Confirmar
         button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Fechar
@@ -273,7 +270,7 @@ javascript:
     if(!sem_produto){
       conteudo += '<li></li>'
       conteudo += '<li><b>Total</b><span class="text-muted"><b>'+number_to_currency(total, { unit: "R$ " })+'</b></span></li>'
-      conteudo += '<li><button type="button" class="btn btn waves-effect waves-light btn-primary" onclick="confirmar_compra()" style="width: 100%">Confirmar</button></li>'
+      conteudo += '<li><button type="button" class="btn btn waves-effect waves-light btn-primary" onclick="finalizar_compra()" style="width: 100%">Confirmar</button></li>'
     }
 
     $("#lista_compras_lateral").html(conteudo)
@@ -282,7 +279,7 @@ javascript:
   }
 
   function confirmar_compra(){
-    $("#confirmar_compra_modal").modal()
+    $("#erro_compra_produto").modal()
   }
 
   function criar_tabelas_combos(){
@@ -556,8 +553,6 @@ javascript:
   function finalizar_compra(){
       var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
 
-      console.log("afniaeknfsenfsenfsenfisef")
-
       $.post("/finalizar_compra",
       {
         user_id: user_id,
@@ -568,7 +563,27 @@ javascript:
         console.log(data)
         console.log(status)
 
-        $("#confirmar_compra_modal").modal('hide')
+        if(data.status == 'OK'){
+          window.open("/transferencia_gerais/transferencia_pdf/"+data.transferencia+".pdf?totem=1")
+
+          location.reload();
+
+        }else if(data.status == 'ERRO_QUANTIDADE_PRODUTO'){
+
+          conteudo = "Produtos sem estoque !"
+
+          for(i in data.produtos){
+            conteudo += data.produtos[i] + "<br>"
+          }
+
+          $("#erro_produto_conteudo").html(conteudo)
+
+          $("#erro_compra_produto").modal()
+
+
+        }
+
+
 
 
       });

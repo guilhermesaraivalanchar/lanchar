@@ -12,7 +12,7 @@ class TransferenciaGeraisController < ApplicationController
     respond_to do |format|
       format.pdf do
         render  :pdf => "#{@transferencia_geral.id}",
-                :show_as_html => params[:debug].present?,
+                :show_as_html => params[:totem].present?,
                 :margin => { :top                => 0,                         # default 10 (mm)
                              :bottom             => 0,
                              :left               => 0,
