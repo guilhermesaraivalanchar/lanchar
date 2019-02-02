@@ -51,6 +51,7 @@ css:
   td {
     padding: 5px 0;
   }
+- current_user = User.find(1) if params[:totem].present?
 - if @transferencia_geral.tipo == "ENTRADA"
   div style="font-size: 15px; max-width: 245px; text-align:center"
     | ------------------------------------------------
