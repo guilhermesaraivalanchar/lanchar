@@ -2,9 +2,11 @@ class TransferenciaGeraisController < ApplicationController
 
 	def transferencia_pdf
 
-    if params[:totem].present? || !current_user.tem_permissao("comprar_sistema")
-      redirect_to pagina_sem_permissao_path
-      return false
+    if !params[:totem].present?
+      if !current_user.tem_permissao("comprar_sistema")
+        redirect_to pagina_sem_permissao_path
+        return false
+      end
     end
 
     @transferencia_geral = TransferenciaGeral.find(params[:id])
