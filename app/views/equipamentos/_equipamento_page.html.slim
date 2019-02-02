@@ -1,11 +1,21 @@
+css:
+  ::-webkit-scrollbar { 
+      display: none; 
+  }
 
-.row style="margin-top: 10px;margin-left: 10px"
-  .col-1
-    div#botao_senha_3.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-      = "1"
-  .col-9
+
+.row style="margin-top: 10px;margin-left: 10px; margin-right: 5px"
+  .col-10
     .row
-      /! Column
+      
+      div#botao_carrinho.col-lg-3.col-md-6
+        .card
+          .card-body
+            .d-flex.flex-row
+              <div class="user-img"><img alt="user" class="img-circle" height="60" src="../imagens/user.jpg" width="60"><span class="profile-status online pull-right"></span></div>
+              .m-l-10.align-self-center
+                h3#nome_usuario.m-b-0.font-lgiht Carrinho (0)
+                h5#saldo_usuario.text-muted.m-b-0 Em Breve
       div#botao_favoritos.col-lg-3.col-md-6
         .card
           .card-body
@@ -15,8 +25,6 @@
               .m-l-10.align-self-center
                 h3.m-b-0.font-light Favoritos
                 h5.text-muted.m-b-0 Em Breve
-      /! Column
-      /! Column
       div#botao_produtos.col-lg-3.col-md-6
         .card
           .card-body
@@ -25,8 +33,6 @@
                 i.mdi.mdi-cellphone-link
               .m-l-10.align-self-center
                 h3.m-b-0.font-lgiht Produtos
-      /! Column
-      /! Column
       div#botao_combos.col-lg-3.col-md-6
         .card
           .card-body
@@ -35,24 +41,21 @@
                 i.mdi.mdi-cart-outline
               .m-l-10.align-self-center
                 h3.m-b-0.font-lgiht Combos
-      /! Column
-      /! Column
-      div#botao_carrinho.col-lg-3.col-md-6
-        .card
-          .card-body
-            .d-flex.flex-row
-              .round.round-lg.align-self-center.round-danger
-                i.mdi.mdi-bullseye
-              .m-l-10.align-self-center
-                h3.m-b-0.font-lgiht Carrinho (0)
-      /! Column
 
-    div#table_all
-    div#table_combos_all style="display:none"
+    .row
+      .col-1
+        div#filtro_tipo_produto class="" style=""
+      .col-11
+        div#table_all
+        div#table_combos_all style="display:none"
 
   .col-2
-    = "OII"
-
+    .card style="position: fixed; top: 10px; right: 10px; width: 300px"
+      .card-body
+        h4.card-title Lista de Compras
+        ul#lista_compras_lateral.feeds
+          li
+            | Carrinho Vazio
 
 div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display:none"
   .card-body
@@ -67,12 +70,68 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
     h6.card-subtitle Escolha seu Produtos
     div#table_combos_tipos_produtos_all
 
+/! sample modal content
+#modal_mensagem.modal.fade aria-hidden="true" aria-labelledby="modal_mensagem_titulo" role="dialog" tabindex="-1" 
+  .modal-dialog.modal-dialog-centered
+    .modal-content
+      .modal-header
+        h4#modal_mensagem_titulo.modal-title Modal Heading
+        button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
+      #modal_mensagem_conteudo.modal-body
+        h4 Overflowing text to show scroll behavior
+        p Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+      .modal-footer
+        button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Close
+    /! /.modal-content
+  /! /.modal-dialog
+
+
+
+/! sample modal content
+#verticalcenter.modal.fade aria-hidden="true" aria-labelledby="vcenter" role="dialog" tabindex="-1" 
+  .modal-dialog.modal-dialog-centered
+    .modal-content
+      .modal-header
+        h4#vcenter.modal-title Modal Heading
+        button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
+      .modal-body
+        h4 Overflowing text to show scroll behavior
+        p Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+      .modal-footer
+        button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Close
+    /! /.modal-content
+  /! /.modal-dialog
+
+
+#confirmar_compra_modal.modal.fade aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" 
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h4#myModalLabel.modal-title Confirmação de Compra
+        button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
+      .modal-body
+        h4 Overflowing text to show scroll behavior
+        p Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+        p Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.
+      .modal-footer
+        button type="button" class="btn btn-danger waves-effect waves-light" onclick="finalizar_compra()" Confirmar
+        button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Fechar
+    /! /.modal-content
+  /! /.modal-dialog
+
 
 javascript:
 
   function iniciar_produto(){
     criar_tabelas_tipo_produtos()
     criar_tabelas_combos()
+    criar_filtro_tipo_produto()
+    setar_dados_usuario()
+  }
+
+  function setar_dados_usuario(){
+    $("#nome_usuario").html(user_nome)
+    $("#saldo_usuario").html(number_to_currency(parseInt(user_saldo), { unit: "R$ " }))
   }
 
   $("#botao_produtos").click(function(){
@@ -84,6 +143,25 @@ javascript:
     $("#table_combos_all").show()
     $("#table_all").hide()
   })
+
+  function criar_filtro_tipo_produto(){
+    var conteudo = ""
+    conteudo += '<div onclick="filtrar_tipo(0)" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">Todos</div></div><br>'
+    for( j in tipos_all ){
+      conteudo += '<div onclick="filtrar_tipo('+tipos_all[j].id+')" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">'+tipos_all[j].nome+'</div></div><br>'
+    }
+    $("#filtro_tipo_produto").html(conteudo)
+  }
+
+  function filtrar_tipo(filtro_id){
+    if (filtro_id == 0){
+      $('table[id^=tabela_produto_tipo_]').show()
+    }else{
+      $('table[id^=tabela_produto_tipo_]').hide()
+      $('#tabela_produto_tipo_'+filtro_id).show()
+    }
+  }
+  
 
   function criar_tabelas_tipo_produtos(){
     console.log("-----")
@@ -106,14 +184,14 @@ javascript:
         ths += "<th></th>";
       }
 
-      tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'">'+tipos_all[j].nome+'</th></tr></thead><tbody>'
+      tables += '<table id="tabela_produto_tipo_'+tipos_all[j].id+'" class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'">'+tipos_all[j].nome+'</th></tr></thead><tbody>'
       
       var produtos_table_string = ""
       var produtos_table_string_total = ""
 
       for( i in produtos_tipo){
 
-        produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br> R$ '+produtos_tipo[i].preco+'</div></div></td>'
+        produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br>'+number_to_currency(produtos_tipo[i].preco, { unit: "R$ " })+'</div></div></td>'
 
         var ii = parseInt(i)+1
         if ( ii % 9 == 0 ){
@@ -149,10 +227,62 @@ javascript:
     
     produto = produtos_all.find(x => x.id === produto_id)
 
-    lista.push({produto_id: produto_id, produto_nome: produto.nome, quantidade: 1, preco: produto.preco})
-      
+    lista.push({produto_id: produto_id, produto_nome: produto.nome, quantidade: 1, preco: produto.preco })
 
-    //listar_produtos()
+    listar_produtos()
+  }
+
+  function remover_produto_lista(i){
+    lista.splice(i, 1)
+    listar_produtos()
+
+  }
+
+  function listar_produtos(){
+    
+    var conteudo = ""
+    var sem_produto = false
+    var total = 0
+    if(lista.length < 1){
+      conteudo += '<li>Carrinho Vazio</li>'
+      var sem_produto = true
+
+    }
+
+    for(i in lista){
+      total += lista[i].preco
+      if(lista[i].produto_nome != undefined){
+        conteudo += '<li data-toggle="collapse" data-target="#lista_collapse_'+i+'" aria-expanded="false" aria-controls="lista_collapse_'+i+'">'+lista[i].produto_nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span></li>'
+        
+      }else{
+        conteudo += '<li data-toggle="collapse" data-target="#lista_collapse_'+i+'" aria-expanded="false" aria-controls="lista_collapse_'+i+'">'+lista[i].nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span>'
+
+        conteudo += '<ul class="feeds">'
+        for(j in lista[i].produtos){
+          var prod_combo = produtos_all.find(x => x.id === lista[i].produtos[j])
+          conteudo += '<li>'+prod_combo.nome+'</li>'
+
+        }
+        conteudo += '</ul></li>'
+
+
+      }
+      conteudo += '<div id="lista_collapse_'+i+'" class="collapse" style="text-align: right"><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_produto_lista('+i+')" style="margin-left: 25px">Remover</button></div>'
+    }
+
+    if(!sem_produto){
+      conteudo += '<li></li>'
+      conteudo += '<li><b>Total</b><span class="text-muted"><b>'+number_to_currency(total, { unit: "R$ " })+'</b></span></li>'
+      conteudo += '<li><button type="button" class="btn btn waves-effect waves-light btn-primary" onclick="confirmar_compra()" style="width: 100%">Confirmar</button></li>'
+    }
+
+    $("#lista_compras_lateral").html(conteudo)
+
+    
+  }
+
+  function confirmar_compra(){
+    $("#confirmar_compra_modal").modal()
   }
 
   function criar_tabelas_combos(){
@@ -181,7 +311,7 @@ javascript:
 
     for( i in combos_all){
 
-      table_string += '<td><div onclick="add_combo('+combos_all[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combos_all[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combos_all[i].nome+'<br> R$ '+combos_all[i].preco+'</div></div></td>'
+      table_string += '<td><div onclick="add_combo('+combos_all[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combos_all[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combos_all[i].nome+'<br> '+number_to_currency(combos_all[i].preco, { unit: "R$ " })+'</div></div></td>'
 
       var ii = parseInt(i)+1
       if ( ii % 9 == 0 ){
@@ -246,6 +376,35 @@ javascript:
 
   }
 
+  function remover_produto_edicao_combo(produto_id){
+
+    index = edicao_combo.produtos.findIndex(x => x === produto_id);
+    edicao_combo.produtos.splice(index, 1);
+    popular_combo_produto(edicao_combo)
+
+  }
+
+  function remover_tipo_produto_edicao_combo(tipo_id){
+    index = edicao_combo.tipo_produtos.findIndex(x => x === tipo_id);
+    edicao_combo.tipo_produtos.splice(index, 1);
+    popular_combo_produto(edicao_combo)
+
+  }
+
+  function confirmar_combo(){
+    console.log("ENTRO")
+    console.log(edicao_combo.tipo_produtos.length)
+    if(edicao_combo.tipo_produtos.length > 0){
+      $("#modal_mensagem_titulo").html("Atenção")
+      $("#modal_mensagem_conteudo").html("Favor selecionar ou excluir os tipos do produto.")
+      $("#modal_mensagem").modal()
+    }else{
+      lista.push(edicao_combo)
+      reset_combo()
+      listar_produtos()
+    }
+  }
+
   function popular_combo_produto(combo){
 
     var combo_produtos = combo.produtos
@@ -278,7 +437,7 @@ javascript:
 
       var combo_prod = produtos_all.find(x => x.id === combo_produtos[i])
 
-      table_string += '<td><div onclick="add_produto_combo('+combo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_prod.url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_prod.nome+'<br>  </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" style="margin-left: 25px">Remover</button></td>'
+      table_string += '<td><div onclick="add_produto_combo('+combo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_prod.url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_prod.nome+'<br>  </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_produto_edicao_combo('+combo_prod.id+')" style="margin-left: 25px">Remover</button></td>'
 
       var ii = parseInt(i)+1
       if ( ii % 9 == 0 ){
@@ -292,7 +451,7 @@ javascript:
       
       var combo_tipo_prod = tipos_all.find(x => x.id === combo_tipo_produtos[i])
 
-      table_string += '<td><div onclick="add_tipo_produto_combo('+combo.id+','+combo_tipo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="/imagens/original/missing.png" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_tipo_prod.nome+'<br> </div></div></td>'
+      table_string += '<td><div onclick="add_tipo_produto_combo('+combo.id+','+combo_tipo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="/imagens/original/missing.png" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_tipo_prod.nome+'<br> </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_tipo_produto_edicao_combo('+combo_tipo_prod.id+')" style="margin-left: 25px">Remover</button></td>'
 
       var ii = parseInt(i)+1
       if ( ii % 9 == 0 ){
@@ -326,6 +485,8 @@ javascript:
 
 
     tables += table_string_total + '</tbody></table>'
+
+    tables += '<card><card-body><div class="m-b-10" style="text-align: right"><button type="button" class="btn waves-effect waves-light btn-primary" onclick="confirmar_combo()">Confirmar Combo</button><button type="button" class="btn waves-effect waves-light btn-danger" style="margin-left: 10px" onclick="reset_combo()">Cancelar</button></div></card-body></card>'
 
 
     $("#table_combos_all").html(tables)
@@ -390,4 +551,25 @@ javascript:
 
   function reset_combo(){
     criar_tabelas_combos()
+  }
+
+  function finalizar_compra(){
+      var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
+
+      console.log("afniaeknfsenfsenfsenfisef")
+
+      $.post("/finalizar_compra",
+      {
+        user_id: user_id,
+        lista: lista
+      },
+      function(data, status){
+
+        console.log(data)
+        console.log(status)
+
+        $("#confirmar_compra_modal").modal('hide')
+
+
+      });
   }

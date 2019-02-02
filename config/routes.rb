@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   match "/login_equipamento" => "equipamentos#login_equipamento", as: :login_equipamento, via: [:get, :post]
   match "/equipamento_page" => "equipamentos#equipamento_page", as: :equipamento_page, via: [:get, :post]
   match "/login_totem" => "equipamentos#login_totem", as: :login_totem, via: [:get, :post]
+  match "/finalizar_compra" => "equipamentos#finalizar_compra", as: :finalizar_compra, via: [:get, :post]
 
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
