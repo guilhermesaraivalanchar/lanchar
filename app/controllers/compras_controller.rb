@@ -19,7 +19,7 @@ class ComprasController < ApplicationController
     end
 
 
-  	@produtos_cardapio = Produto.where(id: cardapio_produto_ids)
+  	@produtos_cardapio = Produto.where(id: cardapio_produto_ids, ativo: true)
   	@combos_cardapio = Combo.where(id: cardapio_combo_ids).collect { |m| [m.nome, m.id] }
 
   	@produtos_cardapio_string = ""

@@ -67,7 +67,7 @@ class EquipamentosController < ApplicationController
 
     cardapio_produto_ids = cardapio_produto_ids - user.bloqueio_produtos.map(&:produto_id)
 
-    @produtos_cardapio = Produto.where(id: cardapio_produto_ids)
+    @produtos_cardapio = Produto.where(id: cardapio_produto_ids, ativo: true)
     @combos_cardapio = Combo.where(id: cardapio_combo_ids)
 
 
@@ -155,22 +155,6 @@ class EquipamentosController < ApplicationController
         valor_transf = valor_transf + prod_preco
         transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, produto_id: prod_combo[:produto_id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         produto = Produto.find(prod_combo[:produto_id])
-
-
-        puts "
-
-
-          NOME: #{produto.nome}
-          ID: #{produto.id}
-          QUANTIDADE: #{produto.quantidade}
-          X :#{produtos_update.select{ |p| p[:id] == 5 }.count}
-          QUANTIDADE UPDATE: #{produtos_update.select{ |p| p[:id] == prod_combo[:produto_id].to_i }.count}
-          produtos_update: #{produtos_update.inspect}
-
-
-
-        "
-
 
         if produto.quantidade > produtos_update.select{ |p| p[:id] == prod_combo[:produto_id].to_i }.count
           produtos_update << produto
