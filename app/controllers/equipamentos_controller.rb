@@ -166,7 +166,7 @@ class EquipamentosController < ApplicationController
       else
         combo_preco = prod_combo[:preco].to_d
         valor_transf = valor_transf + combo_preco
-        transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, combo_id: prod_combo[:produto_id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
+        transf = transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, combo_id: prod_combo[:produto_id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         preco_total += combo_preco
 
         prod_combo[:produtos].each do |prod_id|
