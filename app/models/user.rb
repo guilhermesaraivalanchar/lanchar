@@ -120,6 +120,11 @@ class User < ApplicationRecord
     return (self.saldo.to_d + self.credito.to_d) if !self.saldo_diario
 
     return (self.saldo_diario - self.saldo_gasto_hoje.to_d) 
+
+    saldo_max = (self.saldo.to_d + self.credito.to_d)
+
+    saldo_possivel = (self.saldo_diario < saldo_max) ? self.saldo_diario : saldo_max
+
   end
 
   def saldo_gasto_hoje
