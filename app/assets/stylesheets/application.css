@@ -55,3 +55,11 @@
 .input_filtro{
 	height: 52px;
 }
+
+.retirar_padding_right{
+	padding-right: 0px !important;  
+}
+
+.pointer{
+	cursor: pointer;
+}

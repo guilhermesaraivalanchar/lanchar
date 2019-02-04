@@ -1,6 +1,6 @@
 class EquipamentosController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, :only => [:login_equipamento, :login_totem, :finalizar_compra]
+  skip_before_action :verify_authenticity_token, :only => [:login_equipamento, :login_totem, :finalizar_compra, :alt_senha_user]
 
   def login_equipamento
 
@@ -21,11 +21,18 @@ class EquipamentosController < ApplicationController
     if u 
 
       senhas_possiveis = gerar_possiveis_senhas(params[:p])
-      senhas_possiveis.include?(u.senha_totem)
 
-      render json: usuario_info(u)
+      if u.ativo
+        if senhas_possiveis.include?(u.senha_totem)
+          render json: usuario_info(u)
+        else
+          render json: { status: "SENHA_INCORRETA" }
+        end
+      else
+        render json: { status: "USUARIO_INATIVO" }
+      end
+
     else
-      
       render json: { status: "CODIGO_NAO_ENCONTRADO" }
     end
 
@@ -84,7 +91,9 @@ class EquipamentosController < ApplicationController
 
     end
 
-    return { status: 200, user_nome: user.nome, user_id: user.id, saldo_disponivel: user.saldo_diario_atual, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos }
+    status_user = user.senha_totem == "0000" ? "SENHA_INICIAL" : 200
+
+    return { status: status_user, user_nome: user.nome, user_id: user.id, saldo_total: user.saldo, saldo_disponivel: user.saldo_diario_atual, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos }
 
 
   end
@@ -190,5 +199,12 @@ class EquipamentosController < ApplicationController
     else
       render json: { status: "ERRO_QUANTIDADE_PRODUTO", produtos: erro_produtos_quantidade }
     end
+  end
+
+  def alt_senha_user
+
+    User.find(params[:user_id]).update_attribute(:senha_totem,params[:senha])
+    render json: { status: "SALVO" }
+    
   end
 end

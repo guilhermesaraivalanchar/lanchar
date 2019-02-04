@@ -42,7 +42,7 @@ css:
                 h3.m-b-0.font-lgiht Combos
 
     .row style="padding-right: 30px"
-      .col-1
+      .col-1.retirar_padding_right
         div#filtro_tipo_produto class="" style=""
       .col-11
         div#table_all
@@ -110,7 +110,6 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
         button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
       #erro_produto_conteudo.modal-body
       .modal-footer
-        button type="button" class="btn btn-danger waves-effect waves-light" onclick="finalizar_compra()" Confirmar
         button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Fechar
     /! /.modal-content
   /! /.modal-dialog
@@ -123,7 +122,6 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
         button.close aria-hidden="true" data-dismiss="modal" type="button"  ×
       #erros_sistema_conteudo.modal-body
       .modal-footer
-        button type="button" class="btn btn-danger waves-effect waves-light" onclick="finalizar_compra()" Confirmar
         button.btn.btn-info.waves-effect data-dismiss="modal" type="button"  Fechar
     /! /.modal-content
   /! /.modal-dialog
@@ -139,7 +137,11 @@ javascript:
 
   function setar_dados_usuario(){
     $("#nome_usuario").html(user_nome)
-    $("#saldo_usuario").html(number_to_currency(parseInt(user_saldo), { unit: "R$ " }))
+    if(user_saldo == user_saldo_total){
+      $("#saldo_usuario").html("Saldo: "+number_to_currency(parseInt(user_saldo), { unit: "R$ " }))
+    }else{
+      $("#saldo_usuario").html("Saldo: "+number_to_currency(parseInt(user_saldo), { unit: "R$ " })+"<br> Saldo Diário: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " }))
+    }
   }
 
   $("#botao_produtos").click(function(){
@@ -152,11 +154,20 @@ javascript:
     $("#table_all").hide()
   })
 
-  function criar_filtro_tipo_produto(){
+  function criar_filtro_tipo_produto_old(){
     var conteudo = ""
     conteudo += '<div onclick="filtrar_tipo(0)" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">Todos</div></div><br>'
     for( j in tipos_all ){
       conteudo += '<div onclick="filtrar_tipo('+tipos_all[j].id+')" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">'+tipos_all[j].nome+'</div></div><br>'
+    }
+    $("#filtro_tipo_produto").html(conteudo)
+  }
+
+  function criar_filtro_tipo_produto(){
+    var conteudo = ""
+    conteudo += '<div onclick="filtrar_tipo(0)" class="error_validate alert alert-info pointer" id="erro_senha" style="text-align: center;">Todos</div>'
+    for( j in tipos_all ){
+      conteudo += '<div onclick="filtrar_tipo('+tipos_all[j].id+')" class="alert alert-info pointer" id="erro_senha" style="text-align: center;">'+tipos_all[j].nome+'</div>'
     }
     $("#filtro_tipo_produto").html(conteudo)
   }
@@ -261,10 +272,10 @@ javascript:
     for(i in lista){
       total += lista[i].preco
       if(lista[i].produto_nome != undefined){
-        conteudo += '<li data-toggle="collapse" data-target="#lista_collapse_'+i+'" aria-expanded="false" aria-controls="lista_collapse_'+i+'">'+lista[i].produto_nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span></li>'
+        conteudo += '<li onclick="remover_produto_lista('+i+')">'+lista[i].produto_nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span></li>'
         
       }else{
-        conteudo += '<li data-toggle="collapse" data-target="#lista_collapse_'+i+'" aria-expanded="false" aria-controls="lista_collapse_'+i+'">'+lista[i].nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span>'
+        conteudo += '<li onclick="remover_produto_lista('+i+')">'+lista[i].nome+'<span class="text-muted">'+number_to_currency(lista[i].preco, { unit: "R$ " })+'</span>'
 
         conteudo += '<ul class="feeds">'
         for(j in lista[i].produtos){
@@ -276,14 +287,14 @@ javascript:
 
 
       }
-      conteudo += '<div id="lista_collapse_'+i+'" class="collapse" style="text-align: right"><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_produto_lista('+i+')" style="margin-left: 25px">Remover</button></div>'
+      //conteudo += '<div id="lista_collapse_'+i+'" class="collapse" style="text-align: right"><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_produto_lista('+i+')" style="margin-left: 25px">Remover</button></div>'
     }
 
     if(!sem_produto){
       total_compra = total
       conteudo += '<li></li>'
       conteudo += '<li><b>Total</b><span class="text-muted"><b>'+number_to_currency(total, { unit: "R$ " })+'</b></span></li>'
-      conteudo += '<li><button type="button" class="btn btn waves-effect waves-light btn-primary" onclick="finalizar_compra()" style="width: 100%">Confirmar</button></li>'
+      conteudo += '<li><button id="confirmar_compra_botao" type="button" class="btn btn waves-effect waves-light btn-primary" onclick="finalizar_compra()" style="width: 100%">Confirmar</button></li>'
     }
 
     $("#lista_compras_lateral").html(conteudo)
@@ -567,6 +578,8 @@ javascript:
 
     console.log("TOTAL: "+total_compra)
     console.log("USER: "+user_saldo)
+
+    $("#confirmar_compra_botao").prop("disabled", true)
 
     if (total_compra < user_saldo){
 

@@ -5,6 +5,7 @@
         .card-body
           form#loginform.form-horizontal.form-material action="" 
             h3.box-title.m-b-20 Entrar
+            h4#msg_alt_senha.box-title.m-b-20 style="display:none" Como é seu primeiro login, escolher uma nova senha.
             div#input_usuario.form-group
               h5.box-title.m-b-20 Matricula
               .col-xs-12
@@ -13,11 +14,19 @@
               h5.box-title.m-b-20 Senha
               .col-xs-12
                 input#user_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
+            div#input_alt_senha.form-group style="display:none"
+              h5.box-title.m-b-20 Alterar Senha ( 4 digitos )
+              .col-xs-12
+                input#user_alt_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
             .form-group.text-center.m-t-20
               .col-xs-12
                 div#check_teclado_login
-                  button.btn.btn-info.btn-lg.btn-block.text-uppercase.waves-effect.waves-light type="button" Verificar
-                button#entrar.btn.btn-info.btn-lg.btn-block.text-uppercase.waves-effect.waves-light type="button" style="display:none" Entrar
+                  button.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" Verificar
+                button#entrar.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Entrar
+                button#botao_alt_senha.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Mudar Senha
+                
+                div#erro_senha.error_validate class="alert alert-danger" style="text-align: center; display:none" Codigo ou senha incorreta.
+                div#erro_usu_ativo.error_validate class="alert alert-danger" style="text-align: center; display:none" Usuário desativado.
             .row#teclado_login
               .col-4
                 div.error_validate class="alert alert-info" onclick="login_botao(1)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
@@ -90,6 +99,9 @@ javascript:
   var botao_senha_4 = [1, 2]
   var botao_senha_5 = [1, 2]
 
+  var modo_alt_senha = false
+  var modo_confirmar_alt_senha = false
+  var senha_para_alterar = ""
   var teclado = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
   function misturar_teclado_senha(){
     teclado = []
@@ -142,14 +154,65 @@ javascript:
   var senha = []
 
   function login_botao(numero){
-    log = $("#user_codigo")
+
+    if(modo_alt_senha){
+      log = $("#user_alt_pass")
+    }else{
+      log = $("#user_codigo")
+    }
+
     log.val(log.val() + numero)
   }
 
   function login_botao_apagar() {
-    log = $("#user_codigo")
-    var newStr = log.val().substring(0, log.val().length-1);
-    log.val(newStr)
+    if(modo_alt_senha){
+      $("#user_alt_pass").val("")
+    }else{
+      log = $("#user_codigo")
+      var newStr = log.val().substring(0, log.val().length-1);
+      log.val(newStr)
+    }
+    
+  }
+
+  $("#botao_alt_senha").click(function(){
+    if(!modo_confirmar_alt_senha){
+      var alt_senha = $("#user_alt_pass").val()
+      if(alt_senha.length != 4){
+        alert("A senha deve conter 4 digitos.")
+      }else{
+        senha_para_alterar = alt_senha
+        $("#botao_alt_senha").html('Confirmar Senha')
+        modo_confirmar_alt_senha = true
+        $("#user_alt_pass").val("")
+      }
+    }else{
+      if(senha_para_alterar != $("#user_alt_pass").val()){
+        alert("Senhas digitadas não sao iguais.")
+      }else{
+        mudar_senha_e_logar(senha_para_alterar)
+      }     
+    }
+  })
+
+  function mudar_senha_e_logar(senha_para_alterar){
+    $("#login_page").hide()
+    $("#equip_page").show()
+
+    iniciar_produto()
+
+    $.post("/alt_senha_user",
+    {
+      user_id: user_id,
+      senha: senha_para_alterar
+    },
+    function(data, status){
+
+      console.log(data)
+      console.log(status)
+
+    });
+
   }
 
   $("#check_teclado_login").click(function(){
@@ -174,6 +237,7 @@ javascript:
   var user_saldo = 0
   var user_url = ""
   var user_id = ""
+  var user_saldo_total = 0
 
 
   $("#entrar").click(function(){
@@ -190,19 +254,61 @@ javascript:
         console.log(data)
         console.log(status)
 
-        produtos_all = data.all_produtos
-        combos_all = data.all_combos
-        tipos_all = data.all_tipos
-        user_nome = data.user_nome
-        user_saldo = data.saldo_disponivel
-        user_url = data.user_url
-        user_id = data.user_id
+        if (data.status == "200"){
+          produtos_all = data.all_produtos
+          combos_all = data.all_combos
+          tipos_all = data.all_tipos
+          user_nome = data.user_nome
+          user_saldo = data.saldo_disponivel
+          user_url = data.user_url
+          user_id = data.user_id
+          user_saldo_total = data.saldo_total
 
+          $("#login_page").hide()
+          $("#equip_page").show()
 
-        $("#login_page").hide()
-        $("#equip_page").show()
+          iniciar_produto()
+        }else if(data.status == "SENHA_INCORRETA" || data.status == "CODIGO_NAO_ENCONTRADO"){
+          $("#user_codigo").val("")
+          $("#teclado_login").show()
+          $("#teclado_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
+          $("#check_teclado_login").show()
+          $("#entrar").hide()
+          $("#erro_senha").show()
+        }else if(data.status == "USUARIO_INATIVO"){
+          $("#user_codigo").val("")
+          $("#teclado_login").show()
+          $("#teclado_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
+          $("#check_teclado_login").show()
+          $("#entrar").show()
+          $("#erro_usu_ativo").show()
+        }else if(data.status == "SENHA_INICIAL"){
 
-        iniciar_produto()
+          produtos_all = data.all_produtos
+          combos_all = data.all_combos
+          tipos_all = data.all_tipos
+          user_nome = data.user_nome
+          user_saldo = data.saldo_disponivel
+          user_url = data.user_url
+          user_id = data.user_id
+          user_saldo_total = data.saldo_total
+
+          $("#teclado_login").show()
+          $("#teclado_senha").hide()
+          $("#input_usuario").hide()
+          $("#input_senha").hide()
+          $("#input_alt_senha").show()
+          $("#check_teclado_login").hide()
+          $("#entrar").hide()
+          $("#erro_usu_ativo").hide()
+          $("#botao_alt_senha").show()
+          $("#msg_alt_senha").show()
+          modo_alt_senha = true
+        }
 
       });
   })
