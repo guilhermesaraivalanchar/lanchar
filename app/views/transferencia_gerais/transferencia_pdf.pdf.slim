@@ -51,7 +51,6 @@ css:
   td {
     padding: 5px 0;
   }
-- current_user = User.find(1) if params[:totem].present?
 - if @transferencia_geral.tipo == "ENTRADA"
   div style="font-size: 15px; max-width: 245px; text-align:center"
     | ------------------------------------------------
@@ -64,7 +63,7 @@ css:
     br
     | ------------------------------------------------
   div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user.escola.nome}"
+    = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
     br
     = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
     br
@@ -92,7 +91,7 @@ css:
     br
     | ------------------------------------------------
   div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user.escola.nome}"
+    = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
     br
     = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
     br
@@ -119,7 +118,7 @@ css:
     br
     | ------------------------------------------------
   div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user.escola.nome}"
+    = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
     br
     = "Data/Hora: #{@transferencia_geral.created_at.strftime('%d/%m/%Y %H:%M')}"
     br
@@ -138,7 +137,7 @@ css:
     br
     | -------------------------------------------------
   div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user.escola.nome}"
+    = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
     br
     = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
     br

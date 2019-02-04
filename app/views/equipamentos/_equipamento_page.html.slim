@@ -596,14 +596,14 @@ javascript:
         console.log(status)
 
         if(data.status == 'OK'){
-          console.log("WIDJEMSEF")
+
           window.open("/transferencia_gerais/transferencia_pdf/"+data.transferencia+".pdf?totem=1")
 
-          //location.reload();
+          location.reload();
 
         }else if(data.status == 'ERRO_QUANTIDADE_PRODUTO'){
 
-          conteudo = "Produtos sem estoque !"
+          conteudo = "Produtos sem estoque !<br>"
 
           for(i in data.produtos){
             conteudo += data.produtos[i] + "<br>"
@@ -612,11 +612,16 @@ javascript:
           $("#erro_produto_conteudo").html(conteudo)
 
           $("#erro_compra_produto").modal()
+
+          $("#confirmar_compra_botao").prop("disabled", false)
+
         }
 
       });
     }else{
       $("#erros_sistema_conteudo").html("Saldo insuficiente.")
       $("#erros_sistema").modal()
+      $("#confirmar_compra_botao").prop("disabled", false)
+
     }
   }
