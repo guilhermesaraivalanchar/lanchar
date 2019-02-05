@@ -136,7 +136,7 @@ javascript:
   }
 
   function setar_dados_usuario(){
-    $("#nome_usuario").html(user_nome)
+    $("#nome_usuario").html(user_nome+ '<button type="button" class="btn waves-effect waves-light btn-danger btn-sm" onclick="logoff()" style="position:relative; right: -70px;">Sair</button>')
 
     if(user_diario == null){
       $("#saldo_usuario").html("Saldo: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " })+"<br> Saldo + Lim: "+number_to_currency(parseInt(user_saldo), { unit: "R$ " }))
@@ -191,7 +191,12 @@ javascript:
       $('#tabela_produto_tipo_'+filtro_id).show()
     }
   }
-  
+
+
+  function logoff(){
+    location.reload();
+  }
+
 
   function criar_tabelas_tipo_produtos(){
     console.log("-----")
