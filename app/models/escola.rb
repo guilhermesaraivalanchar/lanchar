@@ -9,6 +9,7 @@ class Escola < ApplicationRecord
 	has_many :tipo_produtos
 	has_many :tipo_users
 	has_many :fornecedores
+	has_many :equipamentos
 
 	def saldo_devedor
 		valor_vendido = self.transferencias.where("transferencias.valor > 0").where(tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor).to_d

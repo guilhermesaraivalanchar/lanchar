@@ -2,6 +2,15 @@ class EquipamentosController < ApplicationController
 
   skip_before_action :verify_authenticity_token, :only => [:login_equipamento, :login_totem, :finalizar_compra, :alt_senha_user]
 
+  #before_action :authenticate_totem
+
+  def authenticate_totem
+    @equipamento = Equipamento.where(token: params[:t]).first if params[:t]
+
+    render json: {}, status: 403 if !@equipamento
+  end
+
+
   def login_equipamento
 
   end

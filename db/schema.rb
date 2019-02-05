@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_01_105701) do
+ActiveRecord::Schema.define(version: 2019_02_05_172315) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -96,6 +96,9 @@ ActiveRecord::Schema.define(version: 2019_02_01_105701) do
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "nome"
+    t.integer "escola_id"
+    t.index ["escola_id"], name: "index_equipamentos_on_escola_id"
   end
 
   create_table "escolas", force: :cascade do |t|

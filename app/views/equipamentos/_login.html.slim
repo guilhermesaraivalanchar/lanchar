@@ -225,8 +225,16 @@ javascript:
     $("#entrar").show()
   })
 
+
+  var totem_token = ""
   $(document).ready(function() {
     mudar_botoes_senha()
+
+    var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    totem_token = url.searchParams.get("t");
+    console.log(t);
+
   })
 
 
@@ -243,7 +251,8 @@ javascript:
 
 
   $("#entrar").click(function(){
-      var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
+
+      var totem_token = "7D5Nt_e9qFD707n78DBoWA"
 
       $.post("/login_totem",
       {
