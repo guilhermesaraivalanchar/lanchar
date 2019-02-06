@@ -265,7 +265,7 @@ javascript:
         console.log(data)
         console.log(status)
 
-        if (data.status == "200"){
+        if (data.status == "200" || data.status == "SENHA_INICIAL"){
           produtos_all = data.all_produtos
           combos_all = data.all_combos
           tipos_all = data.all_tipos

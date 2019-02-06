@@ -179,6 +179,7 @@ class UsersController < ApplicationController
     @user.credito = 30
     @user.enable_after_save = true
     @user.ativo = true
+    @user.senha_totem = "0000"
     @user.nome = @user.nome.upcase
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
