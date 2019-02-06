@@ -128,6 +128,8 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
 
 javascript:
 
+  var numero_items = 8
+
   function iniciar_produto(){
     criar_tabelas_tipo_produtos()
     criar_tabelas_combos()
@@ -145,7 +147,7 @@ javascript:
 
     }
 
-    if(user_saldo == user_saldo_total){
+    if(user_saldo_disponivel == user_saldo_total){
       $("#saldo_usuario").html("Saldo: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " }))
     }else{
       $("#saldo_usuario").html("Saldo: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " })+"<br> Saldo Diário: "+number_to_currency(parseInt(user_saldo_disponivel), { unit: "R$ " }))
@@ -205,10 +207,10 @@ javascript:
     var x;
     var ths = ""
     var quantidade_total_combos = produtos_all.length
-    if (quantidade_total_combos < 9){
+    if (quantidade_total_combos < numero_items){
       num_max = produtos_all.length
     }else{
-      num_max = 9
+      num_max = numero_items
     }
     for (x = 0; x < num_max - 1; x++) { 
       ths += "<th></th>";
@@ -224,7 +226,7 @@ javascript:
       table_string += '<td><div onclick="add_produto('+produtos_all[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_all[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_all[i].nome+'<br> '+number_to_currency(produtos_all[i].preco, { unit: "R$ " })+'</div></div></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         table_string = "<tr>" + table_string + "</tr>" 
         table_string_total += table_string
         table_string = ""
@@ -235,8 +237,8 @@ javascript:
     {
       var tds = ""
 
-      if (quantidade_total_combos > 9){
-        resto = 9 - (quantidade_total_combos % 9)
+      if (quantidade_total_combos > numero_items){
+        resto = numero_items - (quantidade_total_combos % numero_items)
         for (x = 0; x < resto; x++) { 
           tds += "<td></td>";
         }
@@ -261,10 +263,10 @@ javascript:
     var x;
     var ths = ""
     var quantidade_total_produtos = produtos_tipo.length
-    if (quantidade_total_produtos < 9){
+    if (quantidade_total_produtos < numero_items){
       num_max = quantidade_total_produtos
     }else{
-      num_max = 9
+      num_max = numero_items
     }
     for (x = 0; x < num_max - 1; x++) { 
       ths += "<th></th>";
@@ -280,7 +282,7 @@ javascript:
       produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br>'+number_to_currency(produtos_tipo[i].preco, { unit: "R$ " })+'</div></div></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
         produtos_table_string_total += produtos_table_string
         produtos_table_string = ""
@@ -291,8 +293,8 @@ javascript:
     {
       var tds = ""
 
-      if (quantidade_total_produtos > 9){
-        resto = 9 - (quantidade_total_produtos % 9)
+      if (quantidade_total_produtos > numero_items){
+        resto = numero_items - (quantidade_total_produtos % numero_items)
         for (x = 0; x < resto; x++) { 
           tds += "<td></td>";
         }
@@ -318,10 +320,10 @@ javascript:
       var x;
       var ths = ""
       var quantidade_total_produtos = produtos_tipo.length
-      if (quantidade_total_produtos < 9){
+      if (quantidade_total_produtos < numero_items){
         num_max = quantidade_total_produtos
       }else{
-        num_max = 9
+        num_max = numero_items
       }
       for (x = 0; x < num_max - 1; x++) { 
         ths += "<th></th>";
@@ -337,7 +339,7 @@ javascript:
         produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br>'+number_to_currency(produtos_tipo[i].preco, { unit: "R$ " })+'</div></div></td>'
 
         var ii = parseInt(i)+1
-        if ( ii % 9 == 0 ){
+        if ( ii % numero_items == 0 ){
           produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
           produtos_table_string_total += produtos_table_string
           produtos_table_string = ""
@@ -348,8 +350,8 @@ javascript:
       {
         var tds = ""
 
-        if (quantidade_total_produtos > 9){
-          resto = 9 - (quantidade_total_produtos % 9)
+        if (quantidade_total_produtos > numero_items){
+          resto = numero_items - (quantidade_total_produtos % numero_items)
           for (x = 0; x < resto; x++) { 
             tds += "<td></td>";
           }
@@ -440,10 +442,10 @@ javascript:
     var x;
     var ths = ""
     var quantidade_total_combos = combos_all.length
-    if (quantidade_total_combos < 9){
+    if (quantidade_total_combos < numero_items){
       num_max = combos_all.length
     }else{
-      num_max = 9
+      num_max = numero_items
     }
     for (x = 0; x < num_max - 1; x++) { 
       ths += "<th></th>";
@@ -459,7 +461,7 @@ javascript:
       table_string += '<td><div onclick="add_combo('+combos_all[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combos_all[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combos_all[i].nome+'<br> '+number_to_currency(combos_all[i].preco, { unit: "R$ " })+'</div></div></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         table_string = "<tr>" + table_string + "</tr>" 
         table_string_total += table_string
         table_string = ""
@@ -470,8 +472,8 @@ javascript:
     {
       var tds = ""
 
-      if (quantidade_total_combos > 9){
-        resto = 9 - (quantidade_total_combos % 9)
+      if (quantidade_total_combos > numero_items){
+        resto = numero_items - (quantidade_total_combos % numero_items)
         for (x = 0; x < resto; x++) { 
           tds += "<td></td>";
         }
@@ -489,36 +491,22 @@ javascript:
   var edicao_salgado = ""
 
   function add_combo(combo_id){
-
     $("#div_combo_produtos").hide()
-    
     var combo = combos_all.find(x => x.id === combo_id)
-
     edicao_combo = { id: combo.id, nome: combo.nome, preco: combo.preco, produtos: combo.produtos.slice(), tipo_produtos: combo.tipo_produtos.slice(), url: combo.url }
-
     popular_combo_produto(combo)
-
-
   }
 
   function add_tipo_produto_combo(combo_id, ipo_produto_id){
-
     popular_combo_produto_tipo(combo_id, ipo_produto_id)
-
-
   }
 
   function add_tipo_produto_edicao(tipo_id, produto_id){
-
     console.log("AQKK")
-
     index = edicao_combo.tipo_produtos.findIndex(x => x === tipo_id);
     edicao_combo.tipo_produtos.splice(index, 1);
-
     edicao_combo.produtos.push(produto_id)
-
     popular_combo_produto(edicao_combo)
-
   }
 
   function remover_produto_edicao_combo(produto_id){
@@ -564,10 +552,10 @@ javascript:
     var x;
     var ths = ""
     var quantidade_total_no_combo = combo_produtos.length + combo_tipo_produtos.length
-    if (quantidade_total_no_combo < 9){
+    if (quantidade_total_no_combo < numero_items){
       num_max = quantidade_total_no_combo
     }else{
-      num_max = 9
+      num_max = numero_items
     }
     for (x = 0; x < num_max - 1; x++) { 
       ths += "<th></th>";
@@ -585,7 +573,7 @@ javascript:
       table_string += '<td><div onclick="add_produto_combo('+combo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="'+combo_prod.url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_prod.nome+'<br>  </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_produto_edicao_combo('+combo_prod.id+')" style="margin-left: 25px">Remover</button></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         table_string = "<tr>" + table_string + "</tr>" 
         table_string_total += table_string
         table_string = ""
@@ -599,7 +587,7 @@ javascript:
       table_string += '<td><div onclick="add_tipo_produto_combo('+combo.id+','+combo_tipo_prod.id+')" style="width: 120px; height: 180px;"><img height="120" src="/imagens/original/missing.png" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+combo_tipo_prod.nome+'<br> </div></div><button type="button" class="btn btn-sm waves-effect waves-light btn-danger" onclick="remover_tipo_produto_edicao_combo('+combo_tipo_prod.id+')" style="margin-left: 25px">Remover</button></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         table_string = "<tr>" + table_string + "</tr>" 
         table_string_total += table_string
         table_string = ""
@@ -610,8 +598,8 @@ javascript:
     {
       var tds = ""
 
-      if (quantidade_total_no_combo > 9){
-        resto = 9 - (quantidade_total_no_combo % 9)
+      if (quantidade_total_no_combo > numero_items){
+        resto = numero_items - (quantidade_total_no_combo % numero_items)
         for (x = 0; x < resto; x++) { 
           tds += "<td></td>";
         }
@@ -649,10 +637,10 @@ javascript:
     var x;
     var ths = ""
     var quantidade_total_no_combo = produtos_tipo.length
-    if (quantidade_total_no_combo < 9){
+    if (quantidade_total_no_combo < numero_items){
       num_max = quantidade_total_no_combo
     }else{
-      num_max = 9
+      num_max = numero_items
     }
     for (x = 0; x < num_max - 1; x++) { 
       ths += "<th></th>";
@@ -668,7 +656,7 @@ javascript:
       table_string += '<td><div onclick="add_tipo_produto_edicao('+tipo_produto_id+','+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br></div></div></td>'
 
       var ii = parseInt(i)+1
-      if ( ii % 9 == 0 ){
+      if ( ii % numero_items == 0 ){
         table_string = "<tr>" + table_string + "</tr>" 
         table_string_total += table_string
         table_string = ""
@@ -679,8 +667,8 @@ javascript:
     {
       var tds = ""
 
-      if (quantidade_total_no_combo > 9){
-        resto = 9 - (quantidade_total_no_combo % 9)
+      if (quantidade_total_no_combo > numero_items){
+        resto = numero_items - (quantidade_total_no_combo % numero_items)
         for (x = 0; x < resto; x++) { 
           tds += "<td></td>";
         }
