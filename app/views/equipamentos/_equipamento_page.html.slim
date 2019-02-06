@@ -8,7 +8,7 @@ css:
   .col-10
     .row style="padding-right: 30px"
       div#botao_carrinho.col-lg-3.col-md-6
-        img.dark-logo alt="homepage" height="100" src="/imagens/CantinaPro.png"
+        img.dark-logo alt="homepage" width="300" src="/imagens/CantinaPro.png"
 
       div#botao_favoritos.col-lg-3.col-md-6
         .card
@@ -52,8 +52,8 @@ css:
             | Carrinho Vazio
     .card style="position: fixed; bottom: 0px; right: 10px; width: 300px"
       .card-body
-        h3#nome_usuario_inf.m-b-0.font-lgiht
-        h5#saldo_usuario_inf.text-muted.m-b-0
+        h4#nome_usuario_inf.m-b-0.font-lgiht
+        h4#saldo_usuario_inf.text-muted.m-b-0
         button type="button" class="btn waves-effect waves-light btn-danger btn-sm" onclick="logoff()" style="width: 100%" Sair
 
 div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display:none"
@@ -693,7 +693,7 @@ javascript:
 
     $("#confirmar_compra_botao").prop("disabled", true)
 
-    if (total_compra < user_saldo_disponivel){
+    if (total_compra <= user_saldo_disponivel){
 
       var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
 
