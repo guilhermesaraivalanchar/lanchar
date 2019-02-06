@@ -265,7 +265,7 @@ javascript:
         console.log(data)
         console.log(status)
 
-        if (data.status == "200" || data.status == "SENHA_INICIAL"){
+        if (data.status == "200"){
           produtos_all = data.all_produtos
           combos_all = data.all_combos
           tipos_all = data.all_tipos
@@ -302,15 +302,18 @@ javascript:
           $("#entrar").show()
           $("#erro_usu_ativo").show()
         }else if(data.status == "SENHA_INICIAL"){
-
+          
           produtos_all = data.all_produtos
           combos_all = data.all_combos
           tipos_all = data.all_tipos
           user_nome = data.user_nome
-          user_saldo = data.saldo_disponivel
+          user_saldo_disponivel = data.saldo_disponivel
           user_url = data.user_url
           user_id = data.user_id
           user_saldo_total = data.saldo_total
+          user_credito = data.saldo_credito
+          user_credito = data.saldo_credito
+          user_diario = data.saldo_diario
 
           $("#teclado_login").show()
           $("#teclado_senha").hide()
