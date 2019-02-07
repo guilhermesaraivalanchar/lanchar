@@ -11,6 +11,9 @@ class Escola < ApplicationRecord
 	has_many :fornecedores
 	has_many :equipamentos
 
+	has_attached_file :logo, :styles => { :original => "900x900>" }
+  	do_not_validate_attachment_file_type :logo
+
 	def saldo_devedor
 		valor_vendido = self.transferencias.where("transferencias.valor > 0").where(tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor).to_d
 		valor_reembolso = self.transferencias.where("transferencias.valor > 0").where(tipo: ["REEMBOLSO"]).sum(:valor).to_d

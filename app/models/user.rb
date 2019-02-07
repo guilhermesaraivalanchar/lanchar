@@ -9,9 +9,10 @@ class User < ApplicationRecord
 
   validates_presence_of :nome
   validates_presence_of :codigo
-  validates_uniqueness_of :codigo
+  #validates_uniqueness_of :codigo
 
-  validates :codigo, uniqueness: true
+  #validates :codigo, uniqueness: true
+  validates :codigo, uniqueness: { scope: :escola_id, message: 'Já existe um usuário com este codigo.'  }
 
   has_many :responsavel_users, :dependent => :destroy 
   has_many :transferencia_gerais, :dependent => :destroy

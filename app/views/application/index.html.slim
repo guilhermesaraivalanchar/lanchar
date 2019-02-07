@@ -1,11 +1,8 @@
 .row
   .col-lg-4.col-md-6
     .card
-      img.card-img-top alt=("Card image cap") src="../imagens/profile-bg.jpg"
       .card-body.little-profile
         div.text-center
-          .pro-img
-            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
           h3.m-b-0
             = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
           p 
@@ -19,7 +16,7 @@
             .row
               div.col-lg-4.col-md-6
                 div.show_input  
-                  = "Matricula"
+                  = "Codigo de Acesso"
                 = current_user.codigo
               div.col-lg-4.col-md-6
                 div.show_input  

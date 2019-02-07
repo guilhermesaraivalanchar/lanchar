@@ -1,13 +1,34 @@
 class ProdutosController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_produtos")
-    @produtos = Produto.where(escola_id: current_user.escola_id)
     @can_criar_produtos = current_user.tem_permissao("criar_produtos")
     @can_ver_produto = current_user.tem_permissao("ver_produto")
     @can_editar_produtos = current_user.tem_permissao("editar_produtos")
     @can_deletar_produtos = current_user.tem_permissao("deletar_produtos")
     @can_ativar_desativar_produtos = current_user.tem_permissao("ativar_desativar_produtos")
+    
+    @filtro = Filtro.where(user_id: current_user.id, local: "produto_index").first
+    @filtro ||= Filtro.new(user_id: current_user.id)
 
+    where_nome_filtro = ""
+    where_nome_filtro = "produtos.nome LIKE '%#{@filtro.filtro_1.upcase}%'" if @filtro.filtro_1.present?
+    where_codigo_filtro = ""
+    where_codigo_filtro = "produtos.codigo LIKE '%#{@filtro.filtro_2}%'" if @filtro.filtro_2.present?
+    where_tipo_filtro = ""
+    where_tipo_filtro = "produtos.quantidade >= #{@filtro.filtro_3.to_i} AND produtos.quantidade <= #{@filtro.filtro_5.to_i}" if @filtro.filtro_3.present? && @filtro.filtro_5.present?
+    where_tipo_filtro = "produtos.quantidade = #{@filtro.filtro_3.to_i}" if @filtro.filtro_3.present? && !@filtro.filtro_5.present?
+    where_tipo_filtro = "produtos.quantidade = #{@filtro.filtro_5.to_i}" if !@filtro.filtro_3.present? && @filtro.filtro_5.present?
+
+    if @filtro.filtro_4 == "0"
+      @produtos = Produto.where(escola_id: current_user.escola_id).where(where_nome_filtro).where(where_codigo_filtro).where(where_tipo_filtro).where(ativo: false)
+    elsif @filtro.filtro_4 == "1"
+      @produtos = Produto.where(escola_id: current_user.escola_id).where(where_nome_filtro).where(where_codigo_filtro).where(where_tipo_filtro).where(ativo: true)
+    elsif @filtro.filtro_4 == "2"
+      @produtos = Produto.where(escola_id: current_user.escola_id).where(where_nome_filtro).where(where_codigo_filtro).where(where_tipo_filtro)
+    else
+      @produtos = Produto.where(escola_id: current_user.escola_id).where(where_nome_filtro).where(where_codigo_filtro).where(where_tipo_filtro).where(ativo: true)
+    end
+        
 
   end
 
@@ -51,6 +72,7 @@ class ProdutosController < ApplicationController
 
   def create
     init_new
+    produto_params[:nome] = produto_params[:nome].upcase
     produto_params[:escola_id] = current_user.escola_id
     produto_params[:ativo] = true
     respond_to do |format|
@@ -66,6 +88,7 @@ class ProdutosController < ApplicationController
 
   def update
     init_current
+    produto_params[:nome] = produto_params[:nome].upcase
     respond_to do |format|
       if current_user.tem_permissao("editar_produtos") && @produto.update_attributes(produto_params)
         format.html { redirect_to(produtos_path, :notice => "Produto editado com sucesso.") }

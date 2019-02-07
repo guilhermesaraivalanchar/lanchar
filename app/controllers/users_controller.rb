@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  
+  skip_before_action :verify_authenticity_token, :only => [:login_acesso]
+  
   def index
   	@users = User.where(escola_id: current_user.escola_id, sem_compra: [nil,false])
     @can_criar_usuarios = current_user.tem_permissao("criar_usuarios")
@@ -41,6 +44,22 @@ class UsersController < ApplicationController
     end
 
     @users.uniq!
+
+  end
+
+  def login_acesso
+
+    user = User.where(codigo: params[:codigo], escola_id: params[:escola_id]).last
+
+    if user && user.valid_password?(params[:senha])
+      if user.ativo
+        render json: { status: "OK" }
+      else
+        render json: { status: "USUARIO_DESATIVADO" }
+      end
+    else
+      render json: { status: "USUARIO_NAO_ENCONTRADO" }
+    end
 
   end
 

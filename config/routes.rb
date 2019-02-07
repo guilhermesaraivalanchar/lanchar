@@ -3,8 +3,12 @@ Rails.application.routes.draw do
   root to: 'application#index'
 
   devise_for :users
+  
+  
   devise_scope :user do
-		get 'sign_in', to: 'devise/sessions#new'
+    get '/IBS', to: 'devise/sessions#new', :escola => 1
+    get '/Bolinha', to: 'devise/sessions#new', :escola => 2
+		#get 'sign_in', to: 'devise/sessions#new'
 	end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
@@ -25,6 +29,9 @@ Rails.application.routes.draw do
 
 
   # Ajax
+  match "/login_acesso" => "users#login_acesso", as: :login_acesso, via: [:get, :post]
+
+
   match "/creditar" => "users#creditar", via: [:get, :post]
   match "/desativar_ativar" => "users#desativar_ativar", via: [:get, :post]
   match "/desativar_ativar_produto" => "produtos#desativar_ativar_produto", via: [:get, :post]

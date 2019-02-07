@@ -1,3 +1,33 @@
+button.btn.btn-primary.waves-effect.waves-light.botao_filtro type="button"
+  i.fa.fa-filter
+  |  Filtro
+  - filtro_ocupado = (@filtro.filtro_1.present? || @filtro.filtro_2.present? || @filtro.filtro_3.present? || @filtro.filtro_5.present? || @filtro.filtro_4 != "1") && !@filtro.new_record?
+br
+span.label.label-danger id="span__finalizado" style="#{'display: none' if !filtro_ocupado}" Filtro Ativo
+br
+br
+.card.card-outline-info.div_filtro.card.m-t-10 style="display:none"
+  .card-header
+    h4.m-b-0.text-white Filtro
+
+  .card-body
+    = simple_form_for @filtro do |f|
+      div.row 
+        .col-lg-3.col-md-6
+          = f.input :filtro_1, as: :string, label: "Nome", input_html: { class: "input_filtro" }
+        .col-lg-3.col-md-6
+          = f.input :filtro_2, as: :string, label: "Codigo", input_html: { class: "input_filtro" }
+        .col-lg-1.col-md-3
+          = f.input :filtro_3, as: :string, label: "Qtd. Min", input_html: { class: "input_filtro" }
+        .col-lg-1.col-md-3
+          = f.input :filtro_5, as: :string, label: "Qtd. Min", input_html: { class: "input_filtro" }
+        .col-lg-3.col-md-6
+          = f.input :filtro_4, collection: [["Todos", 2], ["Ativo", 1], ["Inativo", 0]], include_blank: false, label: "Status", input_html: { class: "chosen-select input_filtro" }
+
+        .col-12
+          div.m-b-10 style="text-align: right"
+            button#salvar_filtro.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Salvar
+
 .row
   .col-12
     .card
@@ -41,29 +71,52 @@
                         = "#{produto.ativo ? 'Desativar' : 'Ativar'}"
 
 javascript:
-    $('#example23').DataTable({
-        "displayLength": 15,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    });
+  $('#example23').DataTable({
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
 
-    function desativar_ativar(produto_id){
-      $.getJSON("/desativar_ativar_produto", { produto_id: produto_id },function(d){
-        if (d) {
-          console.log(d);
-          if (d.resultado == "desativo"){
-            $("#desativar_ativar_" + produto_id).removeClass("btn-danger")
-            $("#desativar_ativar_" + produto_id).addClass("btn-primary")
-            $("#desativar_ativar_" + produto_id).html("Ativar")
-            $("#ativo_td_" + produto_id).html("Desativado")
-          }else if(d.resultado == "ativo"){
-            $("#desativar_ativar_" + produto_id).removeClass("btn-primary")
-            $("#desativar_ativar_" + produto_id).addClass("btn-danger")
-            $("#desativar_ativar_" + produto_id).html("Desativar")
-            $("#ativo_td_" + produto_id).html("Ativo")
-          }
+  function desativar_ativar(produto_id){
+    $.getJSON("/desativar_ativar_produto", { produto_id: produto_id },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "desativo"){
+          $("#desativar_ativar_" + produto_id).removeClass("btn-danger")
+          $("#desativar_ativar_" + produto_id).addClass("btn-primary")
+          $("#desativar_ativar_" + produto_id).html("Ativar")
+          $("#ativo_td_" + produto_id).html("Desativado")
+        }else if(d.resultado == "ativo"){
+          $("#desativar_ativar_" + produto_id).removeClass("btn-primary")
+          $("#desativar_ativar_" + produto_id).addClass("btn-danger")
+          $("#desativar_ativar_" + produto_id).html("Desativar")
+          $("#ativo_td_" + produto_id).html("Ativo")
         }
-      })
-    }
+      }
+    })
+  }
+
+  $("#salvar_filtro").click(function(){
+    filtro_nome = $("#filtro_filtro_1").val()
+    filtro_codigo = $("#filtro_filtro_2").val()
+    filtro_qnt_min = $("#filtro_filtro_3").val()
+    filtro_qnt_max = $("#filtro_filtro_5").val()
+    filtro_ativo = $("#filtro_filtro_4").val()
+
+    $.getJSON("/salvar_filtro", { filtro_local: "produto_index", filtro_1: filtro_nome, filtro_2: filtro_codigo, filtro_3: filtro_qnt_min, filtro_5: filtro_qnt_max, filtro_4: filtro_ativo },function(d) {
+      if (d) {
+        console.log(d)
+        
+        if (d.status == "salvo"){
+          location.reload()
+        }
+
+      } else {
+        
+      }
+    })
+
+
+  })

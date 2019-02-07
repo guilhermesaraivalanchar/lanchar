@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_05_172315) do
+ActiveRecord::Schema.define(version: 2019_02_07_183939) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -105,6 +105,11 @@ ActiveRecord::Schema.define(version: 2019_02_05_172315) do
     t.string "nome"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "cor_fundo"
+    t.string "logo_file_name"
+    t.string "logo_content_type"
+    t.bigint "logo_file_size"
+    t.datetime "logo_updated_at"
   end
 
   create_table "filtros", force: :cascade do |t|

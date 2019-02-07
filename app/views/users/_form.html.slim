@@ -71,9 +71,9 @@
           button.btn.btn-secondary.btn-block.text-uppdercase.waves-effect.waves-light type="button" data-toggle="collapse" data-target="#collapse_bloqueio_produtos" aria-expanded="false" aria-controls="collapse_bloqueio_produtos"
             | Bloqueio Produtos
           .collapse id="collapse_bloqueio_produtos" style="padding-top: 5px;"
-            .row
+            div.row
               - Produto.all.each do |produto|
-                .col-3 data-toggle="tooltip" data-placement="top" data-original-title="#{produto.nome}" title="#{produto.nome}"
+                .col-lg-3.col-md-6.col-sm-12
                   = f.input :produto_ids, label: produto.nome ,as: :boolean,boolean_style: :inline, checked: 'checked', checked_value: produto.id, unchecked_value: nil, disabled: false, input_html: { :class => "filled-in", id: "produto_ids_#{produto.id}", name: "user[produto_ids][]", checked: @produtos_bloqueados.include?(produto.id)}
         br
       .clear
