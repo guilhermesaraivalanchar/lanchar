@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   match "/login_totem" => "equipamentos#login_totem", as: :login_totem, via: [:get, :post]
   match "/finalizar_compra" => "equipamentos#finalizar_compra", as: :finalizar_compra, via: [:get, :post]
   match "/alt_senha_user" => "equipamentos#alt_senha_user", as: :alt_senha_user, via: [:get, :post]
+  match "/resetar_senha_totem" => "users#resetar_senha_totem", as: :resetar_senha_totem, via: [:get, :post]
 
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]

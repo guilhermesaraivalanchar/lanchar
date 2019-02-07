@@ -42,10 +42,12 @@
         - if current_user.tem_permissao("resetar_senha_usuario")
           br
           button#resetar_senha.btn.btn-danger.waves-effect.waves-light.m-r-10 type="button" Resetar Senha
+          button#botao_reset_senha_totem.btn.btn-danger.waves-effect.waves-light.m-r-10 type="button" Resetar Senha Totem
           br
           br
           div#confirm_reset_senha.alert.alert-info style="display:none"
             span Senha Resetada com sucesso.
+
 
     - if current_user.tem_permissao("editar_funcoes_credito") || @user_responsavel
 
@@ -109,15 +111,25 @@ javascript:
   });
 
   $("#resetar_senha").click(function(){
-    console.log("fsefsef")
-      $.getJSON("/resetar_senha", { user_id: "#{@user.id}" },function(resultado) {
-        if (resultado && resultado.status == "OK") {
-          console.log("gsdgrdgrdg")
-          $("#confirm_reset_senha").show()
-
-
-        } else {
-          console.log("NAO DEU");
-        }
-      })
+    $.getJSON("/resetar_senha", { user_id: "#{@user.id}" },function(resultado) {
+      if (resultado && resultado.status == "OK") {
+        console.log("gsdgrdgrdg")
+        $("#confirm_reset_senha").show()
+      } else {
+        console.log("NAO DEU");
+      }
+    })
   })
+
+
+  $("#botao_reset_senha_totem").click(function(){
+    $.getJSON("/resetar_senha_totem", { user_id: "#{@user.id}" },function(resultado) {
+      if (resultado && resultado.status == "OK") {
+        $("#confirm_reset_senha").show()
+
+      } else {
+        console.log("NAO DEU");
+      }
+    })
+  })
+

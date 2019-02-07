@@ -31,7 +31,14 @@
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
 
  */
- 
+
+.menu_totem_selected{
+	background-color: #1e88e5;
+}
+.menu_totem_selected h3{
+	color: white;
+}
+
 .validate_invalid{
 	color: #d9534f;
 	border-color: #d9534f;

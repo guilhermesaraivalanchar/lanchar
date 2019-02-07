@@ -88,9 +88,7 @@ class EquipamentosController < ApplicationController
     all_combos = []
     @combos_cardapio.each do |combo|
       all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: URI::escape(combo.imagem.url), produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
-    end
-    
-    all_tipos = []
+    endwd
     TipoProduto.where(id: @produtos_cardapio.map(&:tipo_produto_id)).each do |tipo|
       all_tipos << {nome: tipo.nome, id: tipo.id}
     end
@@ -102,8 +100,7 @@ class EquipamentosController < ApplicationController
 
     status_user = user.senha_totem == "0000" ? "SENHA_INICIAL" : 200
 
-    return { status: status_user, user_nome: user.nome, user_id: user.id, saldo_total: user.saldo, saldo_credito: user.credito, saldo_disponivel: user.saldo_diario_atual, saldo_diario: user.saldo_diario, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos }
-
+    return { status: status_user, user_nome: user.nome, user_id: user.id, saldo_total: user.saldo, saldo_total_credito: user.saldo.to_d + user.credito.to_d, saldo_credito: user.credito, saldo_disponivel: user.saldo_diario_atual, saldo_diario: user.saldo_diario, user_saldo_gasto_hoje: user.saldo_gasto_hoje, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos }
 
   end
 

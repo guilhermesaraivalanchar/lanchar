@@ -248,7 +248,8 @@ javascript:
   var user_saldo_total = 0
   var user_credito = 0
   var user_diario = 0
-
+  var user_saldo_total_credito = 0
+  var user_saldo_gasto_hoje = 0
 
   $("#entrar").click(function(){
 
@@ -275,10 +276,12 @@ javascript:
           user_id = data.user_id
           user_saldo_total = data.saldo_total
           user_credito = data.saldo_credito
-          user_credito = data.saldo_credito
           user_diario = data.saldo_diario
+          user_saldo_total_credito = data.saldo_total_credito
+          user_saldo_gasto_hoje = data.user_saldo_gasto_hoje
           $("#login_page").hide()
           $("#equip_page").show()
+    
 
           iniciar_produto()
         }else if(data.status == "SENHA_INCORRETA" || data.status == "CODIGO_NAO_ENCONTRADO"){
@@ -312,8 +315,9 @@ javascript:
           user_id = data.user_id
           user_saldo_total = data.saldo_total
           user_credito = data.saldo_credito
-          user_credito = data.saldo_credito
           user_diario = data.saldo_diario
+          user_saldo_total_credito = data.saldo_total_credito
+          user_saldo_gasto_hoje = data.user_saldo_gasto_hoje
 
           $("#teclado_login").show()
           $("#teclado_senha").hide()

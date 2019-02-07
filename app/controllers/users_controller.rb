@@ -44,6 +44,11 @@ class UsersController < ApplicationController
 
   end
 
+  def resetar_senha_totem
+    User.find(params[:user_id]).update_attribute(:senha_totem, "0000")
+    render json: { status: "OK" }
+  end
+
   def salvar_filtro_index
 
     filtro_user_index = FiltroDatatable.where(datatable_nome: "user_index", user_id: current_user.id).last

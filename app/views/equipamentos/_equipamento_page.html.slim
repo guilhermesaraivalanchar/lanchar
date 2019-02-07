@@ -4,14 +4,13 @@ css:
   }
 
 
-.row style="margin-top: 10px;margin-left: 10px; margin-right: 5px"
+.row style="margin-top: 10px;margin-left: 10px; margin-right: 5px; overflow-y: scroll; max-height: 720px;"
   .col-10
     .row style="padding-right: 30px"
       div#botao_carrinho.col-lg-3.col-md-6
         img.dark-logo alt="homepage" width="300" src="/imagens/CantinaPro.png"
-
       div#botao_favoritos.col-lg-3.col-md-6
-        .card
+        #card_favoritos.card
           .card-body
             .d-flex.flex-row
               .round.round-lg.align-self-center.round-info
@@ -20,7 +19,7 @@ css:
                 h3.m-b-0.font-light Favoritos
                 h5.text-muted.m-b-0 Em Breve
       div#botao_produtos.col-lg-3.col-md-6
-        .card
+        #card_produtos.card.menu_totem_selected
           .card-body
             .d-flex.flex-row
               .round.round-lg.align-self-center.round-warning
@@ -28,7 +27,7 @@ css:
               .m-l-10.align-self-center
                 h3.m-b-0.font-lgiht Produtos
       div#botao_combos.col-lg-3.col-md-6
-        .card
+        #card_combos.card
           .card-body
             .d-flex.flex-row
               .round.round-lg.align-self-center.round-primary
@@ -44,17 +43,22 @@ css:
         div#table_combos_all style="display:none"
 
   .col-2
-    .card style="position: fixed; top: 10px; right: 10px; width: 300px"
+    .card style="position: fixed; top: 10px; right: 10px; width: 300px; overflow-y: scroll; max-height: 720px;"
       .card-body
         h4.card-title Lista de Compras
         ul#lista_compras_lateral.feeds
           li
             | Carrinho Vazio
-    .card style="position: fixed; bottom: 0px; right: 10px; width: 300px"
-      .card-body
-        h4#nome_usuario_inf.m-b-0.font-lgiht
-        h4#saldo_usuario_inf.text-muted.m-b-0
-        button type="button" class="btn waves-effect waves-light btn-danger btn-sm" onclick="logoff()" style="width: 100%" Sair
+
+  .card style="position: fixed; bottom: -20px; left: 10px; width: 98%;"
+    .card-body
+      .row
+        .col-11
+          font#nome_usuario_inf.m-b-0.font-lgiht style="font-size: 20px; font-weight: bold;"
+          br
+          font#saldo_usuario_inf.m-b-0.font-lgiht style="font-size: 17px; margin-left:0px; color: #008000"
+        .col-1
+          button type="button" class="btn waves-effect waves-light btn-danger" onclick="logoff()" style="width: 100%; height: 60px" Sair
 
 div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display:none"
   .card-body
@@ -128,7 +132,7 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
 
 javascript:
 
-  var numero_items = 8
+  var numero_items = 2
 
   function iniciar_produto(){
     criar_tabelas_tipo_produtos()
@@ -140,10 +144,12 @@ javascript:
   function setar_dados_usuario(){
     $("#nome_usuario_inf").html(user_nome)
 
-    if(user_diario == null){
-      $("#saldo_usuario_inf").html("Saldo: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " })+"<br> Saldo + Lim: "+number_to_currency(parseInt(user_saldo_disponivel), { unit: "R$ " }))
+    if (user_diario == null){
+      
+      $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      
     }else{
-      $("#saldo_usuario_inf").html("Saldo: "+number_to_currency(parseInt(user_saldo_total), { unit: "R$ " })+"<br> Saldo Diário: "+number_to_currency(parseInt(user_saldo_disponivel), { unit: "R$ " }))
+      $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Saldo Diário: " + number_to_currency(user_diario, { unit: "R$ " }) + " | Saldo Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
 
     }
 
@@ -157,11 +163,19 @@ javascript:
   $("#botao_produtos").click(function(){
     $("#table_all").show()
     $("#table_combos_all").hide()
+
+    $("#card_produtos").addClass("menu_totem_selected")
+    $("#card_combos").removeClass("menu_totem_selected")
+    $("#card_favoritos").removeClass("menu_totem_selected")
   })
 
   $("#botao_combos").click(function(){
     $("#table_combos_all").show()
     $("#table_all").hide()
+
+    $("#card_produtos").removeClass("menu_totem_selected")
+    $("#card_combos").addClass("menu_totem_selected")
+    $("#card_favoritos").removeClass("menu_totem_selected")
   })
 
   function criar_filtro_tipo_produto_old(){
