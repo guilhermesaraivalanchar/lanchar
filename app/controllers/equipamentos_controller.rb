@@ -165,6 +165,18 @@ class EquipamentosController < ApplicationController
 
         if produto.quantidade > produtos_update.select{ |p| p[:id] == prod_combo[:produto_id].to_i }.count
           produtos_update << produto
+          puts " 
+
+
+          ADD #{produto.id}
+
+
+
+          #{produtos_update.inspect}
+
+
+
+          "
           #produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
         else
           erro_produtos_quantidade << produto.nome
@@ -196,7 +208,8 @@ class EquipamentosController < ApplicationController
       if transf_geral.save
         transf_geral.user.update_attribute(:saldo, transf_geral.user.saldo.to_d - preco_total.to_d) if transf_geral.user
         produtos_update.each do |produto|
-          produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
+          prod_att = Produto.find(produto.id)
+          prod_att.update_attribute(:quantidade, prod_att.quantidade.to_d - 1)
         end
 
         render json: { status: "OK", transferencia: transf_geral.id }
