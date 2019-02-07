@@ -89,12 +89,13 @@ class EquipamentosController < ApplicationController
     @combos_cardapio.each do |combo|
       all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: URI::escape(combo.imagem.url), produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
     end
+    all_tipos = []
     TipoProduto.where(id: @produtos_cardapio.map(&:tipo_produto_id)).each do |tipo|
       all_tipos << {nome: tipo.nome, id: tipo.id}
     end
 
     produtos_agrupados = @produtos_cardapio.group_by { |d| d[:tipo_produto_id] }
-    produtos_agruwdpados.each do |tipo_produto_id, produtos|
+    produtos_agrupados.each do |tipo_produto_id, produtos|
 
     end
 
