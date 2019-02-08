@@ -180,9 +180,9 @@ javascript:
 
   function criar_filtro_tipo_produto_old(){
     var conteudo = ""
-    conteudo += '<div onclick="criar_tabelas_tipo_produtos()" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">Todos</div></div><br>'
+    conteudo += '<div onclick="criar_tabelas_tipo_produtos()" class="error_validate alert alert-info pointer" id="erro_senha" style="text-align: center;">Todos</div>'
     for( j in tipos_all ){
-      conteudo += '<div onclick="criar_tabela_tipo_produto('+tipos_all[j].id+')" style="width: 100px;"><img height="100" src="/imagens/original/missing.png" style="border-radius: 50%;" width="100"><div style="text-align: center;">'+tipos_all[j].nome+'</div></div><br>'
+      conteudo += '<div onclick="criar_tabela_tipo_produto('+tipos_all[j].id+')" class="alert alert-info pointer" id="erro_senha" style="text-align: center;">'+tipos_all[j].nome+'</div>'
     }
     $("#filtro_tipo_produto").html(conteudo)
   }
@@ -190,11 +190,12 @@ javascript:
   function criar_filtro_tipo_produto(){
     var conteudo = ""
     conteudo += '<div onclick="criar_tabelas_tipo_produtos()" class="error_validate alert alert-info pointer" id="erro_senha" style="text-align: center;">Todos</div>'
-    for( j in tipos_all ){
-      conteudo += '<div onclick="criar_tabela_tipo_produto('+tipos_all[j].id+')" class="alert alert-info pointer" id="erro_senha" style="text-align: center;">'+tipos_all[j].nome+'</div>'
+    for( j in filtros_all ){
+      conteudo += '<div onclick="criar_tabela_filtos('+filtros_all[j].id+')" class="alert alert-info pointer" id="erro_senha" style="text-align: center;">'+filtros_all[j].nome+'</div>'
     }
     $("#filtro_tipo_produto").html(conteudo)
   }
+
 
   function filtrar_tipo(filtro_id){
     if (filtro_id == 0){
@@ -261,6 +262,66 @@ javascript:
     }
 
     tables += table_string_total + '</tbody></table>'
+
+    $("#table_all").html(tables)
+
+  }
+
+  function criar_tabela_filtos(filtro_id){
+    console.log("-----")
+    console.log(tipos_all)
+
+    var tables = "" 
+    produtos_tipo = []
+    filtro = filtros_all.find(x => x.id === filtro_id)
+    for(i in filtro.produto_ids){
+      filtro.produto_ids[i]
+      produtos_tipo.push(produtos_all.find(x => x.id === filtro.produto_ids[i]))
+    }
+
+    var x;
+    var ths = ""
+    var quantidade_total_produtos = produtos_tipo.length
+    if (quantidade_total_produtos < numero_items){
+      num_max = quantidade_total_produtos
+    }else{
+      num_max = numero_items
+    }
+    for (x = 0; x < num_max - 1; x++) { 
+      ths += "<th></th>";
+    }
+
+    tables += '<table class="table color-bordered-table info-bordered-table"><thead><tr><th colspan="'+num_max+'">'+filtro.nome+'</th></tr></thead><tbody>'
+    
+    var produtos_table_string = ""
+    var produtos_table_string_total = ""
+
+    for( i in produtos_tipo){
+
+      produtos_table_string += '<td><div onclick="add_produto('+produtos_tipo[i].id+')" style="width: 120px; height: 180px;"><img height="120" src="'+produtos_tipo[i].url+'" style="border-radius: 50%;" width="120"><div style="text-align: center;">'+produtos_tipo[i].nome+'<br>'+number_to_currency(produtos_tipo[i].preco, { unit: "R$ " })+'</div></div></td>'
+
+      var ii = parseInt(i)+1
+      if ( ii % numero_items == 0 ){
+        produtos_table_string = "<tr>" + produtos_table_string + "</tr>" 
+        produtos_table_string_total += produtos_table_string
+        produtos_table_string = ""
+      }
+    }
+
+    if (produtos_table_string != "")
+    {
+      var tds = ""
+
+      if (quantidade_total_produtos > numero_items){
+        resto = numero_items - (quantidade_total_produtos % numero_items)
+        for (x = 0; x < resto; x++) { 
+          tds += "<td></td>";
+        }
+      }
+      produtos_table_string_total += "<tr>" + produtos_table_string + tds +"</tr>"
+    }
+
+    tables += produtos_table_string_total + '</tbody></table>'
 
     $("#table_all").html(tables)
 

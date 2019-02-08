@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_07_183939) do
+ActiveRecord::Schema.define(version: 2019_02_07_224036) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -110,6 +110,23 @@ ActiveRecord::Schema.define(version: 2019_02_07_183939) do
     t.string "logo_content_type"
     t.bigint "logo_file_size"
     t.datetime "logo_updated_at"
+  end
+
+  create_table "filtro_totem_produtos", force: :cascade do |t|
+    t.integer "produto_id"
+    t.integer "filtro_totem_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filtro_totem_id"], name: "index_filtro_totem_produtos_on_filtro_totem_id"
+    t.index ["produto_id"], name: "index_filtro_totem_produtos_on_produto_id"
+  end
+
+  create_table "filtro_totens", force: :cascade do |t|
+    t.string "nome"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "escola_id"
+    t.index ["escola_id"], name: "index_filtro_totens_on_escola_id"
   end
 
   create_table "filtros", force: :cascade do |t|

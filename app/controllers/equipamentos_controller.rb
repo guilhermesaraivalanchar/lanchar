@@ -58,7 +58,6 @@ class EquipamentosController < ApplicationController
 
 
   	"
-
     cardapio_ativo = Cardapio.where(escola_id: user.escola_id, ativo: true).last
 
     cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
@@ -89,9 +88,17 @@ class EquipamentosController < ApplicationController
     @combos_cardapio.each do |combo|
       all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: URI::escape(combo.imagem.url), produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
     end
+
     all_tipos = []
     TipoProduto.where(id: @produtos_cardapio.map(&:tipo_produto_id)).each do |tipo|
       all_tipos << {nome: tipo.nome, id: tipo.id}
+    end
+
+    all_filtros = []
+    FiltroTotem.where(escola_id: user.escola_id).each do |filtro_totem|
+      prods_filtros = filtro_totem.filtro_totem_produtos.map(&:produto_id)
+      filtro_prod_permitidos = (prods_filtros&cardapio_produto_ids)
+      all_filtros << {nome: filtro_totem.nome, id: filtro_totem.id, produto_ids: filtro_prod_permitidos }
     end
 
     produtos_agrupados = @produtos_cardapio.group_by { |d| d[:tipo_produto_id] }
@@ -101,7 +108,7 @@ class EquipamentosController < ApplicationController
 
     status_user = user.senha_totem == "0000" ? "SENHA_INICIAL" : 200
 
-    return { status: status_user, user_nome: user.nome, user_id: user.id, saldo_total: user.saldo, saldo_total_credito: user.saldo.to_d + user.credito.to_d, saldo_credito: user.credito, saldo_disponivel: user.saldo_diario_atual, saldo_diario: user.saldo_diario, user_saldo_gasto_hoje: user.saldo_gasto_hoje, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos }
+    return { status: status_user, user_nome: user.nome, user_id: user.id, saldo_total: user.saldo, saldo_total_credito: user.saldo.to_d + user.credito.to_d, saldo_credito: user.credito, saldo_disponivel: user.saldo_diario_atual, saldo_diario: user.saldo_diario, user_saldo_gasto_hoje: user.saldo_gasto_hoje, user_url: URI::escape(user.imagem.url), cardapio_produto_ids: produtos_agrupados, all_produtos: all_produtos, all_combos: all_combos, all_tipos: all_tipos, all_filtros: all_filtros }
 
   end
 

@@ -69,7 +69,14 @@ Permissao.create(permissao_nome: "Cancelar Transação", permissao_codigo: "canc
 Permissao.create(permissao_nome: "Relatório Transação", permissao_codigo: "relatorio_transferencias", permissao_grupo: "Relatórios")
 Permissao.create(permissao_nome: "Relatório Usuário", permissao_codigo: "relatorio_usuario", permissao_grupo: "Relatórios")
 
+# Filtro Totem
+Permissao.create(permissao_nome: "Ver Filtro Totem", permissao_codigo: "ver_filtro_totem", permissao_grupo: "Filtro Totem")
+Permissao.create(permissao_nome: "Criar Filtro Totem", permissao_codigo: "criar_filtro_totem", permissao_grupo: "Filtro Totem")
+Permissao.create(permissao_nome: "Editar Filtro Totem", permissao_codigo: "editar_filtro_totem", permissao_grupo: "Filtro Totem")
+Permissao.create(permissao_nome: "Deletar Filtro Totem", permissao_codigo: "deletar_filtro_totem", permissao_grupo: "Filtro Totem")
+
 ################################# NOVAS 
+
 
 
 

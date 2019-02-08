@@ -33,6 +33,10 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("ver_tipo_produtos")
           li
             = link_to("Tipos de Produtos", tipo_produtos_path)
+
+        - if current_user.tem_permissao("ver_filtro_totem")
+          li
+            = link_to("Filtros Totem", filtro_totens_path)
         
         - if current_user.tem_permissao("ver_combos")
           li

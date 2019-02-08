@@ -1,0 +1,26 @@
+= render :partial => "/partials/error_display", :locals => { :object => @filtro_totem }
+
+.form-body
+  = simple_form_for @filtro_totem do |f|
+    h4.box-title.m-t-10
+      | Dados do Tipo Usuário
+    hr
+    .clear
+    div.col-12
+      = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
+    br
+
+
+    h4.box-title.m-t-10
+      | Produtos
+    hr
+    .clear
+    div.row
+      - Produto.all.each do |produto|
+        .col-lg-3.col-md-6.col-sm-12
+          = f.input :produto_ids, label: produto.nome ,as: :boolean,boolean_style: :inline, checked: 'checked', checked_value: produto.id, unchecked_value: nil, disabled: false, input_html: { :class => "filled-in", id: "produto_ids_#{produto.id}", name: "filtro_totem[produto_ids][]", checked: @filtro_totem_produtos.include?(produto.id)}
+    br
+    .clear
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+      | Enviar
+    = link_to "Voltar", tipo_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
