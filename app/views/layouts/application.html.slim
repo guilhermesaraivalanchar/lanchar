@@ -39,17 +39,24 @@ html
                   .dropdown-menu.dropdown-menu-right.scape-up
                     = render "menu_current_user.html.slim"
 
-        aside.left-sidebar
-          .slimScrollDiv style="position: relative; overflow:hidden; width: auto; height:  100%"
-            .scroll-sidebar style="overflow: hidden; width: auto; height: 100%;"
-              nav.sidebar-nav
-                = render "menu.html.slim"
-            .slimScrollBar
-            .slimScrollRail
-          .sidebar-footer
+        - if true
+          aside.left-sidebar
+            .slimScrollDiv style="position: relative; overflow:hidden; width: auto; height:  100%"
+              .scroll-sidebar style="overflow: hidden; width: auto; height: 100%;"
+                nav.sidebar-nav
+                  = render "menu.html.slim"
+              .slimScrollBar
+              .slimScrollRail
+            .sidebar-footer
 
-        .page-wrapper style="min-height: 651px"
-          .container-fluid
+          .page-wrapper style="min-height: 651px"
+            .container-fluid
+              = render partial: "/partials/texto_cabecalho"
+              = yield
+            footer.footer style="text-align: center"
+              = "developed by Eu®".html_safe
+        - else
+          div style="padding-left: 30px; padding-right: 30px; background-color: #67757c; heigth: 100%"
             = render partial: "/partials/texto_cabecalho"
             = yield
           footer.footer style="text-align: center"

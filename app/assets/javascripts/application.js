@@ -46,6 +46,7 @@
 //= require multiselect/js/jquery.multi-select.js
 //= require cocoon
 //= require jquery.maskMoney
+//= require daterangepicker/daterangepicker
 
 
 function toggle_menu(){
@@ -92,6 +93,28 @@ $(document).ready(function() {
     }
   });
 
+
+  $(".datetimepicker_range").setMask("39/19/9999 99:99")
+  
+  $('.datetimepicker_range').daterangepicker({
+    "singleDatePicker": true,
+    "timePicker": true,
+    autoUpdateInput: false,
+    "timePicker24Hour": true,
+    "startDate": false,
+    locale: {
+      format: 'DD/MM/YYYY HH:MM',
+      cancelLabel: 'Cancelar',
+      applyLabel: 'Confirmar'
+    }
+  });
+
+  $('.datetimepicker_range').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY HH:MM'))
+    
+    //$(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+  });
+
 });
 
 function number_to_currency(number, options) {
@@ -125,3 +148,4 @@ function number_with_delimiter(number, delimiter, separator) {
     return number
   }
 }
+

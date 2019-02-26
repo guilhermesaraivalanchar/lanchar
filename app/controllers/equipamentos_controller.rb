@@ -26,6 +26,8 @@ class EquipamentosController < ApplicationController
   def login_totem
 
     u = User.where(codigo: params[:c].to_i).last
+
+    u = User.where(codigo: params[:c]).last if !u
     
     if u 
 

@@ -57,6 +57,9 @@ class TransferenciaGeraisController < ApplicationController
   def index
     @can_cancelar = current_user.tem_permissao("cancelar_transacao")
 
+    @filtro = Filtro.where(user_id: current_user.id, local: "transferencia_gerais_index").first
+    @filtro ||= Filtro.new(user_id: current_user.id)
+
     sql = %Q{
       SELECT transferencia_gerais.tipo, transferencia_gerais.id, transferencia_gerais.created_at, transferencia_gerais.valor, transferencia_gerais.cancelada, usuario_comprou.nome as usuario_comprou_nome, usuario_movimentou.nome as usuario_movimentou_nome, usuario_caixa.nome as usuario_caixa_nome
       FROM transferencia_gerais 

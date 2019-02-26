@@ -29,7 +29,7 @@
  *= require bootstrap-select/bootstrap-select.min.css
  *= require icons/font-awesome/css/font-awesome.min.css
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
-
+ *= require daterangepicker/daterangepicker
  */
 
 .menu_totem_selected{

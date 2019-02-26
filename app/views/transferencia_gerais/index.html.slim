@@ -4,11 +4,47 @@
       .card-body
         h2.card-title Lista de Transações
         h6.card-subtitle Visualização e busca de todos as transações.
+        button.btn.btn-primary.waves-effect.waves-light.botao_filtro type="button"
+          i.fa.fa-filter
+          |  Filtro
+          - filtro_ocupado = (@filtro.filtro_1.present? || @filtro.filtro_2.present? || @filtro.filtro_3.present? || @filtro.filtro_5.present? || @filtro.filtro_4 != "1") && !@filtro.new_record?
+        br
+        span.label.label-danger id="span__finalizado" style="#{'display: none' if !filtro_ocupado}" Filtro Ativo
+        br
+        br
+        .card.card-outline-info.div_filtro.card.m-t-10 style="display:none"
+          .card-header
+            h4.m-b-0.text-white Filtro
+
+          .card-body
+            = simple_form_for @filtro do |f|
+              div.row 
+                .col-lg-3.col-md-6
+                  = f.input :filtro_1, collection: [["Hoje", 0], ["Semana", 1], ["Mês", 2], ["Ano", 3], ["Todos", 4]], include_blank: false, label: "Status", input_html: { class: "chosen-select input_filtro" }
+                .col-lg-2.col-md-3
+                  = f.input :filtro_3, as: :string, label: "Data Inicio", input_html: { class: "datetimepicker_range input_filtro" }
+                .col-lg-2.col-md-3
+                  = f.input :filtro_4, as: :string, label: "Data Fim", input_html: { class: "datetimepicker_range input_filtro" }
+
+        .col-12
+          div.m-b-10 style="text-align: right"
+            button#salvar_filtro.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Salvar
+
+
+
+
+
+
+
+
         button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
         button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
         button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
         button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
         button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
+
+
+
 
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
