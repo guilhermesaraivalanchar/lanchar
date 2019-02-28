@@ -124,7 +124,7 @@
                           - else
                             = transferencia_geral[:usuario_comprou_nome]
                         td 
-                          = "#{I18n.t(transferencia_geral[:tipo_entrada])}" if transferencia_geral[:tipo_entrada]
+                          = transferencia_geral[:tipo_entrada] rescue ""
                         td 
                           = transferencia_geral[:created_at].strftime('%d/%m/%Y %H:%M')
                         td 
