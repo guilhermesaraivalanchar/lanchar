@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :filtros
   resources :equipamentos
   resources :filtro_totens
+  resources :tipo_creditos
 
 
   # Ajax

@@ -101,8 +101,9 @@ br
             input#quantidade_credito.form-control type="text"
             label.control-label style="font-weight: bold" for="recipient-name" Tipo:
             select#tipo_credito.select.form-control data-placeholder="Escolha um usuário" style=("width: 100%")
-              option value="dinheiro" Dinheiro
-              option value="anotacao" Anotação
+              - TipoCredito.where(escola_id: current_user.escola_id).each do |tipo_credito|
+                option value="#{tipo_credito.tipo}"
+                  = tipo_credito.tipo
         div#creditado_alerta class="alert alert-success" style="display:none" Aluno Creditado com sucesso.
       .modal-footer
         div#botoes_modal

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_07_224036) do
+ActiveRecord::Schema.define(version: 2019_02_28_132241) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -203,6 +203,13 @@ ActiveRecord::Schema.define(version: 2019_02_07_224036) do
     t.datetime "updated_at", null: false
     t.index ["responsavel_id"], name: "index_responsavel_users_on_responsavel_id"
     t.index ["user_id"], name: "index_responsavel_users_on_user_id"
+  end
+
+  create_table "tipo_creditos", force: :cascade do |t|
+    t.integer "escola_id"
+    t.string "tipo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tipo_produtos", force: :cascade do |t|

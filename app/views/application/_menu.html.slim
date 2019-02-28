@@ -8,6 +8,20 @@ ul#sidebarnav.in
       a.waves-effect.waves-dark href="#{escola_path(current_user.escola_id)}"
         span.hide-menu
           | Escola
+  - if current_user.check_perms(['ver_escola','ver_tipo_creditos'])
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Escola
+      ul.collapse
+        - if current_user.tem_permissao("ver_escola")
+          li
+            = link_to("Dashborad", escola_path(current_user.escola_id))
+
+        - if current_user.tem_permissao("ver_tipo_creditos")
+          li
+            = link_to("Configuração Tipo Credito", tipo_creditos_path)
+
   - if current_user.check_perms(['ver_usuarios','ver_tipo_usuarios','ver_produtos','ver_tipo_produtos','ver_combos'])
     li
       a.has-arrow.waves-effect.waves-dark
