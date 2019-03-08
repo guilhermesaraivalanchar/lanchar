@@ -73,8 +73,11 @@ class TransferenciaGeraisController < ApplicationController
       ORDER BY transferencia_gerais.created_at DESC
     }
 
-
-    if !params[:p] || params[:p] == "hoje"
+    if @filtro.filtro_3.present? && @filtro.filtro_4.present?
+      puts "TIME ! >> #{@filtro.filtro_3.to_datetime}"
+      puts "TIME ! >> #{@filtro.filtro_4.to_datetime}"
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, @filtro.filtro_3.to_time.in_time_zone, @filtro.filtro_4.to_time.in_time_zone]
+    elsif !params[:p] || params[:p] == "hoje"
       @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
     elsif params[:p] == "semana"
       @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_week, Time.now.at_end_of_week]
