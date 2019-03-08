@@ -37,6 +37,10 @@ class User < ApplicationRecord
 
   after_save :att_bloqueio_produto, :salvar_tipo_users, :if => :enable_after_save
 
+  def dependentes
+    return User.where(id: ResponsavelUser.where(responsavel_id: self.id ).map(&:user_id))
+  end
+
   def delete_relacao_dependentes
     if self.sem_compra
       ResponsavelUser.where(responsavel_id: self.id).destroy_all

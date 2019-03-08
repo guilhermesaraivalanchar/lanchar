@@ -75,14 +75,17 @@ Permissao.create(permissao_nome: "Criar Filtro Totem", permissao_codigo: "criar_
 Permissao.create(permissao_nome: "Editar Filtro Totem", permissao_codigo: "editar_filtro_totem", permissao_grupo: "Filtro Totem")
 Permissao.create(permissao_nome: "Deletar Filtro Totem", permissao_codigo: "deletar_filtro_totem", permissao_grupo: "Filtro Totem")
 
-################################# NOVAS 
-
-# Tipo de Produto
+# Tipo de Credito
 Permissao.create(permissao_nome: "Ver Tipo de Credito", permissao_codigo: "ver_tipo_creditos", permissao_grupo: "Tipo de Credito")
 Permissao.create(permissao_nome: "Criar Tipo de Credito", permissao_codigo: "criar_tipo_creditos", permissao_grupo: "Tipo de Credito")
 Permissao.create(permissao_nome: "Editar Tipo de Credito", permissao_codigo: "editar_tipo_creditos", permissao_grupo: "Tipo de Credito")
 Permissao.create(permissao_nome: "Deletar Tipo de Credito", permissao_codigo: "deletar_tipo_creditos", permissao_grupo: "Tipo de Credito")
 
+
+################################# NOVAS 
+
+# Configuração Pais
+Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo", permissao_grupo: "Configuração Pais")
 
 ################################# SUSPENSOS
 Permissao.create(permissao_nome: "Auto Creditar", permissao_codigo: "auto_creditar", permissao_grupo: "Usuários")

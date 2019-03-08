@@ -63,6 +63,18 @@ class UsersController < ApplicationController
 
   end
 
+  def transferencia_saldo_info
+    u = User.find(params[:user_id])
+
+    if u 
+      render json: { status: 200, nome: u.nome, saldo_atual: u.saldo, url: u.imagem.url }
+    else
+      render json: { status: 500 }
+    end
+
+
+  end
+
   def resetar_senha_totem
     User.find(params[:user_id]).update_attribute(:senha_totem, "0000")
     render json: { status: "OK" }
