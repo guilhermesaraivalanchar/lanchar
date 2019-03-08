@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_28_132241) do
+ActiveRecord::Schema.define(version: 2019_03_08_195117) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(version: 2019_02_28_132241) do
     t.integer "user_caixa_id"
     t.decimal "saldo_anterior", precision: 10, scale: 2
     t.boolean "ig_saldo"
+    t.integer "user_transferencia_saldo"
     t.index ["escola_id"], name: "index_transferencia_gerais_on_escola_id"
     t.index ["user_id"], name: "index_transferencia_gerais_on_user_id"
   end

@@ -28,9 +28,9 @@
 
       div.col-lg-4.col-md-12
         h5.m-t-20 Quantidade
-        input#quantidade_credito.form-control type="text"
+        input#quantidade_saldo.form-control type="text"
         div.justify-content-center
-          button#salvar_filtro.btn.btn-success.waves-effect.waves-light.m-t-15 type="button" style="width: 100%; height: 50px; font-size: 20px" Transferir
+          button#transferir.btn.btn-success.waves-effect.waves-light.m-t-15 type="button" style="width: 100%; height: 50px; font-size: 20px" Transferir
 
       div.col-lg-4.col-md-12
         h5.m-t-20 Usuário Destinatário
@@ -58,7 +58,7 @@ javascript:
   $(".select2").select2();
 
   $(function() {
-    $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
+    $('#quantidade_saldo').maskMoney({'prefix': 'R$ '});
   })
 
   $("#select_usuario_remetente").change(function(){
@@ -93,3 +93,25 @@ javascript:
 
   })
 
+  $("#transferir").click(function(){
+
+    $(this).prop( "disabled", true );
+
+    valor_saldo = $("#quantidade_saldo").val().replace("R$ ", "")    
+
+    $.getJSON("/transferir_saldo", { remetente_id: $("#select_usuario_remetente").val(), destinatario_id: $("#select_usuario_destinatario").val(), valor: valor_saldo },function(resultado) {
+
+      console.log(resultado)
+
+      $(this).prop( "disabled", false );
+
+
+      if (resultado.status == 200){
+        $("#nome_destinatario").html(resultado.nome)
+        $("#h4_saldo_destinatario").html(number_to_currency(resultado.saldo_atual, { unit: "R$ " }) )
+        $("#img_destinatario").attr("src",resultado.url);
+      }
+
+    })
+
+  })

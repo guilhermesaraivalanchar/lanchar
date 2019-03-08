@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   match "/resetar_senha_totem" => "users#resetar_senha_totem", as: :resetar_senha_totem, via: [:get, :post]
   match "/transferencia_saldo_pai" => "users#transferencia_saldo_pai", as: :transferencia_saldo_pai, via: [:get, :post]
   match "/transferencia_saldo_info" => "users#transferencia_saldo_info", as: :transferencia_saldo_info, via: [:get, :post]
+  match "/transferir_saldo" => "users#transferir_saldo", as: :transferir_saldo, via: [:get, :post]
 
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
