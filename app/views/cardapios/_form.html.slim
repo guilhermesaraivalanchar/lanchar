@@ -22,15 +22,15 @@
                         = "#{produto.nome}"
                       td
                         - card = @cardapio.cardapio_produtos.where(produto_id: produto.id).last
-                        input.numeric.decimal.required.form-control.mask_preco.validate_valid id="preco_prod_#{produto.id}" aria-invalid="false" name="produto[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
+                        input.numeric.decimal.required.form-control.mask_preco.validate_valid id="preco_prod_#{produto.id}" onblur="preco_produto(#{produto.id})" aria-invalid="false" name="produto[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
                       td
                         - if card && card.ativo
                           .checkbox.checkbox-success
-                            input id="checkbox_p_#{produto.id}" type="checkbox" checked="checked"
+                            input id="checkbox_p_#{produto.id}" type="checkbox" checked="checked" onclick="ativo_produto(#{produto.id})"
                             label for="checkbox_p_#{produto.id}"
                         - else
                           .checkbox.checkbox-success
-                            input id="checkbox_p_#{produto.id}" type="checkbox"
+                            input id="checkbox_p_#{produto.id}" type="checkbox" onclick="ativo_produto(#{produto.id})"
                             label for="checkbox_p_#{produto.id}"
           .col-lg-6.col-md-6.col-sm-6
             div
@@ -49,19 +49,15 @@
                         = "#{combo.nome}"
                       td
                         - card = @cardapio.cardapio_combos.where(combo_id: combo.id).last
-                        input.numeric.decimal.required.form-control.mask_preco.validate_valid  id="preco_combo_#{combo.id}" aria-invalid="false" name="combo[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
+                        input.numeric.decimal.required.form-control.mask_preco.validate_valid  id="preco_combo_#{combo.id}" onblur="preco_combo(#{combo.id})" aria-invalid="false" name="combo[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
                       td
                         - if card && card.ativo
                           .checkbox.checkbox-success
-                            input id="checkbox_c_#{combo.id}" type="checkbox" checked="checked"
+                            input id="checkbox_c_#{combo.id}" type="checkbox" checked="checked" onclick="ativo_combo(#{combo.id})"
                             label for="checkbox_c_#{combo.id}"
-                        - elsif !card
-                          .checkbox.checkbox-success
-                            input id="checkbox_c_#{combo.id}" type="checkbox" 
-                            label for="checkbox_c_#{combo.id}" disabled="disabled"
                         - else
                           .checkbox.checkbox-success
-                            input id="checkbox_c_#{combo.id}" type="checkbox" 
+                            input id="checkbox_c_#{combo.id}" type="checkbox" onclick="ativo_combo(#{combo.id})"
                             label for="checkbox_c_#{combo.id}"
 javascript:
     $('#example23').DataTable({
@@ -94,52 +90,41 @@ javascript:
       })
     })
 
-    $('input[id^=preco_prod_]').blur(function(){
 
-      var element_id = this.id
-      var produto_id = element_id.split("_")[2]
+    function test(){
+      console.log("sefsef")
+    }
 
-      $.getJSON("/preco_cardapio_produto", { cardapio_id: "#{@cardapio.id}", produto_id: produto_id, valor: $(this).val() },function(resultado) {
-
-        console.log(resultado)
-
-      })
-
-    })
-    $('input[id^=preco_combo_]').blur(function(){
-
-      var element_id = this.id
-      var combo_id = element_id.split("_")[2]
-
-      $.getJSON("/preco_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, valor: $(this).val() },function(resultado) {
+    function preco_produto(produto_id){
+      
+      $.getJSON("/preco_cardapio_produto", { cardapio_id: "#{@cardapio.id}", produto_id: produto_id, valor: $("#preco_prod_"+produto_id).val() },function(resultado) {
 
         console.log(resultado)
 
       })
 
-    })
+    }
 
-    $('input[id^=checkbox_p_]').click(function(){
-
-      var element_id = this.id
-      var produto_id = element_id.split("_")[2]
-
-      $.getJSON("/ativo_cardapio_produto", { cardapio_id: "#{@cardapio.id}aaaaaaaaa", produto_id: produto_id, ativo: $(this).prop( "checked"), valor: $("#preco_prod_"+produto_id).val() },function(resultado) {
+    function preco_combo(combo_id){
+      $.getJSON("/preco_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
 
         console.log(resultado)
 
       })
+    }
 
-    })
-    $('input[id^=checkbox_c_]').click(function(){
-
-      var element_id = this.id
-      var combo_id = element_id.split("_")[2]
-
-      $.getJSON("/ativo_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, ativo: $(this).prop( "checked"), valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
+    function ativo_produto(produto_id){
+      $.getJSON("/ativo_cardapio_produto", { cardapio_id: "#{@cardapio.id}", produto_id: produto_id, ativo: $("#checkbox_p_"+produto_id).prop( "checked"), valor: $("#preco_prod_"+produto_id).val() },function(resultado) {
 
         console.log(resultado)
 
       })
+    }
 
-    })
+    function ativo_combo(combo_id){
+      $.getJSON("/ativo_cardapio_produto", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, ativo: $("#checkbox_c_"+combo_id).prop( "checked"), valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
+
+        console.log(resultado)
+
+      })
+    }
