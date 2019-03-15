@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_08_195117) do
+ActiveRecord::Schema.define(version: 2019_03_15_134527) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2019_03_08_195117) do
     t.decimal "preco", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "ativo"
   end
 
   create_table "cardapio_produtos", force: :cascade do |t|
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 2019_03_08_195117) do
     t.decimal "preco", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "ativo"
   end
 
   create_table "cardapio_tipo_produtos", force: :cascade do |t|

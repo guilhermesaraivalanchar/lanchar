@@ -1,46 +1,145 @@
-= render :partial => "/partials/error_display", :locals => { :object => @cardapio }
+.row
+  .col-12
+    .card
+      .card-body
+        div style="text-align: center; font-size: 30px"
+          | Lista de cardápios
+        .row
+          .col-lg-6.col-md-6.col-sm-12
+            div
+              h3 Produtos
+            .table-responsive.m-t-40
+              table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                thead
+                  tr
+                    th Produto
+                    th Preço (R$)
+                    th Ativo
+                tbody
+                  - Produto.where(escola_id: current_user.escola_id).each do |produto|
+                    tr
+                      td
+                        = "#{produto.nome}"
+                      td
+                        - card = @cardapio.cardapio_produtos.where(produto_id: produto.id).last
+                        input.numeric.decimal.required.form-control.mask_preco.validate_valid id="preco_prod_#{produto.id}" aria-invalid="false" name="produto[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
+                      td
+                        - if card && card.ativo
+                          .checkbox.checkbox-success
+                            input id="checkbox_p_#{produto.id}" type="checkbox" checked="checked"
+                            label for="checkbox_p_#{produto.id}"
+                        - else
+                          .checkbox.checkbox-success
+                            input id="checkbox_p_#{produto.id}" type="checkbox"
+                            label for="checkbox_p_#{produto.id}"
+          .col-lg-6.col-md-6.col-sm-6
+            div
+              h3 Combos
+            .table-responsive.m-t-40
+              table#example24.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                thead
+                  tr
+                    th Produto
+                    th Preço (R$)
+                    th Ativo
+                tbody
+                  - Combo.where(escola_id: current_user.escola_id).each do |combo|
+                    tr
+                      td
+                        = "#{combo.nome}"
+                      td
+                        - card = @cardapio.cardapio_combos.where(combo_id: combo.id).last
+                        input.numeric.decimal.required.form-control.mask_preco.validate_valid  id="preco_combo_#{combo.id}" aria-invalid="false" name="combo[produto_produtos_attributes][1][preco]" nome_validacao="Preço" step="any" type="number" value="#{card ? card.preco : "" }"
+                      td
+                        - if card && card.ativo
+                          .checkbox.checkbox-success
+                            input id="checkbox_c_#{combo.id}" type="checkbox" checked="checked"
+                            label for="checkbox_c_#{combo.id}"
+                        - elsif !card
+                          .checkbox.checkbox-success
+                            input id="checkbox_c_#{combo.id}" type="checkbox" 
+                            label for="checkbox_c_#{combo.id}" disabled="disabled"
+                        - else
+                          .checkbox.checkbox-success
+                            input id="checkbox_c_#{combo.id}" type="checkbox" 
+                            label for="checkbox_c_#{combo.id}"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
 
-.form-body
-  = simple_form_for @cardapio do |f|
-    h4.box-title.m-t-10
-      | Dados do Cardápio
-    hr
-    .clear
-    div.col-12
-      = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
-      br
+    $('#example24').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
 
-    h4.box-title.m-t-10
-      | Produtos
-    hr
-    .row.m-b-20
-      .col-12
-        = f.simple_fields_for :cardapio_produtos do |w|
-          = render "cardapio_produto_fields", { :f => w }
-            .clear
+    $('#usar_produto').click(function(){
+      $.getJSON("/setar_produto", { produto_id: this.getAttribute("produto_id") },function(resultado) {
+        if (resultado) {
+          console.log(resultado);
+          if (resultado.status == "OK"){
+            location.reload();
+          }
 
-        div
-          = link_to_add_association "<button class='btn btn-primary waves-effect waves-light' helper='button'>Adicionar Produto</button>".html_safe, f, :cardapio_produtos
+        } else {
+          console.log("NAO DEU");
+        }
+      })
+    })
 
-      .clear
-      br
+    $('input[id^=preco_prod_]').blur(function(){
 
-    h4.box-title.m-t-10
-      | Combos
-    hr
-    .row.m-b-20
-      .col-12
-        = f.simple_fields_for :cardapio_combos do |w|
-          = render "cardapio_combo_fields", { :f => w }
-            .clear
+      var element_id = this.id
+      var produto_id = element_id.split("_")[2]
 
-        div
-          = link_to_add_association "<button class='btn btn-primary waves-effect waves-light' helper='button'>Adicionar Combo</button>".html_safe, f, :cardapio_combos
+      $.getJSON("/preco_cardapio_produto", { cardapio_id: "#{@cardapio.id}", produto_id: produto_id, valor: $(this).val() },function(resultado) {
 
-      .clear
-      br
+        console.log(resultado)
 
-    .clear
-    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
-      | Enviar
-    = link_to "Voltar", cardapios_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
+      })
+
+    })
+    $('input[id^=preco_combo_]').blur(function(){
+
+      var element_id = this.id
+      var combo_id = element_id.split("_")[2]
+
+      $.getJSON("/preco_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, valor: $(this).val() },function(resultado) {
+
+        console.log(resultado)
+
+      })
+
+    })
+
+    $('input[id^=checkbox_p_]').click(function(){
+
+      var element_id = this.id
+      var produto_id = element_id.split("_")[2]
+
+      $.getJSON("/ativo_cardapio_produto", { cardapio_id: "#{@cardapio.id}aaaaaaaaa", produto_id: produto_id, ativo: $(this).prop( "checked"), valor: $("#preco_prod_"+produto_id).val() },function(resultado) {
+
+        console.log(resultado)
+
+      })
+
+    })
+    $('input[id^=checkbox_c_]').click(function(){
+
+      var element_id = this.id
+      var combo_id = element_id.split("_")[2]
+
+      $.getJSON("/ativo_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, ativo: $(this).prop( "checked"), valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
+
+        console.log(resultado)
+
+      })
+
+    })

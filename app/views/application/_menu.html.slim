@@ -17,7 +17,7 @@ ul#sidebarnav.in
           li
             = link_to("Configuração Tipo Credito", tipo_creditos_path)
 
-  - if false && current_user.check_perms(['transferencia_de_saldo'])
+  - if true && current_user.check_perms(['transferencia_de_saldo'])
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu

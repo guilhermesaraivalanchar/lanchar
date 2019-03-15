@@ -62,10 +62,10 @@ class EquipamentosController < ApplicationController
   	"
     cardapio_ativo = Cardapio.where(escola_id: user.escola_id, ativo: true).last
 
-    cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
+    cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('cardapio_produtos.ativo = ?',true).where('produtos.quantidade > 0').map(&:produto_id)
     cardapio_combo_ids = []
 
-    cardapio_ativo.cardapio_combos.each do |cardapio_combo|
+    cardapio_ativo.cardapio_combos.where(ativo: true).each do |cardapio_combo|
       nao_entrar = false
       cardapio_combo.combo.combo_produtos.each do |combo_produto|
         if combo_produto.produto.quantidade <= 0 || user.bloqueio_produtos.map(&:produto_id).include?(combo_produto.produto.id)
@@ -88,7 +88,7 @@ class EquipamentosController < ApplicationController
 
     all_combos = []
     @combos_cardapio.each do |combo|
-      all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f, url: URI::escape(combo.imagem.url), produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
+      all_combos << {nome: combo.nome, id: combo.id, preco: cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: combo.id).last.preco.to_f, url: URI::escape(combo.imagem.url), produtos: combo.combo_produtos.map(&:produto_id), tipo_produtos: combo.combo_tipo_produtos.map(&:tipo_produto_id)}
     end
 
     all_tipos = []

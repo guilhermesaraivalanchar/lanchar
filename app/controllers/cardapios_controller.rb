@@ -75,6 +75,53 @@ class CardapiosController < ApplicationController
     end
   end
 
+  def preco_cardapio_combo
+    cardapio = Cardapio.find(params[:cardapio_id])
+    cardapio_combo = cardapio.cardapio_combos.where(combo_id: params[:combo_id]).first_or_initialize
+    cardapio_combo.preco = params[:valor].to_d
+    cardapio_combo.save
+
+    render json: {status: "OK"}
+  end
+
+  def preco_cardapio_produto
+    cardapio = Cardapio.find(params[:cardapio_id])
+    cardapio_produto = cardapio.cardapio_produtos.where(produto_id: params[:produto_id]).first_or_initialize
+    cardapio_produto.preco = params[:valor].to_d
+    cardapio_produto.save
+
+    render json: {status: "OK"}
+  end
+
+  def ativo_cardapio_combo
+    cardapio = Cardapio.find(params[:cardapio_id])
+
+    if params[:valor].present?
+      cardapio_combo = cardapio.cardapio_combos.where(combo_id: params[:combo_id]).first
+      cardapio_combo.preco = params[:valor]
+      cardapio_combo.ativo = params[:ativo]
+      cardapio_combo.save
+    end
+
+    render json: {status: "OK"}
+  end
+
+  def ativo_cardapio_produto
+
+    puts "#{params.inspect}"
+
+    cardapio = Cardapio.find(params[:cardapio_id])
+
+    if params[:valor].present?
+      cardapio_produto = cardapio.cardapio_produtos.where(produto_id: params[:produto_id]).first
+      cardapio_produto.preco = params[:valor]
+      cardapio_produto.ativo = params[:ativo]
+      cardapio_produto.save
+    end
+
+    render json: {status: "OK"}
+  end
+
 private
   def cardapio_params
     params.require(:cardapio).permit!

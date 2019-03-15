@@ -59,6 +59,12 @@ Rails.application.routes.draw do
   match "/transferencia_saldo_pai" => "users#transferencia_saldo_pai", as: :transferencia_saldo_pai, via: [:get, :post]
   match "/transferencia_saldo_info" => "users#transferencia_saldo_info", as: :transferencia_saldo_info, via: [:get, :post]
   match "/transferir_saldo" => "users#transferir_saldo", as: :transferir_saldo, via: [:get, :post]
+  
+
+  match "/preco_cardapio_produto" => "cardapios#preco_cardapio_produto", as: :preco_cardapio_produto, via: [:get, :post]
+  match "/preco_cardapio_combo" => "cardapios#preco_cardapio_combo", as: :preco_cardapio_combo, via: [:get, :post]
+  match "/ativo_cardapio_produto" => "cardapios#ativo_cardapio_produto", as: :ativo_cardapio_produto, via: [:get, :post]
+  match "/ativo_cardapio_combo" => "cardapios#ativo_cardapio_combo", as: :ativo_cardapio_combo, via: [:get, :post]
 
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]

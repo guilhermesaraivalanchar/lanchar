@@ -5,10 +5,10 @@ class ComprasController < ApplicationController
 
   	cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
-		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0 and produtos.ativo = ?',true).map(&:produto_id)
+		cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('cardapio_produtos.ativo = ?',true).where('produtos.quantidade > 0 and produtos.ativo = ?',true).map(&:produto_id)
 		cardapio_combo_ids = []
 
-    cardapio_ativo.cardapio_combos.each do |cardapio_combo|
+    cardapio_ativo.cardapio_combos.where(ativo: true).each do |cardapio_combo|
       nao_entrar = false
       cardapio_combo.combo.combo_produtos.each do |combo_produto|
         if combo_produto.produto.quantidade <= 0 || !combo_produto.produto.ativo
@@ -29,7 +29,7 @@ class ComprasController < ApplicationController
 		
   	@combos_cardapio_string = ""
   	@combos_cardapio.each do |combo|
-  		@combos_cardapio_string += "#{combo.first}::#{combo.last}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.last).last.preco.to_f}..."
+  		@combos_cardapio_string += "#{combo.first}::#{combo.last}::#{cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: combo.last).last.preco.to_f}..."
   	end
 		
 		@select_prod_options = "<option value='0'>Escolha um produto</option>"
@@ -39,7 +39,7 @@ class ComprasController < ApplicationController
 
 		@select_combo_options = "<option value='0'>Escolha um combo</option>"
     @combos_cardapio.each do |combo|
-    	@select_combo_options += "<option value='#{combo.last}'>#{combo.first} (R$ #{cardapio_ativo.cardapio_combos.where(combo_id: combo.last).last.preco.to_f} ) </option>"
+    	@select_combo_options += "<option value='#{combo.last}'>#{combo.first} (R$ #{cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: combo.last).last.preco.to_f} ) </option>"
     end
   end
 
@@ -125,7 +125,7 @@ class ComprasController < ApplicationController
                   end
                   preco_total += prod_preco
                 elsif prod_combo.last[:tipo] == "c"
-                  combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+                  combo_preco = cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: prod_combo.last[:id]).last.preco.to_f
                   valor_transf = valor_transf + combo_preco
                   transf = transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, combo_id: prod_combo.last[:id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
                   preco_total += combo_preco
@@ -246,7 +246,7 @@ class ComprasController < ApplicationController
               produto.update_attribute(:quantidade, produto.quantidade.to_d - 1)
               preco_total += prod_preco
             elsif prod_combo.last[:tipo] == "c"
-              combo_preco = cardapio_ativo.cardapio_combos.where(combo_id: prod_combo.last[:id]).last.preco.to_f
+              combo_preco = cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: prod_combo.last[:id]).last.preco.to_f
               transf = Transferencia.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, transferencia_geral_id: transf_geral.id, combo_id: prod_combo.last[:id], valor: combo_preco)
               preco_total += combo_preco
               if transf.save

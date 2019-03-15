@@ -11,10 +11,10 @@ class TotensController < ApplicationController
 
       cardapio_ativo = Cardapio.where(escola_id: params[:e], ativo: true).last
 
-      cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
+      cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('cardapio_produtos.ativo = ?',true).where('produtos.quantidade > 0').map(&:produto_id)
       cardapio_combo_ids = []
 
-      cardapio_ativo.cardapio_combos.each do |cardapio_combo|
+      cardapio_ativo.cardapio_combos.where(ativo: true).each do |cardapio_combo|
         nao_entrar = false
         cardapio_combo.combo.combo_produtos.each do |combo_produto|
           if combo_produto.produto.quantidade <= 0
@@ -35,7 +35,7 @@ class TotensController < ApplicationController
       
       @combos_cardapio_string = ""
       @combos_cardapio.each do |combo|
-        @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}::#{combo.combo_produto_ids.join(',')}::#{combo.combo_tipo_produto_ids.join(',')}..."
+        @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}::#{combo.combo_produto_ids.join(',')}::#{combo.combo_tipo_produto_ids.join(',')}..."
       end
 
       render json: { status: 200, saldo_disponivel: user.saldo_diario_atual, p: @produtos_cardapio_string, c: @combos_cardapio_string }
@@ -51,7 +51,7 @@ class TotensController < ApplicationController
     cardapio_produto_ids = cardapio_ativo.cardapio_produtos.joins(:produto).where('produtos.quantidade > 0').map(&:produto_id)
     cardapio_combo_ids = []
 
-    cardapio_ativo.cardapio_combos.each do |cardapio_combo|
+    cardapio_ativo.cardapio_combos.where(ativo: true).each do |cardapio_combo|
       nao_entrar = false
       cardapio_combo.combo.combo_produtos.each do |combo_produto|
         if combo_produto.produto.quantidade <= 0
@@ -72,7 +72,7 @@ class TotensController < ApplicationController
     
     @combos_cardapio_string = ""
     @combos_cardapio.each do |combo|
-      @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}..."
+      @combos_cardapio_string += "#{combo.nome}::#{combo.id}::#{cardapio_ativo.cardapio_combos.where(ativo: true).where(combo_id: combo.id).last.preco.to_f}::#{combo.imagem.url}..."
     end
 
     render json: { status: 200, p: @produtos_cardapio_string, c: @combos_cardapio_string }
