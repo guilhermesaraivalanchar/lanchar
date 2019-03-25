@@ -15,11 +15,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 
 config = Rails.application.config
 
-config.assets.paths << Rails.root.join('vendor', 'assets')
-config.assets.paths << Rails.root.join('vendor', 'assets', 'plugins')
-config.assets.paths << Rails.root.join('vendor', 'assets', 'stylesheets')
-config.assets.paths << Rails.root.join('vendor', 'assets', 'stylesheets', 'css')
-config.assets.paths << Rails.root.join('vendor', 'assets', 'stylesheets', 'scss')
+config.assets.paths << Rails.root.join('assets', 'plugins')
 
 config.assets.precompile += %w( custom.js )
 config.assets.precompile += %w( users.js )

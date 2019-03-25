@@ -85,7 +85,8 @@ Permissao.create(permissao_nome: "Deletar Tipo de Credito", permissao_codigo: "d
 ################################# NOVAS 
 
 # Configuração Pais
-Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo", permissao_grupo: "Configuração Pais")
+Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo", permissao_grupo: "Sistema")
+Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo_pais", permissao_grupo: "Configuração Pais")
 
 ################################# SUSPENSOS
 Permissao.create(permissao_nome: "Auto Creditar", permissao_codigo: "auto_creditar", permissao_grupo: "Usuários")

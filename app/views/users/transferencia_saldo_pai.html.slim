@@ -106,10 +106,8 @@ javascript:
       $(this).prop( "disabled", false );
 
 
-      if (resultado.status == 200){
-        $("#nome_destinatario").html(resultado.nome)
-        $("#h4_saldo_destinatario").html(number_to_currency(resultado.saldo_atual, { unit: "R$ " }) )
-        $("#img_destinatario").attr("src",resultado.url);
+      if (resultado.resultado == "OK"){
+        swal("Sucesso !", "Transferência realizada.", "success")
       }
 
     })

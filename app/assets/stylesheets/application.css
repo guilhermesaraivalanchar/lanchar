@@ -30,6 +30,7 @@
  *= require icons/font-awesome/css/font-awesome.min.css
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
  *= require daterangepicker/daterangepicker
+ *= require sweetalert/sweetalert.css
  */
 
 .menu_totem_selected{

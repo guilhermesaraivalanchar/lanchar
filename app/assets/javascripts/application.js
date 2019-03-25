@@ -47,6 +47,7 @@
 //= require cocoon
 //= require jquery.maskMoney
 //= require daterangepicker/daterangepicker
+//= require sweetalert/sweetalert.min
 
 
 function toggle_menu(){

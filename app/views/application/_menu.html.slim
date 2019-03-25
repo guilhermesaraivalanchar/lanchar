@@ -21,9 +21,19 @@ ul#sidebarnav.in
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu
-          | Pais
+          | Utilidades
       ul.collapse
         - if current_user.tem_permissao("transferencia_de_saldo")
+          li
+            = link_to("Transferência de Saldo", transferencia_saldo_path)
+
+  - if true && current_user.check_perms(['transferencia_de_saldo_pais'])
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Pais
+      ul.collapse
+        - if current_user.tem_permissao("transferencia_de_saldo_pais")
           li
             = link_to("Transferência de Saldo", transferencia_saldo_pai_path)
 
