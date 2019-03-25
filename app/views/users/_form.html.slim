@@ -72,7 +72,7 @@
             | Bloqueio Produtos
           .collapse id="collapse_bloqueio_produtos" style="padding-top: 5px;"
             div.row
-              - Produto.all.each do |produto|
+              - Produto.where(ativo: true).each do |produto|
                 .col-lg-3.col-md-6.col-sm-12
                   = f.input :produto_ids, label: produto.nome ,as: :boolean,boolean_style: :inline, checked: 'checked', checked_value: produto.id, unchecked_value: nil, disabled: false, input_html: { :class => "filled-in", id: "produto_ids_#{produto.id}", name: "user[produto_ids][]", checked: @produtos_bloqueados.include?(produto.id)}
         br
