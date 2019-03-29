@@ -123,7 +123,8 @@ class CardapiosController < ApplicationController
   end
 
   def cardapio_pais
-    prod_ids = Cardapio.where(ativo: true).last.cardapio_produtos.map(&:produto_id)
+    @cardapio = Cardapio.where(ativo: true).last
+    prod_ids =  @cardapio.cardapio_produtos.map(&:produto_id)
     @produtos = Produto.where(id: prod_ids)
   end
 
