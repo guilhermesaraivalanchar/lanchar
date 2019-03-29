@@ -15,4 +15,4 @@
                   h4.m-b-30 
                     = produto.nome
                     br
-                    = ActionController::Base.helpers.number_to_currency(@cardapio.where(produto_id: produto.id).valor)
+                    = ActionController::Base.helpers.number_to_currency(@cardapio.cardapio_produtos.where(produto_id: produto.id).last.preco)
