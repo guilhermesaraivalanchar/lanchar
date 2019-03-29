@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_24_221240) do
+ActiveRecord::Schema.define(version: 2019_03_29_020705) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"

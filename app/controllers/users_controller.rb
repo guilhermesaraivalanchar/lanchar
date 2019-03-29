@@ -215,7 +215,7 @@ class UsersController < ApplicationController
     init_current
     @user_responsavel = @user.responsavel_users.map(&:responsavel_id).include?(current_user.id)
     user_params[:enable_after_save] = true
-    user_params[:nome] = user_params[:nome].upcase
+    user_params[:nome] = user_params[:nome].upcase if user_params[:nome].present?
     respond_to do |format|
       if (current_user.tem_permissao("editar_usuarios") || @user_responsavel) && @user.update_attributes(user_params)
         if !@user_responsavel

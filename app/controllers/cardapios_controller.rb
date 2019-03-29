@@ -122,6 +122,11 @@ class CardapiosController < ApplicationController
     render json: {status: "OK"}
   end
 
+  def cardapio_pais
+    prod_ids = Cardapio.where(ativo: true).last.cardapio_produtos.map(&:produto_id)
+    @produtos = Produto.where(id: prod_ids)
+  end
+
 private
   def cardapio_params
     params.require(:cardapio).permit!

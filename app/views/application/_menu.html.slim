@@ -27,7 +27,7 @@ ul#sidebarnav.in
           li
             = link_to("Transferência de Saldo", transferencia_saldo_path)
 
-  - if true && current_user.check_perms(['transferencia_de_saldo_pais'])
+  - if true && current_user.check_perms(['transferencia_de_saldo_pais','cardapio_pais'])
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu
@@ -36,6 +36,9 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("transferencia_de_saldo_pais")
           li
             = link_to("Transferência de Saldo", transferencia_saldo_pai_path)
+        - if current_user.tem_permissao("cardapio_pais")
+          li
+            = link_to("Cardápio", cardapio_pais_path)
 
   - if current_user.check_perms(['ver_usuarios','ver_tipo_usuarios','ver_produtos','ver_tipo_produtos','ver_combos'])
     li
