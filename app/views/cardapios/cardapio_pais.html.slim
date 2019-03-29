@@ -15,4 +15,4 @@
                   h4.m-b-30 
                     = produto.nome
                     br
-                    = "R$ 20.05"
+                    = ActionController::Base.helpers.number_to_currency(@cardapio.where(produto_id: produto.id).valor)
