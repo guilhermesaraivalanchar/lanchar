@@ -1,7 +1,7 @@
 .row.text-center
   - @produtos.each do |produto|
-    .col-lg-3.cd-md-6.cd-sm-12
+    .col-lg-2.cd-md-4.cd-sm-12
       div.card
-        img alt="user" src="#{produto.imagem.url}" /
+        img alt="user" src="#{produto.imagem.url}" height="200px"
         h4.m-b-30 
           = produto.nome
