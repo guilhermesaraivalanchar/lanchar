@@ -1,7 +1,16 @@
-.row.text-center
-  - @produtos.each do |produto|
-    .col-lg-2.cd-md-4.cd-sm-12
-      div.card
-        img alt="user" src="#{produto.imagem.url}" height="200px"
-        h4.m-b-30 
-          = produto.nome
+.row
+  - produtos_agrupados = @produtos.group_by { |d| d[:tipo_produto_id] }
+  - produtos_agrupados.each do |tipo_produto_id, produtos|
+    .col-lg-6.col-md-6
+      .card.card-outline-inverse
+        .card-header
+          h4.m-b-0.text-white
+            = produtos.last.tipo_produto.nome
+        .card-body
+          .row.text-center
+            - produtos.each do |produto|
+              .col-lg-3.cd-md-12
+                div.card
+                  img alt="user" src="#{produto.imagem.url}" height="200px"
+                  h4.m-b-30 
+                    = produto.nome
