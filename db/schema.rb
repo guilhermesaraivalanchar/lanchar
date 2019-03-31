@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_29_020705) do
+ActiveRecord::Schema.define(version: 2019_03_31_005750) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -19,6 +19,25 @@ ActiveRecord::Schema.define(version: 2019_03_29_020705) do
     t.datetime "updated_at", null: false
     t.index ["produto_id"], name: "index_bloqueio_produtos_on_produto_id"
     t.index ["user_id"], name: "index_bloqueio_produtos_on_user_id"
+  end
+
+  create_table "caixa_historicos", force: :cascade do |t|
+    t.integer "caixa_id"
+    t.integer "user_id"
+    t.decimal "valor", precision: 10, scale: 2
+    t.integer "tipo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["caixa_id"], name: "index_caixa_historicos_on_caixa_id"
+    t.index ["user_id"], name: "index_caixa_historicos_on_user_id"
+  end
+
+  create_table "caixas", force: :cascade do |t|
+    t.integer "user_id"
+    t.decimal "valor", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_caixas_on_user_id"
   end
 
   create_table "cardapio_combos", force: :cascade do |t|
@@ -263,7 +282,11 @@ ActiveRecord::Schema.define(version: 2019_03_29_020705) do
     t.decimal "saldo_anterior", precision: 10, scale: 2
     t.boolean "ig_saldo"
     t.integer "user_transferencia_saldo"
+    t.integer "caixa_id"
+    t.integer "tipo_credito_id"
+    t.index ["caixa_id"], name: "index_transferencia_gerais_on_caixa_id"
     t.index ["escola_id"], name: "index_transferencia_gerais_on_escola_id"
+    t.index ["tipo_credito_id"], name: "index_transferencia_gerais_on_tipo_credito_id"
     t.index ["user_id"], name: "index_transferencia_gerais_on_user_id"
   end
 

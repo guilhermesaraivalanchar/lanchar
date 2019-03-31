@@ -12,10 +12,12 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("ver_escola")
           li
             = link_to("Dashborad", escola_path(current_user.escola_id))
-
         - if current_user.tem_permissao("ver_tipo_creditos")
           li
             = link_to("Configuração Tipo Credito", tipo_creditos_path)
+        - if current_user.tem_permissao("resumo_caixa")
+          li
+            = link_to("Resumo Caixa", resumo_caixa_path)
 
   - if true && current_user.check_perms(['transferencia_de_saldo'])
     li

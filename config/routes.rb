@@ -61,6 +61,7 @@ Rails.application.routes.draw do
   match "/transferencia_saldo_info" => "users#transferencia_saldo_info", as: :transferencia_saldo_info, via: [:get, :post]
   match "/transferir_saldo" => "users#transferir_saldo", as: :transferir_saldo, via: [:get, :post]
   match "/cardapio_pais" => "cardapios#cardapio_pais", as: :cardapio_pais, via: [:get, :post]
+  match "/resumo_caixa" => "escolas#resumo_caixa", as: :resumo_caixa, via: [:get, :post]
   
 
   match "/preco_cardapio_produto" => "cardapios#preco_cardapio_produto", as: :preco_cardapio_produto, via: [:get, :post]

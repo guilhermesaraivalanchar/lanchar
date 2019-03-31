@@ -24,6 +24,7 @@ class TipoCreditosController < ApplicationController
   def create
     init_new
     tipo_credito_params[:escola_id] = current_user.escola_id
+    tipo_credito_params[:tipo] = tipo_credito_params[:tipo].upcase
     respond_to do |format|
       if current_user.tem_permissao("criar_tipo_creditos") && @tipo_credito.update_attributes(tipo_credito_params)
         format.html { redirect_to(tipo_creditos_path, :notice => "Tipo Credito criado com sucesso.") }
@@ -37,6 +38,7 @@ class TipoCreditosController < ApplicationController
 
   def update
     init_current
+    tipo_credito_params[:tipo] = tipo_credito_params[:tipo].upcase
     respond_to do |format|
       if current_user.tem_permissao("editar_tipo_creditos") && @tipo_credito.update_attributes(tipo_credito_params)
         format.html { redirect_to(tipo_creditos_path, :notice => "Tipo Credito editado com sucesso.") }

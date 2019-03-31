@@ -49,6 +49,7 @@ Permissao.create(permissao_nome: "Ver Usuario", permissao_codigo: "ver_usuario",
 
 # Escola
 Permissao.create(permissao_nome: "Ver Dados da Escola", permissao_codigo: "ver_escola", permissao_grupo: "Escola")
+Permissao.create(permissao_nome: "Ver Resumo Caixa", permissao_codigo: "resumo_caixa", permissao_grupo: "Escola")
 
 # Entrada Produto
 Permissao.create(permissao_nome: "Entrada Produto (Sistema)", permissao_codigo: "dar_entrada_produto", permissao_grupo: "Entrada Produto")

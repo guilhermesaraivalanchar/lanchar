@@ -291,13 +291,13 @@ class UsersController < ApplicationController
     else
       user = User.find(params[:user_id])
       user.saldo = 0 if !user.saldo
-
       
       if user
         saldo_ant = user.saldo
         if current_user.tem_permissao("creditar_usuarios_tabela") && user.update_attribute(:saldo, params[:valor].to_d + user.saldo)
             if params[:status] == "caixa"
-              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo], user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + params[:valor].to_d)
+              tipo_credito = TipoCredito.where(escola_id: current_user.escola_id, tipo: params[:tipo]).last.id rescue nil
+              transf_geral = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user.id, valor: params[:valor], tipo: "ENTRADA", tipo_entrada: params[:tipo], tipo_credito_id: tipo_credito, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + params[:valor].to_d)
               transf_geral.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,

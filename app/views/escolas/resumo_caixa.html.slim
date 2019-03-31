@@ -1,0 +1,64 @@
+.card.card-outline-inverse
+  .card-header
+    h4.m-b-0.text-white
+      = "Relação de Fechamento"
+.row
+  - transfs_agrupados = @transferencia_gerais_entrada_hoje.group_by { |d| d[:tipo_credito_id] }
+  - transfs_agrupados.each do |tipo_credito_id, transferencia_gerals|
+    .col-lg-6.col-md-12
+      .card.card-outline-inverse
+        .card-header
+          h4.m-b-0.text-white
+            = "#{TipoCredito.find(tipo_credito_id).tipo}"
+        .card-body
+          .row
+            - transfs_caixa_agrupados = transferencia_gerals.group_by { |d| d[:caixa_id] }
+            - transfs_caixa_agrupados.each do |caixa_id, transferencias|
+              .col-6
+                = Caixa.find(caixa_id).user.nome
+              .col-6
+                = ActionController::Base.helpers.number_to_currency(transferencias.sum(&:valor))
+            .col-6
+              b
+                = 'Total'
+            .col-6
+              b
+                = ActionController::Base.helpers.number_to_currency(transferencia_gerals.sum(&:valor))
+  .col-lg-6.col-md-12
+    .card.card-outline-inverse
+      .card-header
+        h4.m-b-0.text-white
+          = "Sangria"
+      .card-body
+        - if !@transferencia_gerais_saida_hoje.empty?
+          .row
+            .col-4
+              b
+                = 'Responsável'
+              br
+              br
+            .col-4
+              b
+                = "Caixa"
+              br
+              br
+            .col-4
+              b
+                = "Valor"
+              br
+              br
+            - @transferencia_gerais_saida_hoje.each do |transferencia|
+              .col-4
+                = User.find(transferencia.user_movimentou_id).nome
+                br
+                br
+              .col-4
+                = Caixa.find(transferencia.caixa_id).user.nome
+                br
+                br
+              .col-4
+                = ActionController::Base.helpers.number_to_currency(transferencia.valor)
+                br
+                br
+        - else
+          = "Sangrias ainda não realizadas"

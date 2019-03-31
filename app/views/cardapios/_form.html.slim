@@ -122,7 +122,7 @@ javascript:
     }
 
     function ativo_combo(combo_id){
-      $.getJSON("/ativo_cardapio_produto", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, ativo: $("#checkbox_c_"+combo_id).prop( "checked"), valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
+      $.getJSON("/ativo_cardapio_combo", { cardapio_id: "#{@cardapio.id}", combo_id: combo_id, ativo: $("#checkbox_c_"+combo_id).prop( "checked"), valor: $("#preco_combo_"+combo_id).val() },function(resultado) {
 
         console.log(resultado)
 

@@ -1,3 +1,7 @@
+.card.card-outline-inverse
+  .card-header
+    h4.m-b-0.text-white
+      = "Cardápio"
 .row
   - produtos_agrupados = @produtos.group_by { |d| d[:tipo_produto_id] }
   - produtos_agrupados.each do |tipo_produto_id, produtos|
