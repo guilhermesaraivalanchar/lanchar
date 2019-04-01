@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :bloqueio_produtos, :dependent => :destroy
   has_many :caixa_historicos
   has_one :caixa
+  has_many :tipos_users
   has_attached_file :imagem, :styles => { :original => "400x400>" }
   do_not_validate_attachment_file_type :imagem
   #validates_attachment_presence :imagem, :message => "É necessário enviar a placa do veículo"
