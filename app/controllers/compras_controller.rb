@@ -156,8 +156,8 @@ class ComprasController < ApplicationController
               end
               
               debitar = false
-              tipo_credito = TipoCredito.where(escola_id: current_user.escola_id, tipo: params[:tipo]).last.id rescue nil
-              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "dinheiro", tipo_credito_id: tipo_credito, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + preco_total)
+              tipo_credito = TipoCredito.where(escola_id: current_user.escola_id, tipo: "DINHEIRO").last.id rescue nil
+              transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: user_id, valor: preco_total.to_d, tipo: "ENTRADA", tipo_entrada: "DINHEIRO", tipo_credito_id: tipo_credito, user_movimentou_id: current_user.id, saldo_anterior: saldo_ant.to_d + preco_total)
               transf_geral_entrada.transferencias.new({
                 escola_id: current_user.escola_id,
                 user_movimentou_id: current_user.id,
