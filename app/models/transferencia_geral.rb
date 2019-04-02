@@ -11,8 +11,38 @@ class TransferenciaGeral < ApplicationRecord
   def att_caixa
     if ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO'].include?(self.tipo)
       caixa = Caixa.where(user_id: self.user_movimentou_id).first_or_initialize
+      puts "
+
+
+
+
+      *****************
+      *****************
+      *****************
+
+      #{caixa.inspect}
+
+      #{self.user_movimentou_id}
+
+
+      "
       valor_caixa = caixa.new_record? ? self.valor : ( caixa.valor + self.valor )
       caixa.valor = valor_caixa < 0 ? 0 : valor_caixa
+      puts "
+
+
+      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+      #{self.valor}
+      #{caixa.valor}
+      #{valor_caixa}
+
+
+      "
       caixa.save
       self.update_column(:caixa_id, caixa.id)
     elsif ['SAIDA','SAIDA CANCELADA'].include?(self.tipo)
@@ -49,7 +79,7 @@ class TransferenciaGeral < ApplicationRecord
 
         transferencia.update_attribute(:cancelada, true)
       end
-      self.update_attribute(:cancelada, true)
+      self.update_column(:cancelada, true)
 
     elsif self.tipo == "ENTRADA"
       beneficiado = self.user
@@ -60,7 +90,7 @@ class TransferenciaGeral < ApplicationRecord
         tf.save
       end
       self.transferencias.update_all(cancelada: true)
-      self.update_attribute(:cancelada, true)
+      self.update_column(:cancelada, true)
 
     elsif self.tipo == "SAIDA"
 
@@ -69,7 +99,7 @@ class TransferenciaGeral < ApplicationRecord
       tf.save
 
       self.transferencias.update_all(cancelada: true)
-      self.update_attribute(:cancelada, true)
+      self.update_column(:cancelada, true)
 
     end
   end
