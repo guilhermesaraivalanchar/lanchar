@@ -199,9 +199,7 @@ class UsersController < ApplicationController
       @user_imagem = @imagem[0]
     end
 
-    @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
-    @produtos_bloqueados = [] if !@produtos_bloqueados
-    
+    init_produtos_bloqueados(@user)
   end
 
   def resetar_senha
@@ -224,6 +222,7 @@ class UsersController < ApplicationController
           format.html { redirect_to(user_path(@user.id), :notice => "Usuário editado com sucesso.") }
         end
       else
+        init_produtos_bloqueados(@user)
         format.html do
           render :action => "edit"
         end
@@ -234,9 +233,7 @@ class UsersController < ApplicationController
   def new
     init_new
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("criar_usuarios")
-    
-    @produtos_bloqueados = @user.bloqueio_produtos.map(&:produto_id)
-    @produtos_bloqueados = [] if !@produtos_bloqueados
+    init_produtos_bloqueados(@user)
   end
 
   def create
@@ -256,6 +253,7 @@ class UsersController < ApplicationController
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
       else
         format.html do
+          init_produtos_bloqueados(@user)
           render :action => "edit"
         end
       end
@@ -363,5 +361,10 @@ private
   def init_current
     @user = User.find(params[:id])
     init_vars
+  end
+
+  def init_produtos_bloqueados(user)
+    @produtos_bloqueados = user.bloqueio_produtos.map(&:produto_id)
+    @produtos_bloqueados = [] if !@produtos_bloqueados
   end
 end
