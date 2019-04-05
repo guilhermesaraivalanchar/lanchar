@@ -241,7 +241,7 @@ class UsersController < ApplicationController
     user_params[:escola_id] = current_user.escola_id
     @user.assign_attributes(user_params)
     @user.password = "123456"
-    @user.email = "none#{@user.codigo}@none.com"
+    @user.email = "none#{@user.codigo}#{rand(9999)}@none.com"
     @user.saldo = 0
     @user.credito = 30
     @user.enable_after_save = true
