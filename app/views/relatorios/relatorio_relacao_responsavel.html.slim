@@ -19,3 +19,12 @@
                   td 
                     - responsaveis.each do |resp|
                       = "#{resp[:responsavel_nome]}, "
+
+javascript:
+  $('#example23').DataTable({
+    "displayLength": 15,
+    dom: 'Bfrtip',
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+    ]
+  });
