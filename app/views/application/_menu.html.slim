@@ -19,7 +19,7 @@ ul#sidebarnav.in
           li
             = link_to("Resumo Caixa", resumo_caixa_path)
 
-  - if true && current_user.check_perms(['transferencia_de_saldo'])
+  - if current_user.check_perms(['transferencia_de_saldo'])
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu
@@ -29,7 +29,7 @@ ul#sidebarnav.in
           li
             = link_to("Transferência de Saldo", transferencia_saldo_path)
 
-  - if true && current_user.check_perms(['transferencia_de_saldo_pais','cardapio_pais'])
+  - if current_user.check_perms(['transferencia_de_saldo_pais','cardapio_pais'])
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu
@@ -106,7 +106,7 @@ ul#sidebarnav.in
         span.hide-menu
           | Transações
 
-  - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores'])
+  - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores','relatorio_relacao_usuarios'])
     li
       a.has-arrow.waves-effect.waves-dark
         span.hide-menu
@@ -119,3 +119,7 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("relatorio_usuario")
           li
             = link_to("Relatório Usuarios", relatorio_usuario_path(busca: false))
+
+        - if current_user.tem_permissao("relatorio_relacao_usuarios")
+          li
+            = link_to("Relatório Relacão", relatorio_relacao_responsavel_path(busca: false))

@@ -1,0 +1,21 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Ralatório Usuários
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            thead
+              tr
+                th Aluno
+                th Responsáveis
+            tbody
+              - user_agrup = @users.group_by { |d| d[:aluno_id] }
+              - user_agrup.each do |user_id, responsaveis|
+                - aluno = responsaveis.first.aluno_nome
+                tr
+                  td 
+                    = aluno rescue "-"
+                  td 
+                    - responsaveis.each do |resp|
+                      = "#{resp[:responsavel_nome]}, "

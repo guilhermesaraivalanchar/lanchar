@@ -2,6 +2,19 @@ class RelatoriosController < ApplicationController
   def index
   end
 
+  def relatorio_relacao_responsavel
+
+    sql = %Q{
+      SELECT aluno.id as aluno_id, responsavel.nome as responsavel_nome, aluno.nome as aluno_nome, responsavel.codigo as responsavel_codigo, aluno.codigo as aluno_codigo
+      FROM responsavel_users
+      LEFT JOIN users AS responsavel ON responsavel_users.responsavel_id = responsavel.id
+      LEFT JOIN users AS aluno ON responsavel_users.user_id = aluno.id
+    }
+    
+    @users = User.find_by_sql [sql]
+
+  end
+
   def relatorio_transferencia
 
     if params[:busca] && params[:busca] == "false"
@@ -50,14 +63,6 @@ class RelatoriosController < ApplicationController
 
   def relatorio_usuario
 
-    puts "
-
-
-      User(nome: string, codigo: string, saldo: decimal, credito: integer, turma: string, saldo_diario: decimal, sem_compra: boolean, tipos: string)
-
-
-    "
-
     if params[:busca] && params[:busca] == "false"
 
       @users = []
@@ -83,23 +88,6 @@ class RelatoriosController < ApplicationController
       end
 
       @users = User.joins("INNER JOIN tipos_users on tipos_users.user_id = users.id").where(where_tipo_user).where(where_maior).where(where_menor).uniq
-
-      puts "
-
-
-      #{@users.inspect}
-
-
-
-      #{@users.map(&:id).inspect}
-
-
-
-
-
-
-
-      "
 
 
     end
