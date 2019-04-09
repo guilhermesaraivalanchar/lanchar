@@ -25,7 +25,7 @@ class TransferenciaGeral < ApplicationRecord
       self.update_column(:caixa_id, caixa.id)
     end
   
-    LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
+    #LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
 
   end
 
