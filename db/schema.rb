@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_125232) do
+ActiveRecord::Schema.define(version: 2019_04_09_140232) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -178,6 +178,16 @@ ActiveRecord::Schema.define(version: 2019_04_09_125232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "escola_id"
+  end
+
+  create_table "log_caixas", force: :cascade do |t|
+    t.integer "transferencia_geral_id"
+    t.decimal "valor", precision: 10, scale: 2
+    t.integer "caixa_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["caixa_id"], name: "index_log_caixas_on_caixa_id"
+    t.index ["transferencia_geral_id"], name: "index_log_caixas_on_transferencia_geral_id"
   end
 
   create_table "permissoes", force: :cascade do |t|

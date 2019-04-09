@@ -11,38 +11,10 @@ class TransferenciaGeral < ApplicationRecord
   def att_caixa
     if ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO'].include?(self.tipo)
       caixa = Caixa.where(user_id: self.user_movimentou_id).first_or_initialize
-      puts "
 
-
-
-
-      *****************
-      *****************
-      *****************
-
-      #{caixa.inspect}
-
-      #{self.user_movimentou_id}
-
-
-      "
       valor_caixa = caixa.new_record? ? self.valor : ( caixa.valor + self.valor )
       caixa.valor = valor_caixa < 0 ? 0 : valor_caixa
-      puts "
 
-
-      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-      $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
-      #{self.valor}
-      #{caixa.valor}
-      #{valor_caixa}
-
-
-      "
       caixa.save
       self.update_column(:caixa_id, caixa.id)
     elsif ['SAIDA','SAIDA CANCELADA'].include?(self.tipo)
@@ -52,6 +24,9 @@ class TransferenciaGeral < ApplicationRecord
       caixa.save
       self.update_column(:caixa_id, caixa.id)
     end
+  
+    LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
+
   end
 
   def cancelar(current_user)
