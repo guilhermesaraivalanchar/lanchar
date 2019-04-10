@@ -17,15 +17,18 @@ class TransferenciaGeral < ApplicationRecord
 
       caixa.save
       self.update_column(:caixa_id, caixa.id)
+
+      LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
     elsif ['SAIDA','SAIDA CANCELADA'].include?(self.tipo)
       caixa = Caixa.where(user_id: self.user_caixa_id).first_or_initialize
       valor_caixa = caixa.new_record? ? self.valor : ( caixa.valor + self.valor )
       caixa.valor = valor_caixa < 0 ? 0 : valor_caixa
       caixa.save
       self.update_column(:caixa_id, caixa.id)
+      
+      LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
     end
   
-    #LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
 
   end
 

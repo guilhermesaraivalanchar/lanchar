@@ -76,35 +76,40 @@ class UsersController < ApplicationController
     remetente = User.find(params[:remetente_id])
     destinatario = User.find(params[:destinatario_id])
 
-    transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: destinatario.id , user_transferencia_saldo: remetente.id , valor: (params[:valor].to_d), tipo: "TRANSFERÊNCIA ENTRADA", user_movimentou_id: current_user.id )
-    transf_geral_entrada.transferencias.new({
-      escola_id: current_user.escola_id,
-      user_movimentou_id: current_user.id,
-      valor: (params[:valor].to_d),
-      saldo_anterior: (destinatario.saldo + params[:valor].to_d),
-      tipo: "TRANSFERÊNCIA ENTRADA"
-    })
-    
-    transf_geral_saida = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: remetente.id, user_transferencia_saldo: destinatario.id , valor: (params[:valor].to_d * -1), tipo: "TRANSFERÊNCIA SAIDA", user_movimentou_id: current_user.id )
-    transf_geral_saida.transferencias.new({
-      escola_id: current_user.escola_id,
-      user_movimentou_id: current_user.id,
-      valor: (params[:valor].to_d * -1),
-      saldo_anterior: (remetente.saldo - params[:valor].to_d),
-      tipo: "TRANSFERÊNCIA SAIDA"
-    })
-    
-    if transf_geral_entrada.save && transf_geral_saida.save
-      remetente.update_attribute(:saldo, remetente.saldo - params[:valor].to_d)
-      destinatario.update_attribute(:saldo, destinatario.saldo + params[:valor].to_d)
+    if remetente.saldo > params[:valor].to_d
+
+      transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: destinatario.id , user_transferencia_saldo: remetente.id , valor: (params[:valor].to_d), tipo: "TRANSFERÊNCIA ENTRADA", user_movimentou_id: current_user.id )
+      transf_geral_entrada.transferencias.new({
+        escola_id: current_user.escola_id,
+        user_movimentou_id: current_user.id,
+        valor: (params[:valor].to_d),
+        saldo_anterior: (destinatario.saldo + params[:valor].to_d),
+        tipo: "TRANSFERÊNCIA ENTRADA"
+      })
       
-      render json:  { resultado: "OK" }
+      transf_geral_saida = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: remetente.id, user_transferencia_saldo: destinatario.id , valor: (params[:valor].to_d * -1), tipo: "TRANSFERÊNCIA SAIDA", user_movimentou_id: current_user.id )
+      transf_geral_saida.transferencias.new({
+        escola_id: current_user.escola_id,
+        user_movimentou_id: current_user.id,
+        valor: (params[:valor].to_d * -1),
+        saldo_anterior: (remetente.saldo - params[:valor].to_d),
+        tipo: "TRANSFERÊNCIA SAIDA"
+      })
+      
+      if transf_geral_entrada.save && transf_geral_saida.save
+        remetente.update_attribute(:saldo, remetente.saldo - params[:valor].to_d)
+        destinatario.update_attribute(:saldo, destinatario.saldo + params[:valor].to_d)
+        
+        render json:  { resultado: "OK" }
+      else
+
+        transf_geral_entrada.destroy if transf_geral_entrada
+        transf_geral_saida.destroy if transf_geral_saida
+        render json:  { resultado: "ERRO AO SALVAR" }
+
+      end
     else
-
-      transf_geral_entrada.destroy if transf_geral_entrada
-      transf_geral_saida.destroy if transf_geral_saida
-      render json:  { resultado: "ERRO AO SALVAR" }
-
+      render json:  { resultado: "SALDO_INVALIDO" }
     end
     
   end

@@ -108,6 +108,8 @@ javascript:
 
       if (resultado.resultado == "OK"){
         swal("Sucesso !", "Transferência realizada.", "success")
+      }else if(resultado.resultado = "SALDO_INVALIDO"){
+        swal("Erro !", "Salvo Insuficiente.", "error"); 
       }
 
     })
