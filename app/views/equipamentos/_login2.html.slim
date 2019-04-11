@@ -1,99 +1,96 @@
-div style="background-color: #191919; height: 900px" 
-  img src="/imagens/logo.png" style="position: fixed; top: 10px; left: 460px; width: 150px; z-index: 100;"
-  img src="/imagens/CantinaPro_nopreto_escrita.png" style="position: fixed; top: 10px; left: 625px; width: 450px; z-index: 100;"
-  img src="/imagens/logoibs.png" style="position: fixed; top: 15px; left: 1100px; width: 150px; z-index: 99;"
-div.row style="background-color: #191919; " 
-  div style="position: fixed; top: 100px; left: 650px; width: 400px;"
-  .card style="position: fixed; top: 100px; left: 650px; width: 400px;"
-    .card-body
-      form#loginform.form-horizontal.form-material action="" 
-        h3.box-title.m-b-20 Entrar
-        h4#msg_alt_senha.box-title.m-b-20 style="display:none" Como é seu primeiro login, escolher uma nova senha.
-        div#input_usuario.form-group
-          h5.box-title.m-b-20 Matricula
-          .col-xs-12
-            input#user_codigo.form-control readonly="readonly" placeholder="Username" required="true" type="text" /
-        div#input_senha.form-group style="display:none"
-          h5.box-title.m-b-20 Senha
-          .col-xs-12
-            input#user_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
-        div#input_alt_senha.form-group style="display:none"d
-          h5.box-title.m-b-20 Alterar Senha ( 4 digitos )
-          .col-xs-12
-            input#user_alt_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
-        .form-group.text-center.m-t-20
-          .col-xs-12
-            div#check_teclado_login
-              button.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" Verificar
-            button#entrar.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Entrar
-            button#botao_alt_senha.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Mudar Senha
-            
-            div#erro_senha.error_validate class="alert alert-danger" style="text-align: center; display:none" Codigo ou senha incorreta.
-            div#erro_usu_ativo.error_validate class="alert alert-danger" style="text-align: center; display:none" Usuário desativado.
-        .row#teclado_login
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(1)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(2)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "2"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(3)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "3"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(4)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "4"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(5)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "5"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(6)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "6"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(7)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "7"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(8)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "8"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao(9)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "9"
-          .col-8
-            div.error_validate class="alert alert-info" onclick="login_botao(0)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "0"
-          .col-4
-            div.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "X"
+#card_login style="background-color: #191919;"
+  section#wrapper
+    .login-register style=("display: block;background-color: #191919;") 
+      .login-box.card
+        .card-body
+          form#loginform.form-horizontal.form-material action="" 
+            h3.box-title.m-b-20 Entrar
+            h4#msg_alt_senha.box-title.m-b-20 style="display:none" Como é seu primeiro login, escolher uma nova senha.
+            div#input_usuario.form-group
+              h5.box-title.m-b-20 Matricula
+              .col-xs-12
+                input#user_codigo.form-control readonly="readonly" placeholder="Username" required="true" type="text" /
+            div#input_senha.form-group style="display:none"
+              h5.box-title.m-b-20 Senha
+              .col-xs-12
+                input#user_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
+            div#input_alt_senha.form-group style="display:none"
+              h5.box-title.m-b-20 Alterar Senha ( 4 digitos )
+              .col-xs-12
+                input#user_alt_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
+            .form-group.text-center.m-t-20
+              .col-xs-12
+                div#check_teclado_login
+                  button.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" Verificar
+                button#entrar.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Entrar
+                button#botao_alt_senha.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Mudar Senha
+                
+                div#erro_senha.error_validate class="alert alert-danger" style="text-align: center; display:none" Codigo ou senha incorreta.
+                div#erro_usu_ativo.error_validate class="alert alert-danger" style="text-align: center; display:none" Usuário desativado.
+            .row#teclado_login
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(1)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(2)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "2"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(3)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "3"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(4)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "4"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(5)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "5"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(6)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "6"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(7)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "7"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(8)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "8"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao(9)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "9"
+              .col-8
+                div.error_validate class="alert alert-info" onclick="login_botao(0)" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "0"
+              .col-4
+                div.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "X"
 
-        .row#teclado_senha style="display:none"
-          .col-6
-            div#botao_senha_1.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-              font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
-              = "2"
-          .col-6
-            div#botao_senha_2.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-              font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
-              = "2"
-          .col-6
-            div#botao_senha_3.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-              font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
-              = "2"
-          .col-6
-            div#botao_senha_4.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-              font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
-              = "2"
-          .col-6
-            div#botao_senha_5.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "1"
-              font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
-              = "2"
-          .col-6
-            div#botao_senha_6.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
-              = "X"
+            .row#teclado_senha style="display:none"
+              .col-6
+                div#botao_senha_1.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+                  font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
+                  = "2"
+              .col-6
+                div#botao_senha_2.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+                  font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
+                  = "2"
+              .col-6
+                div#botao_senha_3.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+                  font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
+                  = "2"
+              .col-6
+                div#botao_senha_4.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+                  font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
+                  = "2"
+              .col-6
+                div#botao_senha_5.error_validate class="alert alert-info" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "1"
+                  font style="font-size: 15px; margin-left: 30px; margin-right: 30px" ou
+                  = "2"
+              .col-6
+                div#botao_senha_6.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
+                  = "X"
 javascript:
 
   var botao_senha_1 = [1, 2]

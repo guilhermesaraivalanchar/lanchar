@@ -9,7 +9,7 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
     = content_for :head
   - if params[:totem] && params[:totem] == "1"
-    body
+    body style="height:100%"
       = yield
   - elsif current_user
     body.fix-header.fix-sidebar.card-no-border
