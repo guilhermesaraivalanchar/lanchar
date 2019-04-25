@@ -69,7 +69,7 @@
               br
               br
             .col-4
-              = ActionController::Base.helpers.number_to_currency(transferencia_gerais_saida_hoje.sum(&:valor))
+              = ActionController::Base.helpers.number_to_currency(@transferencia_gerais_saida_hoje.sum(&:valor))
               br
               br
               
