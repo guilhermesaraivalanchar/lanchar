@@ -60,5 +60,18 @@
                 = ActionController::Base.helpers.number_to_currency(transferencia.valor)
                 br
                 br
+            .col-4
+              = "Total"
+              br
+              br
+            .col-4
+              = ""
+              br
+              br
+            .col-4
+              = ActionController::Base.helpers.number_to_currency(transferencia_gerais_saida_hoje.sum(&:valor))
+              br
+              br
+              
         - else
           = "Sangrias ainda não realizadas"
