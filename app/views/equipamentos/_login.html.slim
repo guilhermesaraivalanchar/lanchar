@@ -12,11 +12,11 @@ div.row style="background-color: #191919; "
             div style="height: 85px"
             h3.box-title.m-b-20 Entrar
             h4#msg_alt_senha.box-title.m-b-20 style="display:none" Como é seu primeiro login, escolher uma nova senha.
-            div#input_usuario.form-group
+            div#input_usuario.form-group autofocus="true"
               h5.box-title.m-b-20 Matricula
               .col-xs-12
                 input#user_codigo.form-control placeholder="Username" required="true" type="text" /
-            div#input_senha.form-group style="display:block"
+            div#input_senha.form-group style="display:none"
               h5.box-title.m-b-20 Senha
               .col-xs-12
                 input#user_pass.form-control placeholder="Password" required="true" type="password" /
@@ -227,8 +227,8 @@ javascript:
     usuario = $("#user_codigo").val()
     $("#teclado_login").hide()
     $("#teclado_senha").show()
-    //$("#input_usuario").hide()
-    //$("#input_senha").show()
+    $("#input_usuario").hide()
+    $("#input_senha").show()
     $("#check_teclado_login").hide()
     $("#entrar").show()
   })
@@ -298,8 +298,8 @@ javascript:
           $("#user_codigo").val("")
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").show()
-          //$("#input_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
           $("#check_teclado_login").show()
           $("#entrar").hide()
           $("#erro_senha").show()
@@ -309,8 +309,8 @@ javascript:
           $("#user_codigo").val("")
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").show()
-          //$("#input_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
           $("#check_teclado_login").show()
           $("#entrar").show()
           $("#erro_usu_ativo").show()
@@ -331,8 +331,8 @@ javascript:
 
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").hide()
-          //$("#input_senha").hide()
+          $("#input_usuario").hide()
+          $("#input_senha").hide()
           $("#input_alt_senha").show()
           $("#check_teclado_login").hide()
           $("#entrar").hide()
