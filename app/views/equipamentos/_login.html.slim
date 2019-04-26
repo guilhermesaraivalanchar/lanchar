@@ -6,16 +6,16 @@ div style="background-color: #191919; height: 900px"
 div.row style="background-color: #191919; " 
   .card style="position: fixed; top: 160px; left: 400px; width: 800px;"
     .card-body
-      form#loginform.form-horizontal.form-material action="" 
+      div#loginform.form-horizontal.form-material action="" autocomplete="off"
         .row
           .col-5
             div style="height: 85px"
             h3.box-title.m-b-20 Entrar
             h4#msg_alt_senha.box-title.m-b-20 style="display:none" Como é seu primeiro login, escolher uma nova senha.
-            div#input_usuario.form-group autofocus="true"
+            div#input_usuario.form-group
               h5.box-title.m-b-20 Matricula
               .col-xs-12
-                input#user_codigo.form-control placeholder="Username" required="true" type="text" /
+                input#user_codigo.form-control placeholder="Username" required="true" type="text" autofocus="true" autocomplete="off" /
             div#input_senha.form-group style="display:none"
               h5.box-title.m-b-20 Senha
               .col-xs-12
@@ -128,6 +128,12 @@ javascript:
     }
   }
 
+  $(document).on('keypress',function(e) {
+    if(e.which == 13) {
+      $("#check_teclado_login").click()
+    }
+  });
+
   function montar_botoes_senha(){
     botao_senha_1 = [teclado[0],teclado[1]]
     botao_senha_2 = [teclado[2],teclado[3]]
@@ -236,6 +242,7 @@ javascript:
 
   var totem_token = ""
   $(document).ready(function() {
+    $("#user_codigo").val("")
     mudar_botoes_senha()
 
     var url_string = window.location.href; //window.location.href
