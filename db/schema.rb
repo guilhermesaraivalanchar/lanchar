@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_140232) do
+ActiveRecord::Schema.define(version: 2019_04_26_030104) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -330,7 +330,6 @@ ActiveRecord::Schema.define(version: 2019_04_09_140232) do
     t.string "nome"
     t.string "codigo"
     t.string "desconto_id"
-    t.string "cartao_id"
     t.string "imagem_file_name"
     t.string "imagem_content_type"
     t.integer "imagem_file_size"
@@ -345,6 +344,7 @@ ActiveRecord::Schema.define(version: 2019_04_09_140232) do
     t.string "tipos"
     t.boolean "ativo"
     t.string "senha_totem"
+    t.string "cartao"
     t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

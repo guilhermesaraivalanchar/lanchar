@@ -25,7 +25,7 @@
               div.col-lg-4.col-md-6
                 div.show_input  
                   = "Cartao"
-                = current_user.cartao_id
+                = current_user.cartao
     - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
     - if !dependentes.empty?
       .card.earning-widget
