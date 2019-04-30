@@ -11,7 +11,7 @@
         = f.input :imagem, as: :file, input_html: { nome_validacao: "Código", class: "dropify", "data-default-file": @user_imagem, "data-allowed-file-extensions": "png jpg jpeg" }
         = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
         = f.input :codigo, label: "Codigo", input_html: { nome_validacao: "Código" }
-        = f.input :cartao_id, label: "Cartão", input_html: { nome_validacao: "Código" }
+        = f.input :cartao, label: "Cartão", input_html: { nome_validacao: "Cartão" }
         = f.input :turma, label: "Turma", input_html: { nome_validacao: "Turma" }
         = f.input :tipo_users, as: :hidden, input_html: { value: @user.tipos_users.map(&:tipo_user_id).join(',') }
         h5.m-t-20 Tipos de Usuario
@@ -133,3 +133,12 @@ javascript:
     })
   })
 
+
+  $(document).ready(function() {
+    $(window).keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+      }
+    });
+  });

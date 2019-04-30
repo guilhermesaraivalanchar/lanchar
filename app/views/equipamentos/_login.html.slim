@@ -6,7 +6,7 @@ div style="background-color: #191919; height: 900px"
 div.row style="background-color: #191919; " 
   .card style="position: fixed; top: 160px; left: 400px; width: 800px;"
     .card-body
-      form#loginform.form-horizontal.form-material action="" 
+      div#loginform.form-horizontal.form-material action="" autocomplete="off"
         .row
           .col-5
             div style="height: 85px"
@@ -15,15 +15,15 @@ div.row style="background-color: #191919; "
             div#input_usuario.form-group
               h5.box-title.m-b-20 Matricula
               .col-xs-12
-                input#user_codigo.form-control readonly="readonly" placeholder="Username" required="true" type="text" /
-            div#input_senha.form-group style="display:block"
+                input#user_codigo.form-control placeholder="Username" required="true" type="text" autofocus="true" autocomplete="off" /
+            div#input_senha.form-group style="display:none"
               h5.box-title.m-b-20 Senha
               .col-xs-12
-                input#user_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
+                input#user_pass.form-control placeholder="Password" required="true" type="password" /
             div#input_alt_senha.form-group style="display:none"
               h5.box-title.m-b-20 Alterar Senha ( 4 digitos )
               .col-xs-12
-                input#user_alt_pass.form-control readonly="readonly" placeholder="Password" required="true" type="password" /
+                input#user_alt_pass.form-control placeholder="Password" required="true" type="password" /
             .form-group.text-center.m-t-20
               .col-xs-12
                 div#check_teclado_login
@@ -128,6 +128,12 @@ javascript:
     }
   }
 
+  $(document).on('keypress',function(e) {
+    if(e.which == 13) {
+      $("#check_teclado_login").click()
+    }
+  });
+
   function montar_botoes_senha(){
     botao_senha_1 = [teclado[0],teclado[1]]
     botao_senha_2 = [teclado[2],teclado[3]]
@@ -227,8 +233,8 @@ javascript:
     usuario = $("#user_codigo").val()
     $("#teclado_login").hide()
     $("#teclado_senha").show()
-    //$("#input_usuario").hide()
-    //$("#input_senha").show()
+    $("#input_usuario").hide()
+    $("#input_senha").show()
     $("#check_teclado_login").hide()
     $("#entrar").show()
   })
@@ -236,6 +242,7 @@ javascript:
 
   var totem_token = ""
   $(document).ready(function() {
+    $("#user_codigo").val("")
     mudar_botoes_senha()
 
     var url_string = window.location.href; //window.location.href
@@ -298,8 +305,8 @@ javascript:
           $("#user_codigo").val("")
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").show()
-          //$("#input_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
           $("#check_teclado_login").show()
           $("#entrar").hide()
           $("#erro_senha").show()
@@ -309,8 +316,8 @@ javascript:
           $("#user_codigo").val("")
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").show()
-          //$("#input_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
           $("#check_teclado_login").show()
           $("#entrar").show()
           $("#erro_usu_ativo").show()
@@ -331,8 +338,8 @@ javascript:
 
           $("#teclado_login").show()
           $("#teclado_senha").hide()
-          //$("#input_usuario").hide()
-          //$("#input_senha").hide()
+          $("#input_usuario").hide()
+          $("#input_senha").hide()
           $("#input_alt_senha").show()
           $("#check_teclado_login").hide()
           $("#entrar").hide()
@@ -341,6 +348,8 @@ javascript:
           $("#msg_alt_senha").show()
           modo_alt_senha = true
         }
+
+        $("#user_codigo").focus()
 
       });
   })

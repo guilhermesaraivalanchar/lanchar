@@ -29,6 +29,8 @@ class EquipamentosController < ApplicationController
 
     u = User.where(codigo: params[:c]).last if !u
     
+    u = User.where(cartao: params[:c]).last if !u
+
     if u 
 
       senhas_possiveis = gerar_possiveis_senhas(params[:p])

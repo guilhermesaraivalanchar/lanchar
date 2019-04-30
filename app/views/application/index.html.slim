@@ -2,7 +2,7 @@
   - if current_user.user_tipo("responsavel")
     .col-lg-4.col-md-6
       .card
-        .card-b!ody.little-profile
+        .card-body.little-profile
           div.text-center
             h3.m-b-0
               = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
