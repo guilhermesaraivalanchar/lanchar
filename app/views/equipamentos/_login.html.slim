@@ -27,11 +27,12 @@ div.row style="background-color: #191919; "
             .form-group.text-center.m-t-20
               .col-xs-12
                 div#check_teclado_login
-                  button.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" Verificar
+                  button.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" Entrar
                 button#entrar.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Entrar
                 button#botao_alt_senha.btn.btn-info.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:none" Mudar Senha
                 br
                 div#erro_usu_ativo.error_validate class="alert alert-danger" style="text-align: center; display:none" Usuário desativado.
+                div#erro_senha.error_validate class="alert alert-danger" style="text-align: center; display:none" Codigo ou senha incorreta.
           .col-7
             .row#teclado_login
               .col-4
@@ -97,7 +98,6 @@ div.row style="background-color: #191919; "
               .col-6
                 div#botao_senha_6.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
                   = "X"
-        div#erro_senha.error_validate class="alert alert-danger" style="text-align: center; display:none" Codigo ou senha incorreta.
 
 javascript:
 

@@ -1,5 +1,5 @@
 .row
-  - if current_user.user_tipo("responsavel")
+  - if !current_user.user_tipo("responsavel")
     .col-lg-4.col-md-6
       .card
         .card-body.little-profile
@@ -26,7 +26,7 @@
                 div.col-lg-4.col-md-6
                   div.show_input  
                     = "Cartao"
-                  = current_user.cartao_id
+                  = current_user.cartao
       - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
       - if !dependentes.empty?
         .card.earning-widget
