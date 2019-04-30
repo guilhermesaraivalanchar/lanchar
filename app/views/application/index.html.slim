@@ -1,146 +1,189 @@
 .row
-  .col-lg-4.col-md-6
-    .card
-      .card-body.little-profile
-        div.text-center
-          h3.m-b-0
-            = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
-          p 
-            = current_user.tipos rescue ""
-        .row
-          .col-lg-12.col-md-12
-            h4.box-title.m-t-10
-              | Meus Dados
-            hr
-            .clear
-            .row
-              div.col-lg-4.col-md-6
-                div.show_input  
-                  = "Codigo de Acesso"
-                = current_user.codigo
-              div.col-lg-4.col-md-6
-                div.show_input  
-                  = "Tipo"
-                = current_user.tipos rescue ""
-              div.col-lg-4.col-md-6
-                div.show_input  
-                  = "Cartao"
-                = current_user.cartao_id
-    - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
-    - if !dependentes.empty?
-      .card.earning-widget
-        .card-header
-          .card-actions
-            a data-action="collapse" 
-              i.ti-minus
-            a.btn-minimize data-action="expand" 
-              i.mdi.mdi-arrow-expand
-            a.btn-close data-action="close" 
-              i.ti-close
-          h4.card-title.m-b-0 Dependentes
-        .card-body.b-t.collapse.show
-          table.table.v-middle.no-border
-            tbody
-              - dependentes.each do |dep|
-                tr
-                  td style="width:40px" 
-                    img.img-circle alt="logo" src="#{dep.user.imagem.url != '/imagens/original/missing.png' ? dep.user.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
-                  td
-                    = link_to(dep.user.nome, user_path(dep.user.id))
-                  td align="right" 
-                    span.label.label-light-info
-                      = "R$#{dep.user.saldo}"
-
-
-         
-  .col-lg-8.col-md-6
-    .row
-      .col-12
-        .card
-          .card-body
-            h4.card-title Histórico de transação
-            h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
-            button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
-            button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
-            button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
-            button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
-            button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
-            .table-responsive.m-t-40
-              table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
-                col width="30%"
-                col width="30%"
-                col width="30%"
-                col width="30%"
-                col width="5%"
-                thead
+  - if current_user.user_tipo("responsavel")
+    .col-lg-4.col-md-6
+      .card
+        .card-b!ody.little-profile
+          div.text-center
+            h3.m-b-0
+              = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
+            p 
+              = current_user.tipos rescue ""
+          .row
+            .col-lg-12.col-md-12
+              h4.box-title.m-t-10
+                | Meus Dados
+              hr
+              .clear
+              .row
+                div.col-lg-4.col-md-6
+                  div.show_input  
+                    = "Codigo de Acesso"
+                  = current_user.codigo
+                div.col-lg-4.col-md-6
+                  div.show_input  
+                    = "Tipo"
+                  = current_user.tipos rescue ""
+                div.col-lg-4.col-md-6
+                  div.show_input  
+                    = "Cartao"
+                  = current_user.cartao_id
+      - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
+      - if !dependentes.empty?
+        .card.earning-widget
+          .card-header
+            .card-actions
+              a data-action="collapse" 
+                i.ti-minus
+              a.btn-minimize data-action="expand" 
+                i.mdi.mdi-arrow-expand
+              a.btn-close data-action="close" 
+                i.ti-close
+            h4.card-title.m-b-0 Dependentes
+          .card-body.b-t.collapse.show
+            table.table.v-middle.no-border
+              tbody
+                - dependentes.each do |dep|
                   tr
-                    th Nome
-                    th Data
-                    th Mẽs
-                    th Valor
-                    th Saldo Atual
-                tbody
-                  - @transferencias_gerais_user.each do |transferencia|
-                    - if transferencia[:produto_id]
-                      tr
-                        td
-                          = transferencia[:produto_nome]
-                        td 
-                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                        td 
-                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                        td.text-danger
-                          = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                          td class="text-green"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                        - else
-                          td class="text-danger"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                    - elsif transferencia[:combo_id]
-                      tr
-                        td
-                          = transferencia[:combo_nome]
-                        td 
-                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                        td 
-                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                        td.text-danger
-                          = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                          td class="text-green"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                        - else
-                          td class="text-danger"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                      - TransferenciaCombo.where(transferencia_id: transferencia[:transferencia_id]).each do |tranf_combo|
+                    td style="width:40px" 
+                      img.img-circle alt="logo" src="#{dep.user.imagem.url != '/imagens/original/missing.png' ? dep.user.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
+                    td
+                      = link_to(dep.user.nome, user_path(dep.user.id))
+                    td align="right" 
+                      span.label.label-light-info
+                        = "R$#{dep.user.saldo}"
+
+
+           
+    .col-lg-8.col-md-6
+      .row
+        .col-12
+          .card
+            .card-body
+              h4.card-title Histórico de transação
+              h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
+              button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
+              button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
+              button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
+              button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
+              button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
+              .table-responsive.m-t-40
+                table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                  col width="30%"
+                  col width="30%"
+                  col width="30%"
+                  col width="30%"
+                  col width="5%"
+                  thead
+                    tr
+                      th Nome
+                      th Data
+                      th Mẽs
+                      th Valor
+                      th Saldo Atual
+                  tbody
+                    - @transferencias_gerais_user.each do |transferencia|
+                      - if transferencia[:produto_id]
                         tr
-                          td style="padding-left: 20px"
-                            = " #{tranf_combo.produto.nome} (#{transferencia[:combo_nome]})"
+                          td
+                            = transferencia[:produto_nome]
                           td 
                             = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
                           td 
                             = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                          td.text-danger
+                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                            td class="text-green"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                          - else
+                            td class="text-danger"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                      - elsif transferencia[:combo_id]
+                        tr
                           td
-                            = 
+                            = transferencia[:combo_nome]
+                          td 
+                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                          td.text-danger
+                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                            td class="text-green"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                          - else
+                            td class="text-danger"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                        - TransferenciaCombo.where(transferencia_id: transferencia[:transferencia_id]).each do |tranf_combo|
+                          tr
+                            td style="padding-left: 20px"
+                              = " #{tranf_combo.produto.nome} (#{transferencia[:combo_nome]})"
+                            td 
+                              = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                            td 
+                              = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                            td
+                              = 
+                            td
+                              = 
+                      - else
+                        tr
                           td
-                            = 
-                    - else
-                      tr
-                        td
-                          = transferencia[:tipo]
-                        td 
-                          = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                        td 
-                          = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                        td class="#{ (transferencia[:tipo] == 'ENTRADA' || transferencia[:tipo] == 'REEMBOLSO') ? 'text-green' : 'text-danger'}"
-                          = "#{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                        - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                          td class="text-green"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                        - else
-                          td class="text-danger"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                            = transferencia[:tipo]
+                          td 
+                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
+                          td 
+                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
+                          td class="#{ (transferencia[:tipo] == 'ENTRADA' || transferencia[:tipo] == 'REEMBOLSO') ? 'text-green' : 'text-danger'}"
+                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
+                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
+                            td class="text-green"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+                          - else
+                            td class="text-danger"
+                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+
+
+
+
+  - else
+    .col-12
+      - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
+      - if !dependentes.empty?
+        .card.earning-widget
+          .card-header
+            h4.card-title.m-b-0 Dependentes
+          .card-body.b-t.collapse.show
+            table.table.v-middle.no-border
+              tbody
+                - dependentes.each do |dep|
+                  tr
+                    td style="width:40px" 
+                      img.img-circle alt="logo" src="#{dep.user.imagem.url != '/imagens/original/missing.png' ? dep.user.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
+                    td
+                      = link_to(dep.user.nome, user_path(dep.user.id))
+                    td align="right" 
+                      span.label.label-light-info
+                        = "R$#{dep.user.saldo}"
+
+
+      #transferencia_pais.card.card-inverse.card-primary
+        .card-body
+          .d-flex
+            .m-r-20.align-self-center
+              h1.text-white
+                i.mdi.mdi-account-convert
+            div
+              h3.card-title Transferência de Saldo 
+
+      #cardapio_pais.card.card-inverse.card-primary
+        .card-body
+          .d-flex
+            .m-r-20.align-self-center
+              h1.text-white
+                i.mdi.mdi-content-paste
+            div
+              h3.card-title Cardápio
 
 
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
@@ -205,4 +248,16 @@ javascript:
   $("#botao_hoje, #botao_semana, #botao_mes, #botao_ano, #botao_todos").click(function(){
     part = this.id.split("_")
     window.location = "?p=" + part[1]
+  })
+
+  $("#transferencia_pais").click(function(){
+    
+    window.location = "/transferencia_saldo_pai"
+
+  })
+
+  $("#cardapio_pais").click(function(){
+    
+    window.location = "/cardapio_pais"
+
   })

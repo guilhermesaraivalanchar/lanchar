@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_140232) do
+ActiveRecord::Schema.define(version: 2019_04_30_171959) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 2019_04_09_140232) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "escola_id"
+    t.string "codigo"
     t.index ["escola_id"], name: "index_tipo_users_on_escola_id"
   end
 

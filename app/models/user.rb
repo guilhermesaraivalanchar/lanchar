@@ -122,6 +122,10 @@ class User < ApplicationRecord
   def user_responsavel(user)
   end
 
+  def user_tipo(tipo)
+    return self.tipos_users.map(&:tipo_user).map(&:codigo).include?(tipo)
+  end
+
   def saldo_diario_atual
     
     return (self.saldo.to_d + self.credito.to_d) if !self.saldo_diario
