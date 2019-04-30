@@ -1,2 +1,30 @@
-h1 Escolas#index
-p Find me in app/views/escolas/index.html.slim
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Lista de escolas
+        h6.card-subtitle Visualização e busca de todos as escolas.
+        = link_to "Nova Escola", new_escola_path, class: "btn btn-info waves-effect waves-light"
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="90%"
+            col width="5%"
+            thead
+              tr
+                th Nome
+                th Ação
+            tbody
+              - Escola.all.each do |escola|
+                tr
+                  td 
+                    = escola.nome
+                  td
+                    = link_to "Editar", edit_escola_path(escola.id), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+javascript:
+    $('#example23').DataTable({
+        "displayLength": 15,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });

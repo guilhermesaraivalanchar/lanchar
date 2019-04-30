@@ -1,8 +1,9 @@
 section#wrapper
   .login-register style="background-color: #191919;" 
-    .login-box.card 
+    .login-box.card style="width: 430px;"
       .card-body
-        img.dark-logo alt="homepage" width="300" src="/imagens/CantinaPro.png"
+        img.dark-logo.m-r-15 alt="homepage" width="300" src="/imagens/CantinaPro.png"
+        img.dark-logo alt="homepage" height="70" src="/imagens/logoibs.png"
         br
         br
         = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|

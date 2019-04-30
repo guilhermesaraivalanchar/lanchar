@@ -1,4 +1,14 @@
 ul#sidebarnav.in
+
+  - if current_user.admin
+    li
+      a.has-arrow.waves-effect.waves-dark
+        span.hide-menu
+          | Escolas
+      ul.collapse
+        li
+          = link_to("Gerenciar", escolas_path)
+
   li
     a.waves-effect.waves-dark href="#{root_url}"
       span.hide-menu
