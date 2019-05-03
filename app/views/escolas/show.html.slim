@@ -69,7 +69,16 @@
             = @escola.nome
           p 
             = current_user.tipos rescue ""
-
+        - if @escola.desabilitar_diario
+          .checkbox.checkbox-success
+            input id="check_desabilitar_credito" type="checkbox" checked="checked" onclick="desabilitar_diario(#{@escola.id})"
+            label for="check_desabilitar_credito"
+              | Desabilitar Saldo Diário
+        - else
+          .checkbox.checkbox-success
+            input id="check_desabilitar_credito" type="checkbox" onclick="desabilitar_diario(#{@escola.id})"
+            label for="check_desabilitar_credito"
+              | Desabilitar Saldo Diário
 
          
   .col-lg-9.col-md-6
@@ -207,6 +216,15 @@
 
 
 javascript:
+
+  function desabilitar_diario(escola_id){
+    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_desabilitar_credito").prop( "checked") },function(resultado) {
+
+      console.log(resultado)
+
+    })
+  }
+
   $('#example23').DataTable({
       "ordering": false,
       "displayLength": 15,

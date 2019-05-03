@@ -35,9 +35,14 @@ class User < ApplicationRecord
   attr_accessor :responsavel_ids
   attr_accessor :enable_after_save
 
+  before_save :check_credito
   after_save :salvar_responsavel, :if => :enable_after_save
 
   after_save :att_bloqueio_produto, :salvar_tipo_users, :if => :enable_after_save
+
+  def check_credito
+    self.credito = 0 if !self.credito
+  end
 
   def dependentes
     return User.where(id: ResponsavelUser.where(responsavel_id: self.id ).map(&:user_id))
@@ -128,7 +133,7 @@ class User < ApplicationRecord
 
   def saldo_diario_atual
     
-    return (self.saldo.to_d + self.credito.to_d) if !self.saldo_diario
+    return (self.saldo.to_d + self.credito.to_d) if !self.saldo_diario || self.escola.desabilitar_diario
 
     #return (self.saldo_diario - self.saldo_gasto_hoje.to_d) 
 

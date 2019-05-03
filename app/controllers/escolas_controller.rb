@@ -54,6 +54,15 @@ class EscolasController < ApplicationController
 
   end
 
+  def desabilitar_saldo_diario
+
+    escola = Escola.find(params[:escola_id])
+
+    escola.update_attribute(:desabilitar_diario, !escola.desabilitar_diario)
+
+    render json: {status: "OK", escola_des_diario: escola.desabilitar_diario}
+  end
+
   def resumo_caixa
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("resumo_caixa")
 
