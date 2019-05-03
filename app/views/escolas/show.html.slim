@@ -80,6 +80,16 @@
             label for="check_desabilitar_credito"
               | Desabilitar Saldo Diário
 
+        - if @escola.itens_separados
+          .checkbox.checkbox-success
+            input id="check_itens_separados" type="checkbox" checked="checked" onclick="itens_separados(#{@escola.id})"
+            label for="check_itens_separados"
+              | Habilitar Separação de Itens Compra
+        - else
+          .checkbox.checkbox-success
+            input id="check_itens_separados" type="checkbox" onclick="itens_separados(#{@escola.id})"
+            label for="check_itens_separados"
+              | Habilitar Separação de Itens Compra
          
   .col-lg-9.col-md-6
     .row
@@ -218,13 +228,20 @@
 javascript:
 
   function desabilitar_diario(escola_id){
-    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_desabilitar_credito").prop( "checked") },function(resultado) {
+    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_desabilitar_credito").prop( "checked"), tipo: "desabilitar_saldo_diario" },function(resultado) {
 
       console.log(resultado)
 
     })
   }
 
+  function itens_separados(escola_id){
+    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_itens_separados").prop( "checked"), tipo: "itens_separados" },function(resultado) {
+
+      console.log(resultado)
+
+    })
+  }
   $('#example23').DataTable({
       "ordering": false,
       "displayLength": 15,

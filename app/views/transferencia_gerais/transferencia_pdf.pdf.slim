@@ -130,40 +130,71 @@ css:
       = "Valor: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f * -1)}"
     | ------------------------------------------------
 - else
-  div style="font-size: 15px; max-width: 245px; text-align:center"
-    | -------------------------------------------------
-    br
-    | CANTINA PRO
-    br
-    | -------------------------------------------------
-  div style="font-size: 15px; max-width: 245px"
-    = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
-    br
-    = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
-    br
-    = "Aluno: "
-    - if @transferencia_geral.tipo == "VENDA_DIRETA"
-      = "VENDA DIRETA"
-    - else
-      = "#{@transferencia_geral.user.nome}"
-    br
-    = "Itens: "
-    br
-    - @transferencia_geral.transferencias.each do |t|
-      = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
-      - if t.combo
-        = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
-        br
-        div style="padding-left: 20px;font-size: 15px;"
-          - t.transferencia_combos.each do |tc|
-            = tc.produto.nome
-            br
+  - if !@transferencia_geral.escola.itens_separados
+    div style="font-size: 15px; max-width: 245px; text-align:center"
+      | ------------------------------------------------
       br
-    div style="font-weight: bold;font-size: 20px;"
-      = "Total: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
-    | -------------------------------------------------
-
-
+      | CANTINA PRO
+      br
+      | ------------------------------------------------
+    div style="font-size: 15px; max-width: 245px"
+      = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
+      br
+      = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
+      br
+      = "Aluno: "
+      - if @transferencia_geral.tipo == "VENDA_DIRETA"
+        = "VENDA DIRETA"
+      - else
+        = "#{@transferencia_geral.user.nome}"
+      br
+      = "Itens: "
+      br
+      - @transferencia_geral.transferencias.each do |t|
+        = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+        - if t.combo
+          = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+          br
+          div style="padding-left: 20px;font-size: 15px;"
+            - t.transferencia_combos.each do |tc|
+              = tc.produto.nome
+              br
+        br
+      div style="font-weight: bold;font-size: 20px;"
+        = "Total: #{ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor.to_f)}"
+      | ------------------------------------------------
+  - else
+    - @transferencia_geral.transferencias.each do |t|
+      div style="font-size: 15px; max-width: 245px; text-align:center"
+        | ------------------------------------------------
+        br
+        | CANTINA PRO
+        br
+        | ------------------------------------------------
+      div style="font-size: 15px; max-width: 245px"
+        = "Empresa: #{current_user ? current_user.escola.nome : User.find(1).escola.nome}"
+        br
+        = "Data/Hora: #{DateTime.now.in_time_zone.strftime('%d/%m/%Y %H:%M')}"
+        br
+        = "Aluno: "
+        - if @transferencia_geral.tipo == "VENDA_DIRETA"
+          = "VENDA DIRETA"
+        - else
+          = "#{@transferencia_geral.user.nome}"
+        br
+        br
+        div style="font-size: 20px;"
+          = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+          - if t.combo
+            = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+            br
+            div style="padding-left: 20px;font-size: 15px;"
+              - t.transferencia_combos.each do |tc|
+                = tc.produto.nome
+                br
+          br
+      br
+      br
 - if params[:totem] == "1"
   javascript:
     setTimeout(function(){ window.print() }, 500);

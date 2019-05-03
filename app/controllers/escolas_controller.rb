@@ -58,9 +58,18 @@ class EscolasController < ApplicationController
 
     escola = Escola.find(params[:escola_id])
 
-    escola.update_attribute(:desabilitar_diario, !escola.desabilitar_diario)
+    if params[:tipo] == "desabilitar_saldo_diario"
 
-    render json: {status: "OK", escola_des_diario: escola.desabilitar_diario}
+      escola.update_attribute(:desabilitar_diario, !escola.desabilitar_diario)
+
+      render json: {status: "OK", escola_des_diario: escola.desabilitar_diario}
+    elsif params[:tipo] == "itens_separados"
+
+      escola.update_attribute(:itens_separados, !escola.itens_separados)
+
+      render json: {status: "OK", escola_itens_separados: escola.itens_separados}
+    end
+      
   end
 
   def resumo_caixa
