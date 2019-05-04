@@ -73,7 +73,7 @@
                   td
                     = ActionController::Base.helpers.number_to_currency(transferencia_geral[:valor])
                   td
-                    - if @can_cancelar && !transferencia_geral[:cancelada] && transferencia_geral[:tipo] != "VENDA_DIRETA"
+                    - if @can_cancelar && !transferencia_geral[:cancelada]
                       = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral[:id]), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
                     - elsif transferencia_geral[:cancelada]
                       = link_to "Cancelada", '', helper: "button", class: "btn waves-effect waves-light btn-secondary", style: "margin-right: 10px"

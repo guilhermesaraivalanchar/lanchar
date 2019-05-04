@@ -30,13 +30,17 @@ class Escola < ApplicationRecord
   end
 
   def saldo_em_caixa
-    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO']).sum(&:valor)
+    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA']).sum(&:valor)
   end
 
   def self.criar_escola(nome)
     escola = Escola.new(nome: nome)
+
     escola.tipo_users.new(nome: "Administrador", codigo: "admin")
     escola.tipo_users.new(nome: "Aluno", codigo: "aluno")
     escola.tipo_users.new(nome: "Responsável", codigo: "responsavel")
+
+
+    #User.create(nome:"SISTEMA", email:"sistema1@sistemacantinapro.com.br", escola_id: 1, codigo:"SISTEMA_____1", password:123456, sistema: true)
   end
 end

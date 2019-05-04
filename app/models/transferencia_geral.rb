@@ -9,7 +9,7 @@ class TransferenciaGeral < ApplicationRecord
   after_save :att_caixa
 
   def att_caixa
-    if ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO'].include?(self.tipo)
+    if ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA'].include?(self.tipo)
       caixa = Caixa.where(user_id: self.user_movimentou_id).first_or_initialize
 
       valor_caixa = caixa.new_record? ? self.valor : ( caixa.valor + self.valor )
@@ -78,6 +78,31 @@ class TransferenciaGeral < ApplicationRecord
 
       self.transferencias.update_all(cancelada: true)
       self.update_column(:cancelada, true)
+
+
+    elsif self.tipo == "VENDA_DIRETA"
+
+      comprador = User.where(escola_id: self.escola_id, sistema: true).last
+
+      tf = TransferenciaGeral.new(user_id: comprador.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "REEMBOLSO_VENDA_DIRETA", user_movimentou_id: current_user.id)
+      tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"REEMBOLSO_VENDA_DIRETA", saldo_anterior: 0)
+      tf.save
+
+      self.transferencias.each do |transferencia|
+        transferencia.produto.update_attribute(:quantidade, transferencia.produto.quantidade + 1) if transferencia.produto
+        
+        if transferencia.combo
+          transferencia.transferencia_combos.each do |transferencia_combo|
+            produto_combo = transferencia_combo.produto
+            produto_combo.update_attribute(:quantidade, produto_combo.quantidade + 1)
+            transferencia_combo.update_attribute(:cancelada, true)
+          end
+        end 
+
+        transferencia.update_attribute(:cancelada, true)
+      end
+      self.update_column(:cancelada, true)
+
 
     end
   end
