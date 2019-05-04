@@ -151,9 +151,9 @@ css:
       = "Itens: "
       br
       - @transferencia_geral.transferencias.each do |t|
-        = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+        = ("#{t.produto.nome} - #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
         - if t.combo
-          = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+          = "#{t.combo.nome} - #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
           br
           div style="padding-left: 20px;font-size: 15px;"
             - t.transferencia_combos.each do |tc|
@@ -184,9 +184,9 @@ css:
         br
         br
         div style="font-size: 20px;"
-          = ("#{t.produto.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
+          = ("#{t.produto.nome} - #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)}") if t.produto
           - if t.combo
-            = "#{t.combo.nome} - R$ #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
+            = "#{t.combo.nome} - #{ActionController::Base.helpers.number_to_currency(t.valor.to_f)} "
             br
             div style="padding-left: 20px;font-size: 15px;"
               - t.transferencia_combos.each do |tc|
