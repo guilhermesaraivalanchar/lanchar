@@ -278,6 +278,10 @@ class ComprasController < ApplicationController
 
   end
 
+  def operador
+    
+  end
+
 
 
 end

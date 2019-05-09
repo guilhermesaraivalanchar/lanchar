@@ -2,36 +2,33 @@
   .col-12
     .card
       .card-body
-        h2.card-title Operador
+        h2.card-title Compras
+        h6.card-subtitle Realização de compras de produtos e combos
+        h4.box-title.m-t-10
+          | Dados Usuario
         hr
         div.col-12
-          .row
-            .col-12
-              h5.m-t-20 Usuário
-              select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
-                option value="" Escolha um usuário
-                option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
-                - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false], ativo: true).order(:nome).each do |user|
-                  option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" last_transf="#{user.transferencia_gerais.where(tipo: "VENDA").last.id rescue '0'}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario && !user.escola.desabilitar_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
-                    = "#{user.nome}"
-            #div_botao_lista.col-12
-              br
-              button#botao_lista.btn.btn-success.waves-effect.waves-light type="button" style="width: 100%;" Lista
-          div#div_opcoes_usuario style="display: none"
-            br
-            button#botao_creditar.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Creditar
-            button#botao_segunda_via.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" 2ª Via
-            button#usuario_venda.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Venda
-            br
+          h5.m-t-20 Usuário
+          select#select_usuario.select2.m-b-10.select2-multiple data-placeholder="Escolha um usuário" style=("width: 100%")
+            option value="" Escolha um usuário
+            option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
+            - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false], ativo: true).order(:nome).each do |user|
+              option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario && !user.escola.desabilitar_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
+                = "#{user.nome}"
           br
-          div#div_opcoes_venda style="display: none"
-            .checkbox.checkbox-success
-              input#venda_com_entrada type="checkbox"
-              label for="venda_com_entrada"  Venda com Entrada
-            .checkbox.checkbox-success
-              input#ignorar_saldo type="checkbox"
-              label for="ignorar_saldo"  Ignorar Saldo
-            br
+          br
+          button.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Creditar
+          button.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" 2ª Via
+          button.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Cancelar
+          br
+          br
+          .checkbox.checkbox-success
+            input#venda_com_entrada type="checkbox"
+            label for="venda_com_entrada"  Venda com Entrada
+          .checkbox.checkbox-success
+            input#ignorar_saldo type="checkbox"
+            label for="ignorar_saldo"  Ignorar Saldo
+          br
           div.div_saldo.alert.alert-info style="display: none"
             span
           div.erro_saldo.alert.alert-danger style="display: none"
@@ -39,54 +36,36 @@
           div.div_erro_bloqueio.alert.alert-danger style="display: none"
             span
           
-          div#div_creditar style="display: none"
-            .row
-              .col-6
-                label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
-                input#quantidade_credito.form-control type="text"
-              .col-6
-                label.control-label style="font-weight: bold" for="recipient-name" Tipo:
-                select#tipo_credito.select.form-control data-placeholder="Escolha um usuário" style=("width: 100%")
-                  - TipoCredito.where(escola_id: current_user.escola_id).each do |tipo_credito|
-                    option value="#{tipo_credito.tipo}"
-                      = tipo_credito.tipo
-              .col-6
-                br
-                button#botao_creditar.btn.btn-success.waves-effect.waves-light type="button" style="width: 100%;" Creditar
-              .col-6
-                br
-                button.voltar_pagina.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" style="width: 100%;" Voltar
-        div#div_produtos style="display: none"
-          h4.box-title.m-t-10
-            | Produtos
-          hr
-          div.col-12
-            div#add_produtos
-            button#add_produto_botao.btn.btn-primary.waves-effect.waves-light helper='button' Adicionar Produto
-            br
-            br
-            div#add_combos
-            button#add_combo_botao.btn.btn-primary.waves-effect.waves-light helper='button' Adicionar Combo
-            br
-            br
-            div.div_erro_quantidade.alert.alert-danger style="display: none"
-              span
-            div.div_erro_selecao.alert.alert-danger style="display: none"
-              span
 
-          button#add_prod_usu.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Adicionar
+        h4.box-title.m-t-10
+          | Produtos
+        hr
+        div.col-12
+          div#add_produtos
+          button#add_produto_botao.btn.btn-primary.waves-effect.waves-light helper='button' Adicionar Produto
           br
           br
-          h4.box-title.m-t-10
-            | Lista
-          hr
-          div#div_confirmacao.comment-widgets
-
-          div.div_erro_produto_quantidade.alert.alert-danger style="display: none"
+          div#add_combos
+          button#add_combo_botao.btn.btn-primary.waves-effect.waves-light helper='button' Adicionar Combo
+          br
+          br
+          div.div_erro_quantidade.alert.alert-danger style="display: none"
             span
-          button#enviar_confirmacao.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Comprar
-          button.voltar_pagina.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Voltar
-          a.btn.waves-effect.waves-light.btn-info helper="button" href="" id="imprimir_tudo" style="margin-right: 10px; display: none" target="_blank" Imprimir Todos
+          div.div_erro_selecao.alert.alert-danger style="display: none"
+            span
+
+        button#add_prod_usu.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Adicionar
+        br
+        br
+        h4.box-title.m-t-10
+          | Lista
+        hr
+        div#div_confirmacao.comment-widgets
+
+        div.div_erro_produto_quantidade.alert.alert-danger style="display: none"
+          span
+        button#enviar_confirmacao.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Comprar
+        a.btn.waves-effect.waves-light.btn-info helper="button" href="" id="imprimir_tudo" style="margin-right: 10px; display: none" target="_blank" Imprimir Todos
 
 javascript:
   var produto_num = 0;
@@ -95,10 +74,8 @@ javascript:
   var select_combo_options = "#{@select_combo_options}"
   var produtos_all_string = "#{@produtos_cardapio_string}"
   var combos_all_string = "#{@combos_cardapio_string}"
-  var modo_lista = false
-  var confirmacao = []; 
-  var user_id_uni = 0
-  var last_transf = 0;
+
+  var confirmacao = [];
 
   produtos_all = []
   produtos_all_preco = []
@@ -195,7 +172,6 @@ javascript:
 
   $("#select_usuario").change(function(){
 
-    user_id_uni = $(this).val()
     user_id = $(this).val()
     user_saldo = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo");
     user_credito = document.getElementById("option_usu_"+user_id).getAttribute("usuario_credito");
@@ -205,7 +181,6 @@ javascript:
     user_saldo_diario = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_diario");
     user_saldo_gasto_hoje = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_gasto_hoje");
     user_saldo_total = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_total");
-    last_transf = document.getElementById("option_usu_"+user_id).getAttribute("last_transf");
     produtos_bloqueados_split = produtos_bloqueados.split(",")
     blod_string = ""
     if (produtos_bloqueados_split[0] != ""){
@@ -232,14 +207,6 @@ javascript:
       $("div.div_saldo").show()
     } else {
       $("div.div_saldo").hide()
-    }
-
-    if(!modo_lista){
-      $("#div_botao_lista").hide()
-      $("#div_opcoes_usuario").show()
-
-      $("#div_opcoes_venda").hide()
-      $("#div_produtos").hide()
     }
   
   })
@@ -554,74 +521,6 @@ javascript:
         }
       } else {
         console.log("NAO DEU");
-      }
-    })
-
-  })
-
-  $("#botao_lista").click(function(){
-    modo_lista = true
-    $("#div_botao_lista").hide()
-    $("#div_opcoes_usuario").hide()
-    $("#div_opcoes_venda").show()
-    $("#div_produtos").show()
-  })
-
-  $("#usuario_venda").click(function(){
-    $("#div_botao_lista").hide()
-    $("#div_opcoes_usuario").hide()
-    $("#div_opcoes_venda").show()
-    $("#div_produtos").show()
-    $("#select_usuario").prop("disabled", true)
-  })
-
-  $("#botao_creditar").click(function(){
-    $("#div_botao_lista").hide()
-    $("#div_opcoes_usuario").hide()
-    $("#div_opcoes_venda").hide()
-    $("#div_produtos").hide()
-    $("#div_creditar").show()
-    $("#select_usuario").prop("disabled", true)
-  })
-
-  $("#botao_segunda_via").click(function(){
-    if (last_transf != null && last_transf != 0){ window.open("/transferencia_gerais/transferencia_pdf/"+last_transf+".pdf?via=ok") }
-  })
-
-  $(".voltar_pagina").click(function(){
-    location.reload();
-  })
-
-  $(function() {
-    $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
-  })
-
-  $("#botao_creditar").click(function(){
-
-    $(this).prop( "disabled", true );
-    valor_credito = $("#quantidade_credito").val().replace("R$ ", "")    
-    valor_credito = valor_credito.replace(/,/g, "");
-
-    $.getJSON("/creditar", { user_id: user_id_uni, valor: valor_credito, tipo: $("#tipo_credito").val(), status: "caixa" },function(d){
-      if (d) {
-        console.log(d);
-        if (d.resultado == "OK"){
-          $("#creditado_alerta").show();
-          setTimeout(function(){
-
-            $("#quantidade_credito").val("");
-            $("#creditado_alerta").hide();
-
-            window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf")
-
-            $("#botao_creditar").prop( "disabled", false );
-
-            location.reload();
-
-          }, 1000);
-        }
-      } else {
-
       }
     })
 

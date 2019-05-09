@@ -64,7 +64,6 @@ Rails.application.routes.draw do
   match "/cardapio_pais" => "cardapios#cardapio_pais", as: :cardapio_pais, via: [:get, :post]
   match "/resumo_caixa" => "escolas#resumo_caixa", as: :resumo_caixa, via: [:get, :post]
   
-
   match "/preco_cardapio_produto" => "cardapios#preco_cardapio_produto", as: :preco_cardapio_produto, via: [:get, :post]
   match "/preco_cardapio_combo" => "cardapios#preco_cardapio_combo", as: :preco_cardapio_combo, via: [:get, :post]
   match "/ativo_cardapio_produto" => "cardapios#ativo_cardapio_produto", as: :ativo_cardapio_produto, via: [:get, :post]
@@ -74,6 +73,7 @@ Rails.application.routes.draw do
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
 
+  match "/operador" => "compras#operador", as: :operador, via: [:get, :post]
 
   # TOTEM
   match "/totem/login" => "totens#login", via: [:get, :post]
