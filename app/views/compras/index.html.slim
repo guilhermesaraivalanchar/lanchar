@@ -19,7 +19,7 @@
               button#botao_lista.btn.btn-success.waves-effect.waves-light type="button" style="width: 100%;" Lista
           div#div_opcoes_usuario style="display: none"
             br
-            button#botao_creditar.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Creditar
+            button#botao_creditar_show.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Creditar
             button#botao_segunda_via.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" 2ª Via
             button#usuario_venda.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Venda
             br
@@ -575,7 +575,7 @@ javascript:
     $("#select_usuario").prop("disabled", true)
   })
 
-  $("#botao_creditar").click(function(){
+  $("#botao_creditar_show").click(function(){
     $("#div_botao_lista").hide()
     $("#div_opcoes_usuario").hide()
     $("#div_opcoes_venda").hide()

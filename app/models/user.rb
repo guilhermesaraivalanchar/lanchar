@@ -42,6 +42,7 @@ class User < ApplicationRecord
 
   def check_credito
     self.credito = 0 if !self.credito
+    #self.saldo = 0 if !self.saldo
   end
 
   def dependentes
