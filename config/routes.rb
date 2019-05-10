@@ -73,8 +73,6 @@ Rails.application.routes.draw do
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
 
-  match "/operador" => "compras#operador", as: :operador, via: [:get, :post]
-
   # TOTEM
   match "/totem/login" => "totens#login", via: [:get, :post]
   match "/totem/g_p" => "totens#get_produtos", via: [:get, :post]
