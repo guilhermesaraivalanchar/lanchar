@@ -195,6 +195,9 @@ javascript:
 
   $("#select_usuario").change(function(){
 
+    $("#botao_creditar_show").show()
+    $("#botao_segunda_via").show()
+
     user_id_uni = $(this).val()
     user_id = $(this).val()
     user_saldo = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo");
@@ -235,11 +238,20 @@ javascript:
     }
 
     if(!modo_lista){
-      $("#div_botao_lista").hide()
-      $("#div_opcoes_usuario").show()
 
-      $("#div_opcoes_venda").hide()
-      $("#div_produtos").hide()
+      if (user_saldo_disponivel != "99999999999999999999999"){
+        $("#div_botao_lista").hide()
+        $("#div_opcoes_usuario").show()
+        $("#div_opcoes_venda").hide()
+        $("#div_produtos").hide()
+      }else{
+        $("#botao_creditar_show").hide()
+        $("#botao_segunda_via").hide()
+        $("#div_botao_lista").hide()
+        $("#div_opcoes_usuario").show()
+        $("#div_opcoes_venda").hide()
+        $("#div_produtos").hide()
+      }
     }
   
   })
