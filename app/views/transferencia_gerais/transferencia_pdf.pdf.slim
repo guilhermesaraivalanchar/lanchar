@@ -189,7 +189,7 @@ css:
         br
         = "Aluno: "
         - if @transferencia_geral.tipo == "VENDA_DIRETA"
-          = "VENDA DIRETA"
+          = "VENDA DIRETA - #{@transferencia_geral.id}"
         - else
           = "#{@transferencia_geral.user.nome}"
         br
