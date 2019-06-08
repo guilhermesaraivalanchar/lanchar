@@ -58,7 +58,7 @@ class EscolasController < ApplicationController
 
     escola = Escola.find(params[:escola_id])
 
-    if params[:tipo] == "desabilitar_saldo_diario"
+    if params[:tipo] == "desabilitar_diario"
 
       escola.update_attribute(:desabilitar_diario, !escola.desabilitar_diario)
 
@@ -68,6 +68,12 @@ class EscolasController < ApplicationController
       escola.update_attribute(:itens_separados, !escola.itens_separados)
 
       render json: {status: "OK", escola_itens_separados: escola.itens_separados}
+    elsif params[:tipo] == "sem_credito"
+
+      escola.users.update_all(credito: 0) if !escola.sem_credito
+      escola.update_attribute(:sem_credito, !escola.sem_credito)
+
+      render json: {status: "OK", escola_sem_credito: escola.sem_credito}
     end
       
   end

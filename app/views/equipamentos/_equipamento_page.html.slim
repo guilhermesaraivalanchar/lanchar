@@ -132,6 +132,7 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
 
 javascript:
 
+  var escola_sem_credito = "#{current_user.escola.sem_credito}"
   var numero_items = 8
 
   function iniciar_produto(){
@@ -145,11 +146,23 @@ javascript:
     $("#nome_usuario_inf").html(user_nome)
 
     if (user_diario == null){
+
+      if(escola_sem_credito == "true"){
+        $("#saldo_usuario_inf").html("Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
       
-      $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      }else{
+        $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      }
+      
       
     }else{
-      $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Limite Diário: " + number_to_currency(user_diario, { unit: "R$ " }) + " | Valor Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Limite Diário Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      if(escola_sem_credito == "true"){
+        $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Limite Diário: " + number_to_currency(user_diario, { unit: "R$ " }) + " | Valor Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Limite Diário Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+      
+      }else{
+        $("#saldo_usuario_inf").html("Saldo: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " | Limite Diário: " + number_to_currency(user_diario, { unit: "R$ " }) + " | Valor Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Limite Diário Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }))
+
+      }
 
     }
 

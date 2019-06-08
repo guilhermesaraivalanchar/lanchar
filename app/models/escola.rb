@@ -10,6 +10,8 @@ class Escola < ApplicationRecord
   has_many :tipo_users, :dependent => :destroy
   has_many :fornecedores, :dependent => :destroy
   has_many :equipamentos, :dependent => :destroy
+  has_many :tipo_creditos, :dependent => :destroy
+  has_many :caixas, :dependent => :destroy
 
   has_attached_file :logo, :styles => { :original => "900x900>" }
     do_not_validate_attachment_file_type :logo
@@ -27,20 +29,28 @@ class Escola < ApplicationRecord
 
   def faturamento_mensal
     self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
-  end
+  end0
 
   def saldo_em_caixa
     self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA']).sum(&:valor)
   end
 
   def self.criar_escola(nome)
-    escola = Escola.new(nome: nome)
+    escola = Escola.new(nome: nome, sem_credito: true)
 
-    escola.tipo_users.new(nome: "Administrador", codigo: "admin")
-    escola.tipo_users.new(nome: "Aluno", codigo: "aluno")
-    escola.tipo_users.new(nome: "Responsável", codigo: "responsavel")
+    escola.tipo_users.new(nome: "Administrador", codigo: "admin", bloqueado: true)
+    escola.tipo_users.new(nome: "Aluno", codigo: "aluno", bloqueado: true)
+    escola.tipo_users.new(nome: "Responsável", codigo: "responsavel", bloqueado: true)
+    escola.users.new(nome: "SISTEMA", email:"sistema1@sistemacantinapro.com.br", codigo:"SISTEMA_____1", password: 123456, sistema: true)
+    escola.users.new(nome: "Admin", email:"admin_#{nome}@sistemacantinapro.com.br", codigo:"admin", password: 123456, sistema: false, ativo: true, saldo: 0, admin: true)
+    escola.tipo_produtos.new(nome: "Salgados")
+    escola.tipo_produtos.new(nome: "Bebidas")
+    escola.tipo_produtos.new(nome: "Outros")
+    escola.tipo_creditos.new(tipo: "Dinheiro")
+    escola.cardapios.new(nome: "Padrão", ativo: true)
 
+    escola.save!
 
-    #User.create(nome:"SISTEMA", email:"sistema1@sistemacantinapro.com.br", escola_id: 1, codigo:"SISTEMA_____1", password:123456, sistema: true)
+    puts escola.id
   end
 end

@@ -95,6 +95,7 @@ javascript:
   var select_combo_options = "#{@select_combo_options}"
   var produtos_all_string = "#{@produtos_cardapio_string}"
   var combos_all_string = "#{@combos_cardapio_string}"
+  var escola_sem_credito = "#{current_user.escola.sem_credito}"
   var modo_lista = false
   var confirmacao = []; 
   var user_id_uni = 0
@@ -225,11 +226,24 @@ javascript:
 
     if (user_id != 0){
       if (tem_saldo_diario == "n"){
-        
-        $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+
+        if(escola_sem_credito == "true"){
+          $("div.div_saldo span").html("Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+        }else{
+          $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+        }
         
       }else{
-        $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Total: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " <br> Saldo Diário: " + number_to_currency(user_saldo_diario, { unit: "R$ " }) + " | Saldo Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+
+        if(escola_sem_credito == "true"){
+          $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " <br> Saldo Diário: " + number_to_currency(user_saldo_diario, { unit: "R$ " }) + " | Saldo Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+        
+        }else{
+          $("div.div_saldo span").html("Saldo: " + number_to_currency(user_saldo, { unit: "R$ " }) + " | Credito: " + number_to_currency(user_credito, { unit: "R$ " }) + " | Saldo Total: " + number_to_currency(user_saldo_total, { unit: "R$ " }) + " <br> Saldo Diário: " + number_to_currency(user_saldo_diario, { unit: "R$ " }) + " | Saldo Gasto Hoje: " + number_to_currency(user_saldo_gasto_hoje, { unit: "R$ " }) + " | Saldo Disponível: " + number_to_currency(user_saldo_disponivel, { unit: "R$ " }) + " <br> "+blod_string)
+
+        }
+
+
 
       }
       $("div.div_saldo").show()
