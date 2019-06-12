@@ -1,6 +1,49 @@
 
 .row
-  .col-lg-3.col-md-6
+  .col-lg-4.col-md-6
+    .card
+      img.card-img-top alt=("Card image cap") src="../imagens/profile-bg.jpg"
+      .card-body.little-profile
+        div.text-center
+          .pro-img
+            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
+          h3.m-b-0
+            = @escola.nome
+          p 
+            = current_user.tipos rescue ""
+        - if @escola.desabilitar_diario
+          .checkbox.checkbox-success
+            input id="check_desabilitar_credito" type="checkbox" checked="checked" onclick="mudar_booleans(#{@escola.id}, 'desabilitar_diario')"
+            label for="check_desabilitar_credito"
+              | Desabilitar Saldo Diário
+        - else
+          .checkbox.checkbox-success
+            input id="check_desabilitar_credito" type="checkbox" onclick="mudar_booleans(#{@escola.id}, 'desabilitar_diario')"
+            label for="check_desabilitar_credito"
+              | Desabilitar Saldo Diário
+
+        - if @escola.itens_separados
+          .checkbox.checkbox-success
+            input id="check_itens_separados" type="checkbox" checked="checked" onclick="mudar_booleans(#{@escola.id}, 'itens_separados')"
+            label for="check_itens_separados"
+              | Habilitar Separação de Itens Compra
+        - else
+          .checkbox.checkbox-success
+            input id="check_itens_separados" type="checkbox" onclick="mudar_booleans(#{@escola.id}, 'itens_separados')"
+            label for="check_itens_separados"
+              | Habilitar Separação de Itens Compra
+
+        - if @escola.sem_credito
+          .checkbox.checkbox-success
+            input id="check_sem_credito" type="checkbox" checked="checked" onclick="mudar_booleans(#{@escola.id}, 'sem_credito')"
+            label for="check_sem_credito"
+              | Sem Credito
+        - else
+          .checkbox.checkbox-success
+            input id="check_sem_credito" type="checkbox" onclick="mudar_booleans(#{@escola.id}, 'sem_credito')"
+            label for="check_sem_credito"
+              | Sem Credito
+  .col-lg-4.col-md-6
     .card.card-inverse.card-info
       .card-body
         .d-flex
@@ -12,7 +55,7 @@
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_em_caixa)}"
         hr
-        - Caixa.all.each do |caixa|
+        - Caixa.where(escola_id: current_user.escola_id).each do |caixa|
           - if caixa.valor != 0
             div style="color: white"
               = caixa.user.nome
@@ -21,7 +64,7 @@
                 = "#{ActionController::Base.helpers.number_to_currency(caixa.valor)}"
                 button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{caixa.user_id}" valor_caixa="#{caixa.valor}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
-  .col-lg-3.col-md-6
+  .col-lg-4.col-md-6
     .card.card-inverse.card-info
       .card-body
         .d-flex
@@ -32,7 +75,6 @@
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.faturamento_diario)}"
-  .col-lg-3.col-md-6
     .card.card-inverse.card-info
       .card-body
         .d-flex
@@ -43,7 +85,6 @@
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.faturamento_mensal)}"
-  .col-lg-3.col-md-6
     .card.card-inverse.card-danger
       .card-body
         .d-flex
@@ -58,40 +99,9 @@
 
 
 .row
-  .col-lg-3.col-md-6
-    .card
-      img.card-img-top alt=("Card image cap") src="../imagens/profile-bg.jpg"
-      .card-body.little-profile
-        div.text-center
-          .pro-img
-            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
-          h3.m-b-0
-            = @escola.nome
-          p 
-            = current_user.tipos rescue ""
-        - if @escola.desabilitar_diario
-          .checkbox.checkbox-success
-            input id="check_desabilitar_credito" type="checkbox" checked="checked" onclick="desabilitar_diario(#{@escola.id})"
-            label for="check_desabilitar_credito"
-              | Desabilitar Saldo Diário
-        - else
-          .checkbox.checkbox-success
-            input id="check_desabilitar_credito" type="checkbox" onclick="desabilitar_diario(#{@escola.id})"
-            label for="check_desabilitar_credito"
-              | Desabilitar Saldo Diário
 
-        - if @escola.itens_separados
-          .checkbox.checkbox-success
-            input id="check_itens_separados" type="checkbox" checked="checked" onclick="itens_separados(#{@escola.id})"
-            label for="check_itens_separados"
-              | Habilitar Separação de Itens Compra
-        - else
-          .checkbox.checkbox-success
-            input id="check_itens_separados" type="checkbox" onclick="itens_separados(#{@escola.id})"
-            label for="check_itens_separados"
-              | Habilitar Separação de Itens Compra
          
-  .col-lg-9.col-md-6
+  .col-lg-12.col-md-12
     .row
       .col-12
         .card
@@ -227,21 +237,20 @@
 
 javascript:
 
-  function desabilitar_diario(escola_id){
-    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_desabilitar_credito").prop( "checked"), tipo: "desabilitar_saldo_diario" },function(resultado) {
+  function mudar_booleans(escola_id, tipo){
+
+    if(tipo == "desabilitar_diario"){ ativo = $("#check_desabilitar_credito").prop( "checked")}
+    if(tipo == "itens_separados"){ ativo = $("#check_itens_separados").prop( "checked")}
+    if(tipo == "sem_credito"){ ativo = $("#check_sem_credito").prop( "checked")}
+
+
+    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: ativo, tipo: tipo },function(resultado) {
 
       console.log(resultado)
 
     })
   }
 
-  function itens_separados(escola_id){
-    $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: $("#check_itens_separados").prop( "checked"), tipo: "itens_separados" },function(resultado) {
-
-      console.log(resultado)
-
-    })
-  }
   $('#example23').DataTable({
       "ordering": false,
       "displayLength": 15,

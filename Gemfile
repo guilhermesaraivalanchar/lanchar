@@ -15,6 +15,7 @@ gem 'aasm'
 gem 'cocoon', '~> 1.2', '>= 1.2.11'
 gem 'wicked_pdf', '~> 1.1'
 gem 'wkhtmltopdf-binary', '~> 0.12.4'
+gem 'whenever', require: false
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'

@@ -80,7 +80,7 @@ class ComprasController < ApplicationController
   def enviar_confirmacao_compra
     
     if current_user.tem_permissao("comprar_sistema")
-      cardapio_ativo = Cardapio.where(ativo: true).last
+      cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
       resposta = []
 
@@ -114,6 +114,20 @@ class ComprasController < ApplicationController
               conf.last[:produtos].each do |prod_combo|
 
                 if prod_combo.last[:tipo] == "p"
+                  puts "
+
+
+                    #{prod_combo.last[:id]}
+
+
+
+
+
+
+
+
+
+                  "
                   prod_preco = cardapio_ativo.cardapio_produtos.where(produto_id: prod_combo.last[:id]).last.preco.to_f
                   valor_transf = valor_transf + prod_preco
                   transf_geral.transferencias.new(escola_id: current_user.escola_id, tipo: tipo_transacao, user_movimentou_id: current_user.id, produto_id: prod_combo.last[:id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
@@ -222,7 +236,7 @@ class ComprasController < ApplicationController
   def enviar_confirmacao_compra_old
     
     if current_user.tem_permissao("comprar_sistema")
-      cardapio_ativo = Cardapio.where(ativo: true).last
+      cardapio_ativo = Cardapio.where(escola_id: current_user.escola_id, ativo: true).last
 
       resposta = []
 

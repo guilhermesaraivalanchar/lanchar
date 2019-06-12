@@ -98,6 +98,8 @@ div.row style="background-color: #191919; "
               .col-6
                 div#botao_senha_6.error_validate class="alert alert-info" onclick="login_botao_apagar()" style="height: 90px;text-align: center; vertical-align: middle; line-height: 60px; font-size: 30px"
                   = "X"
+              .col-12
+                button#cancelar_senha.btn.btn-danger.btn-lg.btn-block.waves-effect.waves-light type="button" style="display:block" Cancelar
 
 javascript:
 
@@ -177,6 +179,17 @@ javascript:
 
     log.val(log.val() + numero)
   }
+
+  $("#cancelar_senha").click(function(){
+    $("#user_codigo").val("")
+    $("#teclado_login").show()
+    $("#teclado_senha").hide()
+    $("#input_usuario").show()
+    $("#input_senha").hide()
+    $("#check_teclado_login").show()
+    $("#entrar").hide()
+    $("#user_pass").val("")
+  })
 
   function login_botao_apagar() {
     if(modo_alt_senha){
