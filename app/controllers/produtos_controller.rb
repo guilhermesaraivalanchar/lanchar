@@ -148,7 +148,7 @@ class ProdutosController < ApplicationController
       LEFT JOIN transferencia_combos ON transferencia_combos.transferencia_id = transferencias.id
       LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
       LEFT JOIN produtos AS produto_combo_transf ON produto_combo_transf.id = transferencia_combos.produto_id
-      WHERE transferencias.tipo = "VENDA" OR transferencias.tipo = "VENDA_DIRETA"
+      WHERE transferencias.tipo = 'VENDA' OR transferencias.tipo = 'VENDA_DIRETA'
     }
 
     @transferencias_produtos = Transferencia.find_by_sql [sql]
