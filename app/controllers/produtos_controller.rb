@@ -127,6 +127,42 @@ class ProdutosController < ApplicationController
 
   end
 
+  def produtos_vendidos
+
+
+    produtos = []    
+
+    @data_inicio = "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 00:00:00"
+    @data_fim = "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 23:59:59"
+    
+    if params[:data_inicio].present? && params[:data_fim].present?
+
+      @data_inicio = params[:data_inicio].to_time.in_time_zone.strftime("%Y-%m-%d %H:%M") rescue @data_inicio
+      @data_fim = params[:data_fim].to_time.in_time_zone.strftime("%Y-%m-%d %H:%M") rescue @data_fim
+
+    end
+
+    sql = %Q{
+      SELECT produto_transf.nome as produto_transf_nome, produto_combo_transf.nome as produto_combo_transf_nome, transferencias.created_at
+      FROM transferencias 
+      LEFT JOIN transferencia_combos ON transferencia_combos.transferencia_id = transferencias.id
+      LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
+      LEFT JOIN produtos AS produto_combo_transf ON produto_combo_transf.id = transferencia_combos.produto_id
+      WHERE transferencias.tipo = "VENDA" OR transferencias.tipo = "VENDA_DIRETA"
+    }
+
+    @transferencias_produtos = Transferencia.find_by_sql [sql]
+
+    @transferencias_produtos.each do |prod|
+
+      produtos << {nome: prod[:produto_transf_nome] ? prod[:produto_transf_nome] : prod[:produto_combo_transf_nome], c: prod[:created_at] } if prod[:created_at] > @data_inicio.to_time  && prod[:created_at] < @data_fim.to_time 
+
+    end
+
+    @produtos_group = produtos.group_by { |d| d[:nome] }
+
+  end
+
 private
   def produto_params
     params.require(:produto).permit!

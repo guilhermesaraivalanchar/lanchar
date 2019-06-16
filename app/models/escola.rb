@@ -24,12 +24,12 @@ class Escola < ApplicationRecord
   end
 
   def faturamento_diario
-    self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
+    self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 00:00:00", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 23:59:59").where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
   end
 
   def faturamento_mensal
-    self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , Time.now.beginning_of_month, Time.now.end_of_month).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
-  end0
+    self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0" , inicio_mes, fim_mes).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
+  end
 
   def saldo_em_caixa
     self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA']).sum(&:valor)
@@ -53,4 +53,11 @@ class Escola < ApplicationRecord
 
     puts escola.id
   end
+
+  def inicio_dia
+  end
+
+  def fim_dia
+  end
+
 end

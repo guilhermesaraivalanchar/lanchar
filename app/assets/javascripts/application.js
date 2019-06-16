@@ -111,7 +111,7 @@ $(document).ready(function() {
   });
 
   $('.datetimepicker_range').on('apply.daterangepicker', function(ev, picker) {
-    $(this).val(picker.startDate.format('DD/MM/YYYY HH:MM'))
+    $(this).val(picker.startDate.format('DD/MM/YYYY HH:mm'))
     
     //$(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
   });

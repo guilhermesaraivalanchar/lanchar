@@ -70,6 +70,8 @@ Rails.application.routes.draw do
   match "/ativo_cardapio_combo" => "cardapios#ativo_cardapio_combo", as: :ativo_cardapio_combo, via: [:get, :post]
   match "/desabilitar_saldo_diario" => "escolas#desabilitar_saldo_diario", as: :desabilitar_saldo_diario, via: [:get, :post]
 
+  match "/produtos_vendidos" => "produtos#produtos_vendidos", as: :produtos_vendidos, via: [:get, :post]
+
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
 

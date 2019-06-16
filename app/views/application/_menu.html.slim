@@ -133,3 +133,4 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("relatorio_relacao_usuarios")
           li
             = link_to("Relatório Relacão", relatorio_relacao_responsavel_path(busca: false))
+            = link_to("Produtos Vendidos", produtos_vendidos_path(busca: false))

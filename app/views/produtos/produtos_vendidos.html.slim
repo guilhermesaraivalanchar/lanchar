@@ -1,0 +1,85 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Parametros do Relatório
+        .row.col-12
+          .col-4
+            h5.m-t-20 Período
+            .row
+              .col-6
+                input#input_data_inicio.string.form-control.datetimepicker_range placeholder="Data Inicio" type="text" value="#{@data_inicio.to_time.strftime("%d-%m-%Y %H:%M")}"
+              .col-6
+                input#input_data_fim.string.form-control.datetimepicker_range placeholder="Data Fim" type="text" value="#{@data_fim.to_time.strftime("%d-%m-%Y %H:%M")}"
+                     
+        br
+        div.col-12
+          button#buscar_relatorio.btn.btn-success.waves-effect.waves-light.m-r-10 type="button" Filtrar
+
+
+
+
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Ralatório Usuários
+        .table-responsive.m-t-40
+          table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+            col width="70%"
+            col width="30%"
+            thead
+              tr
+                th Nome
+                th Quantidade
+            tbody
+              - @produtos_group.each do |produto_nome, produtos|
+                tr
+                  td 
+                    = produto_nome rescue ""
+                  td 
+                    = produtos.count rescue ""
+javascript:
+
+  $("#buscar_relatorio").click(function(){
+
+    var location = "/relatorio_transferencia?"
+
+    console.log($("#input_data_inicio").val())
+    console.log($("#input_data_fim").val())
+
+    string_data_inicio = ""
+    data_inicio = $("#input_data_inicio").val()
+    data_fim = $("#input_data_fim").val()
+    if (data_inicio != ""){
+      string_data_inicio = "data_inicio="+data_inicio+"&"
+      if(data_fim != ""){
+        string_data_inicio = string_data_inicio + "data_fim="+data_fim+"&"
+      }
+
+    }
+
+
+    console.log(string_data_inicio)
+    
+    string_busca = string_data_inicio
+    console.log(string_busca)
+
+    string_busca = string_busca.substring(0, string_busca.length-1)
+
+    window.location = "/produtos_vendidos?"+string_busca
+
+  })
+  $(".mask-data").setMask("99/99/9999");
+
+  $(".select2").select2();
+
+  var table = $('#example23').DataTable({
+      "order": [[1, "desc"]],
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
+
