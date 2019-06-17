@@ -1,0 +1,108 @@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.5.0"></script>
+
+.row
+  .col-12
+    .card
+      .card-body
+        h4.card-title Radar
+        canvas id="myChartt" style="height: 800px"
+
+javascript:
+  labels_mes = "#{@mes_padrao.join('::')}"
+  vendas = "#{@venda_quantidades.join('::')}"
+  entradas = "#{@entrada_quantidades.join('::')}"
+
+  dados_venda = vendas.split("::")
+  dados_entrada = entradas.split("::")
+  dados_labels = labels_mes.split("::")
+
+
+  // CONFIGURARA A POSIÇÃO DO LABEL
+  Chart.defaults.global.plugins.datalabels.anchor = 'end';
+  Chart.defaults.global.plugins.datalabels.align = 'end';
+
+  // CRIANDO UM ESPAÇO ENTRE A LEGENDA E O GRÁFICO
+  Chart.Legend.prototype.afterFit = function() {
+      this.height = this.height + 20;
+  };
+  
+  var ctx = document.getElementById('myChartt').getContext('2d');
+  var chart = new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+      scaleOverride : true,
+      scaleSteps : 10,
+      scaleStepWidth : 50,
+      scaleStartValue : 0,
+
+      // The data for our dataset
+      data: {
+          labels: dados_labels,
+          datasets: [{
+              label: "Vendas",
+              backgroundColor: '#009000',
+              data: dados_venda
+          },{
+              label: "Entradas",
+              backgroundColor: '#007bff',
+              data: dados_entrada
+          }]
+      },
+
+      onAnimationComplete: function () {
+
+          var ctx = this.chart.ctx;
+          ctx.font = this.scale.font;
+          ctx.fillStyle = this.scale.textColor
+          ctx.textAlign = "center";
+          ctx.anchor = "end";
+
+          this.datasets.forEach(function (dataset) {
+              dataset.bars.forEach(function (bar) {
+                  ctx.fillText(bar.value, bar.x, bar.y - 15);
+              });
+          })
+      },
+
+      // Configuration options go here
+      options: {
+        layout: {
+            padding: {
+                left: 0,
+                right: 50,
+                top: 0,
+                bottom: 0
+            }
+        },
+
+        legend: {
+            position: 'top',
+        },
+        scales: {
+            yAxes: [{
+                ticks: {
+                    padding: 4
+                }
+            }]
+        },
+
+        plugins: {
+          datalabels: {
+            color: 'black',
+            display: function(context) {
+              return true;
+            },
+            font: {
+              weight: 'bold'
+            },
+            formatter: Math.round
+          }
+        }
+
+
+      }
+  });
+

@@ -49,7 +49,6 @@
 //= require daterangepicker/daterangepicker
 //= require sweetalert/sweetalert.min
 
-
 function toggle_menu(){
   $("body").toggleClass("show-sidebar");
 }
