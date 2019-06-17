@@ -132,7 +132,7 @@ div#div_combo_produtos.card style="position:fixed; top: 20px; left:20px; display
 
 javascript:
 
-  var escola_sem_credito = "#{current_user.escola.sem_credito}"
+  var escola_sem_credito = "#{Escola.first.sem_credito}"
   var numero_items = 8
 
   function iniciar_produto(){
