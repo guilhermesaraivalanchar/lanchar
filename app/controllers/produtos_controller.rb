@@ -48,6 +48,7 @@ class ProdutosController < ApplicationController
       LEFT JOIN users AS vendedor_gerais ON vendedor_gerais.id = transferencia_gerais.user_movimentou_id
       LEFT JOIN users AS vendedor_transf ON vendedor_transf.id = transferencias.user_movimentou_id
       WHERE transferencias.produto_id = #{params[:id]} OR transferencia_combos.produto_id = #{params[:id]}
+      ORDER BY transferencias.id DESC
     }
 
     @transferencias_produtos = Transferencia.find_by_sql [sql]
