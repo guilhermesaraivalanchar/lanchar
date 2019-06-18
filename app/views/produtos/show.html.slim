@@ -40,7 +40,7 @@
                       td 
                         = "#{I18n.t(Date.today.strftime("%B"))}"
                       td
-                        = produto[:transf_created_at] ? produto[:transf_created_at].to_datetime.strftime('%d/%m/%Y %H:%M') : produto[:transf_combo_created_at].to_datetime.strftime('%d/%m/%Y %H:%M')
+                        = produto[:transf_created_at] ? produto[:transf_created_at].in_time_zone.strftime('%d/%m/%Y %H:%M') : produto[:transf_combo_created_at].in_time_zone.strftime('%d/%m/%Y %H:%M')
 javascript:
   $('#example23').DataTable({
       "ordering": false,
