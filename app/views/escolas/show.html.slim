@@ -44,6 +44,15 @@
             input id="check_sem_credito" type="checkbox" onclick="mudar_booleans(#{@escola.id}, 'sem_credito')"
             label for="check_sem_credito"
               | Sem Credito
+
+    #historico_transacao_botao.card.card-inverse.card-info style="cursor: pointer"
+      .card-body
+        .d-flex
+          div style="color: white; font-size: 25px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Histórico de Transação
+
   .col-lg-4.col-md-6
     .card.card-inverse.card-info
       .card-body
@@ -97,13 +106,6 @@
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_devedor)}"
 
-
-
-  .col-12
-    .card
-      .card-body
-        h4.card-title Radar
-        canvas id="myChartt" style="height: 800px"
        
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
@@ -208,5 +210,11 @@ javascript:
   
   $(function() {
     $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
+  })
+
+  $("#historico_transacao_botao").click(function(){
+
+    window.location = "/escola_hist_transacao"
+
   })
 
