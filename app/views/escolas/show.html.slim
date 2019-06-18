@@ -48,10 +48,17 @@
     #historico_transacao_botao.card.card-inverse.card-info style="cursor: pointer"
       .card-body
         .d-flex
-          div style="color: white; font-size: 25px"
+          div style="color: white; font-size: 20px"
             i.mdi.mdi-book-open.m-r-5
             span
               | Histórico de Transação
+    #dash_venda_entrada_botao.card.card-inverse.card-info style="cursor: pointer"
+      .card-body
+        .d-flex
+          div style="color: white; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Dashboard Venda/Entrada (Em progresso...)
 
   .col-lg-4.col-md-6
     .card.card-inverse.card-info
@@ -212,9 +219,6 @@ javascript:
     $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
   })
 
-  $("#historico_transacao_botao").click(function(){
-
-    window.location = "/escola_hist_transacao"
-
-  })
+  $("#historico_transacao_botao").click(function(){    window.location = "/escola_hist_transacao"  })
+  $("#dash_venda_entrada_botao").click(function(){    window.location = "/dash_vendas_entradas"  })
 
