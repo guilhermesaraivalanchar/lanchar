@@ -29,13 +29,13 @@ class EscolasController < ApplicationController
     }
 
     if !params[:p] || params[:p] == "hoje"
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "#{Time.now.at_beginning_of_day.in_time_zone.strftime("%Y-%m-%d")} 00:00:00}", "#{Time.now.at_end_of_day.in_time_zone.strftime("%Y-%m-%d")} 23:59:59}"]
     elsif params[:p] == "semana"
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_week, Time.now.at_end_of_week]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "#{Time.now.at_beginning_of_week.in_time_zone.strftime("%Y-%m-%d")} 00:00:00}", "#{Time.now.at_end_of_week.in_time_zone.strftime("%Y-%m-%d")} 23:59:59}"]
     elsif params[:p] == "mes"
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_month, Time.now.at_end_of_month]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "#{Time.now.at_beginning_of_month.in_time_zone.strftime("%Y-%m-%d")} 00:00:00}", "#{Time.now.at_end_of_month.in_time_zone.strftime("%Y-%m-%d")} 23:59:59}"]
     elsif params[:p] == "ano"
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_year, Time.now.at_end_of_year]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "#{Time.now.at_beginning_of_year.in_time_zone.strftime("%Y-%m-%d")} 00:00:00}", "#{Time.now.at_end_of_year.in_time_zone.strftime("%Y-%m-%d")} 23:59:59}"]
     elsif params[:p] == "todos"
       
       sql = %Q{
@@ -67,6 +67,7 @@ class EscolasController < ApplicationController
       FROM transferencia_gerais
       WHERE (transferencia_gerais.tipo = 'VENDA' OR transferencia_gerais.tipo = 'VENDA_DIRETA' OR transferencia_gerais.tipo = 'ENTRADA')
       AND transferencia_gerais.cancelada IS NULL
+      AND transferencia_gerais.created_at > '2019-01-01 00:00:00'
     }
 
     @transferencias = TransferenciaGeral.find_by_sql [sql]
