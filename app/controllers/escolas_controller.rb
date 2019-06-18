@@ -7,6 +7,12 @@ class EscolasController < ApplicationController
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_escola") || current_user.escola_id != @escola.id
     
 
+  end
+
+  def escola_hist_transacao
+
+    @escola = current_user.escola
+
     sql = %Q{
       SELECT transferencia_gerais.tipo, transferencia_gerais.id, transferencia_gerais.created_at, transferencia_gerais.valor, transferencia_gerais.cancelada, usuario_comprou.nome as usuario_comprou_nome, 
       usuario_comprou.id as usuario_comprou_id, usuario_movimentou.nome as usuario_movimentou_nome, usuario_caixa.nome as usuario_caixa_nome, transferencia_gerais.tipo_entrada, tipo_creditos.tipo as tipo_credito_nome
@@ -40,7 +46,7 @@ class EscolasController < ApplicationController
         LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
         LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
         LEFT JOIN tipo_creditos ON tipo_creditos.id = transferencia_gerais.tipo_credito_id
-        WHERE transferencia_gerais.escola_id = 1
+        WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
         AND transferencia_gerais.tipo IN ('SAIDA CANCELADA','VENDA_DIRETA','ENTRADA','SAIDA')
         ORDER BY transferencia_gerais.created_at DESC
       }
@@ -50,6 +56,75 @@ class EscolasController < ApplicationController
     else
       @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
     end
+
+
+  end
+
+  def dash_vendas_entradas
+
+    sql = %Q{
+      SELECT transferencia_gerais.created_at, transferencia_gerais.tipo
+      FROM transferencia_gerais
+      WHERE (transferencia_gerais.tipo = 'VENDA' OR transferencia_gerais.tipo = 'VENDA_DIRETA' OR transferencia_gerais.tipo = 'ENTRADA')
+      AND transferencia_gerais.cancelada IS NULL
+    }
+
+    @transferencias = TransferenciaGeral.find_by_sql [sql]
+
+    transferencia_vendas = []
+    transferencia_entrada = []
+
+    @transferencias.each do |transferencia|
+      transferencia_vendas << { mes: transferencia[:created_at].strftime("%m") } if transferencia[:tipo] == "VENDA" || transferencia[:tipo] == "VENDA_DIRETA" 
+      transferencia_entrada << { mes: transferencia[:created_at].strftime("%m") } if transferencia[:tipo] == "ENTRADA"
+    end
+
+    vendas_group = transferencia_vendas.group_by { |d| d[:mes] }
+    entradas_group = transferencia_entrada.group_by { |d| d[:mes] }
+
+    @mes_padrao = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+    @venda_quantidades = [0,0,0,0,0,0,0,0,0,0,0,0]
+    @entrada_quantidades = [0,0,0,0,0,0,0,0,0,0,0,0]
+
+    mes_atual = Time.now.strftime("%m")
+
+    vendas_group.each do |mes, tranfs|
+      @venda_quantidades[mes.to_i - 1] = tranfs.count
+    end
+
+    entradas_group.each do |mes, tranfs|
+      @entrada_quantidades[mes.to_i - 1] = tranfs.count
+    end
+
+    puts "
+
+
+    vvas
+    vvas
+    vvas
+
+
+    #{vendas_group.inspect}
+
+    ffffffffff
+    ffffffffff
+    ffffffffff
+    ffffffffff
+    ffffffffff
+
+
+
+    #{entradas_group.inspect}
+
+
+    #{@mes_padrao}
+    #{@venda_quantidades}
+    #{@entrada_quantidades}
+
+
+
+
+    "
 
 
   end

@@ -143,19 +143,22 @@ class ProdutosController < ApplicationController
     end
 
     sql = %Q{
-      SELECT produto_transf.nome as produto_transf_nome, produto_combo_transf.nome as produto_combo_transf_nome, transferencias.created_at
+      SELECT produto_transf.nome as produto_transf_nome, produto_combo_transf.nome as produto_combo_transf_nome
       FROM transferencias 
       LEFT JOIN transferencia_combos ON transferencia_combos.transferencia_id = transferencias.id
       LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
       LEFT JOIN produtos AS produto_combo_transf ON produto_combo_transf.id = transferencia_combos.produto_id
-      WHERE transferencias.tipo = 'VENDA' OR transferencias.tipo = 'VENDA_DIRETA'
+      WHERE (transferencias.tipo = 'VENDA' OR transferencias.tipo = 'VENDA_DIRETA') 
+      AND transferencias.cancelada IS NULL
+      AND transferencias.created_at > ? AND transferencias.created_at < ?
+
     }
 
-    @transferencias_produtos = Transferencia.find_by_sql [sql]
+    @transferencias_produtos = Transferencia.find_by_sql [sql, @data_inicio, @data_fim]
 
     @transferencias_produtos.each do |prod|
 
-      produtos << {nome: prod[:produto_transf_nome] ? prod[:produto_transf_nome] : prod[:produto_combo_transf_nome], c: prod[:created_at] } if prod[:created_at] > @data_inicio.to_time  && prod[:created_at] < @data_fim.to_time 
+      produtos << {nome: prod[:produto_transf_nome] ? prod[:produto_transf_nome] : prod[:produto_combo_transf_nome] }
 
     end
 

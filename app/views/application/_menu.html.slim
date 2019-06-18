@@ -21,7 +21,7 @@ ul#sidebarnav.in
       ul.collapse
         - if current_user.tem_permissao("ver_escola")
           li
-            = link_to("Dashborad", escola_path(current_user.escola_id))
+            = link_to("Inicio", escola_path(current_user.escola_id))
         - if current_user.tem_permissao("ver_tipo_creditos")
           li
             = link_to("Configuração Tipo Credito", tipo_creditos_path)
@@ -124,13 +124,13 @@ ul#sidebarnav.in
       ul.collapse
         - if current_user.tem_permissao("relatorio_transferencias")
           li
-            = link_to("Relatório Transações", relatorio_transferencia_path(busca: false))
+            = link_to("Transações", relatorio_transferencia_path(busca: false))
 
         - if current_user.tem_permissao("relatorio_usuario")
           li
-            = link_to("Relatório Usuarios", relatorio_usuario_path(busca: false))
+            = link_to("Usuarios", relatorio_usuario_path(busca: false))
 
         - if current_user.tem_permissao("relatorio_relacao_usuarios")
           li
-            = link_to("Relatório Relacão", relatorio_relacao_responsavel_path(busca: false))
+            = link_to("Relacão", relatorio_relacao_responsavel_path(busca: false))
             = link_to("Produtos Vendidos", produtos_vendidos_path(busca: false))
