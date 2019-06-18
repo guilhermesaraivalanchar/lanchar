@@ -50,6 +50,7 @@ class ProdutosController < ApplicationController
       WHERE transferencias.produto_id = #{params[:id]} OR transferencia_combos.produto_id = #{params[:id]}
       ORDER BY transferencias.id DESC
     }
+    
 
     @transferencias_produtos = Transferencia.find_by_sql [sql]
 
