@@ -100,7 +100,7 @@ class TransferenciaGeraisController < ApplicationController
 
       @transferencia_gerais = TransferenciaGeral.find_by_sql [sql]
     else
-      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, Time.now.at_beginning_of_day, Time.now.at_end_of_day]
+      @transferencia_gerais = TransferenciaGeral.find_by_sql [sql, "#{Time.now.at_beginning_of_day.in_time_zone.strftime("%Y-%m-%d")} 00:00:00}", "#{Time.now.at_end_of_day.in_time_zone.strftime("%Y-%m-%d")} 23:59:59}"]
     end
 
       
