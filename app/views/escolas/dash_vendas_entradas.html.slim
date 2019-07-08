@@ -3,14 +3,113 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.5.0"></script>
 
-.row
+.row style="display: none"
   .col-12
-    .card
       .card-body
         h4.card-title Dashboard Venda/Entrada
         canvas id="myChartt" style="height: 800px"
 
+.card
+  .card-body
+    h2.card-title Parametros do Relatório
+    .row.col-12
+      .col-4
+        h5.m-t-20 Mês
+        select#select_tipo.select2.m-b-10.select2-multiple data-placeholder="Escolha os tipos" style=("width: 100%") 
+          - if params[:mes] && params[:mes] == "01"
+            option selected="true" value="01" Janeiro
+          - else
+            option value="01" Janeiro
+          - if params[:mes] && params[:mes] == "02"
+            option selected="true" value="02" Fevereiro
+          - else
+            option value="01" Fevereiro
+          - if params[:mes] && params[:mes] == "03"
+            option selected="true" value="03" Março
+          - else
+            option value="01" Março
+          - if params[:mes] && params[:mes] == "04"
+            option selected="true" value="04" Abril
+          - else
+            option value="01" Abril
+          - if params[:mes] && params[:mes] == "05"
+            option selected="true" value="05" Maio
+          - else
+            option value="01" Maio
+          - if params[:mes] && params[:mes] == "06"
+            option selected="true" value="06" Junho
+          - else
+            option value="01" Junho
+          - if params[:mes] && params[:mes] == "07"
+            option selected="true" value="07" Julho
+          - else
+            option value="01" Julho
+          - if params[:mes] && params[:mes] == "08"
+            option selected="true" value="08" Agosto
+          - else
+            option value="01" Agosto
+          - if params[:mes] && params[:mes] == "09"
+            option selected="true" value="09" Setembro
+          - else
+            option value="01" Setembro
+          - if params[:mes] && params[:mes] == "10"
+            option selected="true" value="10" Outubro
+          - else
+            option value="01" Outubro
+          - if params[:mes] && params[:mes] == "11"
+            option selected="true" value="11" Novembro
+          - else
+            option value="01" Novembro
+          - if params[:mes] && params[:mes] == "12"
+            option selected="true" value="12" Dezembro
+          - else
+            option value="01" Dezembro
+ 
+      .col-4
+        h5.m-t-20 Ano
+        select#select_tipo.select2.m-b-10.select2-multiple data-placeholder="Escolha os tipos" style=("width: 100%") 
+          - (2018..DateTime.now.strftime("%Y").to_i).each do |ano| 
+            - if params[:ano] && params[:ano].to_i == ano
+              option selected="true" value="#{ano}"
+                = ano
+            - else
+              option value="#{ano}"
+                = ano
+    br
+    h4.card-title Simple Line Chart
+    .ct-sm-line-chart style=("height: 400px;") 
+
 javascript:
+
+  $(".select2").select2();
+
+  labels_dias = "#{@dados_dias.join("::")}"
+  valores = "#{@dados_valor.join("::")}"
+
+  dados_valores = valores.split("::")
+  dados_labels_dias = labels_dias.split("::")
+
+
+  $(document).ready(function() {
+
+    new Chartist.Line('.ct-sm-line-chart', {
+      labels: dados_labels_dias,
+      series: [dados_valores]
+    }, {
+      fullWidth: true,
+      
+      plugins: [
+        Chartist.plugins.tooltip()
+      ],
+      chartPadding: {
+        right: 40
+      }
+    });
+
+    
+  })
+
+
   labels_mes = "#{@mes_padrao.join('::')}"
   vendas = "#{@venda_quantidades.join('::')}"
   entradas = "#{@entrada_quantidades.join('::')}"
@@ -28,6 +127,8 @@ javascript:
   Chart.Legend.prototype.afterFit = function() {
       this.height = this.height + 20;
   };
+
+
   
   var ctx = document.getElementById('myChartt').getContext('2d');
   var chart = new Chart(ctx, {

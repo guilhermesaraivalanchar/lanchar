@@ -48,6 +48,9 @@
 //= require jquery.maskMoney
 //= require daterangepicker/daterangepicker
 //= require sweetalert/sweetalert.min
+//= require chartist-js/dist/chartist.min.js
+//= require chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js
+
 
 function toggle_menu(){
   $("body").toggleClass("show-sidebar");

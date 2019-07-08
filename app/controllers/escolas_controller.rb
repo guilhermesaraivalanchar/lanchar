@@ -97,37 +97,75 @@ class EscolasController < ApplicationController
       @entrada_quantidades[mes.to_i - 1] = tranfs.count
     end
 
-    puts "
+    ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
+    mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
+
+    dia_ini = "#{ano}-#{mes}-02".to_time.beginning_of_month.strftime("%d")
+    dia_fim = "#{ano}-#{mes}-02".to_time.end_of_month.strftime("%d")
+
+    data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
+    data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
+
+    base = "producao2"
+    if base == "producao"
+      sql = %Q{
+        SELECT    date_part('year', created_at) AS "Year",
+                  date_part('month', created_at) AS "Month",
+                  date_part('day', created_at) AS "Day",
+                  COUNT(*) AS "transf"
+        FROM      transferencia_gerais
+        WHERE transferencia_gerais.created_at > '#{data_inicio}'
+        AND transferencia_gerais.created_at < '#{data_fim}'
+        AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+        GROUP BY  date_part('day', created_at),
+                  date_part('month', created_at),
+                  date_part('year', created_at)
+        ORDER BY  "Year",
+                  "Month",
+                  "Day"
+
+      }
+    else
+
+      sql = %Q{
+          SELECT    strftime('%Y', created_at) AS "Year",
+                    strftime('%m', created_at) AS "Month",
+                    strftime('%d', created_at) AS "Day",
+                    COUNT(*) AS "transf"
+          FROM      transferencia_gerais
+          WHERE transferencia_gerais.created_at > '#{data_inicio}'
+          AND transferencia_gerais.created_at < '#{data_fim}'
+          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+          GROUP BY  strftime('%d', created_at),
+                    strftime('%m', created_at),
+                    strftime('%Y', created_at)
+          ORDER BY  "Year",
+                    "Month",
+                    "Day"
+
+      }
+    end
+
+    @dados_dias = []
+    @dados_valor = []
+
+    @dados = ActiveRecord::Base.connection.select_all(sql)
+
+    @dados.each do |object|
+      puts "
+
+          #{object["Year"]}
+          #{object["Month"]}
+          #{object["Day"]}
+          #{object["transf"]}
 
 
-    vvas
-    vvas
-    vvas
 
+      "
 
-    #{vendas_group.inspect}
-
-    ffffffffff
-    ffffffffff
-    ffffffffff
-    ffffffffff
-    ffffffffff
-
-
-
-    #{entradas_group.inspect}
-
-
-    #{@mes_padrao}
-    #{@venda_quantidades}
-    #{@entrada_quantidades}
-
-
-
-
-    "
-
-
+      @dados_dias << "#{object["Day"]}/#{object["Month"]}"
+      @dados_valor << "#{object["transf"]}"
+    end
   end
 
   def desabilitar_saldo_diario

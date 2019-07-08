@@ -31,6 +31,9 @@
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
  *= require daterangepicker/daterangepicker
  *= require sweetalert/sweetalert.css
+ *= require chartist-js/dist/chartist.min.css
+ *= require chartist-js/dist/chartist-init.css
+ *= require chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css
  */
 
 .menu_totem_selected{
