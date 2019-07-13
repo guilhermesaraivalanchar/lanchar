@@ -110,7 +110,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
     data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
 
-    base = "producao2"
+    base = "producao"
     if base == "producao"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
