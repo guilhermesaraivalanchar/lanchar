@@ -97,6 +97,10 @@ class EscolasController < ApplicationController
       @entrada_quantidades[mes.to_i - 1] = tranfs.count
     end
 
+
+
+
+
     ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
     mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
 
@@ -166,6 +170,7 @@ class EscolasController < ApplicationController
       @dados_dias << "#{object["Day"]}/#{object["Month"]}"
       @dados_valor << "#{object["transf"]}"
     end
+
   end
 
   def desabilitar_saldo_diario
