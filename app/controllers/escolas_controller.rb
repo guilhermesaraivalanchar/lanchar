@@ -62,7 +62,7 @@ class EscolasController < ApplicationController
 
   def dash_vendas_entradas
 
-    @dados = busca_transferencias(params)
+    #@dados = busca_transferencias(params)
     @dados_tipos = busca_transferencias_tipos(params)
 
     @dados_dias = []
@@ -118,7 +118,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
     data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
 
-    base = "producao2"
+    base = "producao"
     if base == "producao"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
