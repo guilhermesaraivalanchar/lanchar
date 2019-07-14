@@ -62,45 +62,53 @@ class EscolasController < ApplicationController
 
   def dash_vendas_entradas
 
-    sql = %Q{
-      SELECT transferencia_gerais.created_at, transferencia_gerais.tipo
-      FROM transferencia_gerais
-      WHERE (transferencia_gerais.tipo = 'VENDA' OR transferencia_gerais.tipo = 'VENDA_DIRETA' OR transferencia_gerais.tipo = 'ENTRADA')
-      AND transferencia_gerais.cancelada IS NULL
-      AND transferencia_gerais.created_at > '2019-01-01 00:00:00'
-    }
+    @dados = busca_transferencias(params)
+    @dados_tipos = busca_transferencias_tipos(params)
 
-    @transferencias = TransferenciaGeral.find_by_sql [sql]
+    @dados_dias = []
+    @dados_valor_entrada = []
+    @dados_valor_saida = []
+    @dados_valor_venda = []
 
-    transferencia_vendas = []
-    transferencia_entrada = []
+    ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
+    mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
 
-    @transferencias.each do |transferencia|
-      transferencia_vendas << { mes: transferencia[:created_at].strftime("%m") } if transferencia[:tipo] == "VENDA" || transferencia[:tipo] == "VENDA_DIRETA" 
-      transferencia_entrada << { mes: transferencia[:created_at].strftime("%m") } if transferencia[:tipo] == "ENTRADA"
+    dia_ini = "#{ano}-#{mes}-02".to_time.beginning_of_month
+    dia_fim = "#{ano}-#{mes}-02".to_time.end_of_month
+
+
+    (dia_ini.to_date..dia_fim.to_date).each do |data|
+      @dados_dias << data.strftime("%d/%m")
+
+      valor_entrada = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "ENTRADA"}.first["transf"] rescue 0
+      valor_saida = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "SAIDA"}.first["transf"] rescue 0
+      valor_dia_venda_normal = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA"}.first["transf"] rescue 0
+      valor_dia_venda_direta = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA_DIRETA"}.first["transf"] rescue 0
+
+      @dados_valor_entrada << valor_entrada
+      @dados_valor_saida << valor_saida
+      @dados_valor_venda << valor_dia_venda_normal + valor_dia_venda_direta
     end
 
-    vendas_group = transferencia_vendas.group_by { |d| d[:mes] }
-    entradas_group = transferencia_entrada.group_by { |d| d[:mes] }
+    puts "
 
-    @mes_padrao = ["01","02","03","04","05","06","07","08","09","10","11","12"]
-    @venda_quantidades = [0,0,0,0,0,0,0,0,0,0,0,0]
-    @entrada_quantidades = [0,0,0,0,0,0,0,0,0,0,0,0]
 
-    mes_atual = Time.now.strftime("%m")
+    DADOS
 
-    vendas_group.each do |mes, tranfs|
-      @venda_quantidades[mes.to_i - 1] = tranfs.count
-    end
-
-    entradas_group.each do |mes, tranfs|
-      @entrada_quantidades[mes.to_i - 1] = tranfs.count
-    end
+    #{@dados_dias.inspect}
+    #{@dados_valor_entrada.inspect}
+    #{@dados_valor_saida.inspect}
+    #{@dados_valor_venda.inspect}
 
 
 
 
+    "
 
+
+  end
+
+  def busca_transferencias(params)
     ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
     mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
 
@@ -110,7 +118,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
     data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
 
-    base = "producao"
+    base = "producao2"
     if base == "producao"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
@@ -150,26 +158,84 @@ class EscolasController < ApplicationController
       }
     end
 
-    @dados_dias = []
-    @dados_valor = []
+    @dados = ActiveRecord::Base.connection.select_all(sql)
+
+    return @dados
+
+  end
+
+  def busca_transferencias_tipos(params)
+
+    ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
+    mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
+
+    dia_ini = "#{ano}-#{mes}-02".to_time.beginning_of_month.strftime("%d")
+    dia_fim = "#{ano}-#{mes}-02".to_time.end_of_month.strftime("%d")
+
+    data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
+    data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
+
+    base = "producao2"
+    if base == "producao"
+      sql = %Q{
+        SELECT    date_part('year', created_at) AS "Year",
+                  date_part('month', created_at) AS "Month",
+                  date_part('day', created_at) AS "Day",
+                  COUNT(*) AS "transf",
+                  tipo
+        FROM      transferencia_gerais
+        WHERE transferencia_gerais.created_at > '#{data_inicio}'
+        AND transferencia_gerais.created_at < '#{data_fim}'
+        AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+        GROUP BY  date_part('day', created_at),
+                  date_part('month', created_at),
+                  date_part('year', created_at),
+                  tipo
+        ORDER BY  "Year",
+                  "Month",
+                  "Day"
+
+      }
+    else
+
+      sql = %Q{
+          SELECT    strftime('%Y', created_at) AS "Year",
+                    strftime('%m', created_at) AS "Month",
+                    strftime('%d', created_at) AS "Day",
+                    COUNT(*) AS "transf",
+                    tipo
+          FROM      transferencia_gerais
+          WHERE transferencia_gerais.created_at > '#{data_inicio}'
+          AND transferencia_gerais.created_at < '#{data_fim}'
+          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+          GROUP BY  strftime('%d', created_at),
+                    strftime('%m', created_at),
+                    strftime('%Y', created_at),
+                    tipo
+          ORDER BY  "Year",
+                    "Month",
+                    "Day"
+
+      }
+    end
 
     @dados = ActiveRecord::Base.connection.select_all(sql)
 
+    return @dados
+
     @dados.each do |object|
       puts "
-
           #{object["Year"]}
           #{object["Month"]}
           #{object["Day"]}
           #{object["transf"]}
-
-
-
+          #{object["tipo"]}
       "
 
-      @dados_dias << "#{object["Day"]}/#{object["Month"]}"
-      @dados_valor << "#{object["transf"]}"
+
+
     end
+
 
   end
 
