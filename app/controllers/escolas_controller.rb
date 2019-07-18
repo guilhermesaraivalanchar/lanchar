@@ -7,6 +7,30 @@ class EscolasController < ApplicationController
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_escola") || current_user.escola_id != @escola.id
     
 
+    if @escola.logo_file_name != nil
+      @logo = @escola.logo.url.split("?")
+      @escola_imagem = @logo[0]
+    end
+
+  end
+
+  def update
+    @escola = Escola.find(params[:id])
+    respond_to do |format|
+      if current_user.tem_permissao("editar_escola") && @escola.update_attributes(escola_params)
+        format.html { redirect_to(escola_path(@escola.id), :notice => "Escola editada com sucesso.") }
+      else
+        format.html do
+          render :action => "edit"
+        end
+      end
+    end
+  end
+
+  def mudar_cor_escola
+    Escola.find(current_user.escola_id).update_attribute(:cor_fundo, params[:cor])
+
+    render json: {resultado: "OK"}
   end
 
   def escola_hist_transacao
@@ -272,4 +296,10 @@ class EscolasController < ApplicationController
     @transferencia_gerais_venda_direta_hoje = TransferenciaGeral.where(tipo: ["VENDA_DIRETA"], cancelada: [nil,false]).where('transferencia_gerais.caixa_id is not null').where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day.in_time_zone, Time.now.end_of_day.in_time_zone)
     @transferencia_gerais_saida_hoje = TransferenciaGeral.where(tipo: "SAIDA", cancelada: [nil,false]).where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ?", Time.now.beginning_of_day.in_time_zone, Time.now.end_of_day.in_time_zone)
   end
+
+private
+  def escola_params
+    params.require(:escola).permit!
+  end
+
 end

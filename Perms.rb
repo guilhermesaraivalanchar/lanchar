@@ -50,6 +50,7 @@ Permissao.create(permissao_nome: "Ver Usuario", permissao_codigo: "ver_usuario",
 # Escola
 Permissao.create(permissao_nome: "Ver Dados da Escola", permissao_codigo: "ver_escola", permissao_grupo: "Escola")
 Permissao.create(permissao_nome: "Ver Resumo Caixa", permissao_codigo: "resumo_caixa", permissao_grupo: "Escola")
+Permissao.create(permissao_nome: "Editar Escola", permissao_codigo: "editar_escola", permissao_grupo: "Escola")
 
 # Entrada Produto
 Permissao.create(permissao_nome: "Entrada Produto (Sistema)", permissao_codigo: "dar_entrada_produto", permissao_grupo: "Entrada Produto")
@@ -89,6 +90,8 @@ Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "t
 ################################# NOVAS 
 
 Permissao.create(permissao_nome: "Cardápio", permissao_codigo: "cardapio_pais", permissao_grupo: "Configuração Pais")
+
+
 
 ################################# SUSPENSOS
 Permissao.create(permissao_nome: "Auto Creditar", permissao_codigo: "auto_creditar", permissao_grupo: "Usuários")

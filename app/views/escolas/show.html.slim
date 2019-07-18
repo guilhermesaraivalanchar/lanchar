@@ -3,11 +3,11 @@
 .row
   .col-lg-4.col-md-6
     .card
-      img.card-img-top alt=("Card image cap") src="../imagens/profile-bg.jpg"
+      div style="height: 100px"
       .card-body.little-profile
         div.text-center
           .pro-img
-            img alt="user" src="#{current_user.imagem.url != '/imagens/original/missing.png' ? current_user.imagem.url : '../imagens/user.jpg'}"
+            img alt="user" src="#{current_user.escola.logo.url != '/logos/original/missing.png' ? current_user.escola.logo.url : '../imagens/user.jpg'}"
           h3.m-b-0
             = @escola.nome
           p 
@@ -45,6 +45,13 @@
             label for="check_sem_credito"
               | Sem Credito
 
+        label style="font-size: 17px; font-weight: bold" Cor Padrão 
+        input#cor_padrao.m-l-10 type='color' name='color' value="#{@escola.cor_fundo ? @escola.cor_fundo : '#191919'}"
+        br
+        font style="font-size: 17px; font-weight: bold"
+          | Funçoes
+        br
+        button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_editar_logo" data-toggle="modal" type="button" style="margin-left: 10px" Editar Logo
     #historico_transacao_botao.card.card-inverse.card-info style="cursor: pointer"
       .card-body
         .d-flex
@@ -136,14 +143,40 @@
           svg class="circular" viewBox="25 25 50 50"
             circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
 
-
-
-
-
+#modal_editar_logo.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title Logo
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        .form-body
+          = simple_form_for @escola do |f|
+            div.col-12
+              = f.input :logo, as: :file, label: "", input_html: { nome_validacao: "Logo", class: "dropify", "data-default-file": @escola_imagem, "data-allowed-file-extensions": "png jpg jpeg" }
+            br
+            .clear
+            button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+              | Enviar
+            = link_to "Voltar", tipo_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
 
 
 
 javascript:
+
+  $("#cor_padrao").change(function(){
+    $.getJSON("/mudar_cor_escola", { cor: $(this).val() },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          
+        }
+      } else {
+
+      }
+    })
+  })
 
   function mudar_booleans(escola_id, tipo){
 

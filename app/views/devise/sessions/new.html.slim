@@ -1,16 +1,24 @@
 section#wrapper
-  .login-register style="background-color: #191919;" 
+  - escola = params[:escola].present? ? Escola.find(params[:escola]) : nil
+  .login-register style="background-color: #{(escola && escola.cor_fundo) ? escola.cor_fundo : '#191919'};" 
     .login-box.card style="width: 430px;"
       .card-body
-        img.dark-logo.m-r-15 alt="homepage" width="300" src="/imagens/CantinaPro.png"
-        img.dark-logo alt="homepage" height="70" src="/imagens/logoibs.png"
+        div.text-center style="width: 100%;"
+          img.dark-logo.m-r-15 alt="homepage" width="300" src="/imagens/CantinaPro.png"
+        - if (escola && escola.logo.url != '/logos/original/missing.png')
+          br
+          div.text-center style="width: 100%;"
+            img.dark-logo alt="homepage" height="70" src="#{escola.logo.url}"
         br
         br
         = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
           .form-group
             .col-xs-12
+              - if params[:escola].present?
+                = f.input :escola_id, as: :hidden, input_html: { value: params[:escola] }
+              - else
+                = f.input :escola_id, as: :select, collection: Escola.all.collect{|n| [n.nome, n.id]}, label: "Selecione sua escola", input_html: { class: "chosen-select" }
               = f.input :codigo, required: true, autofocus: true, label: "Acesso", input_html: { class: "form-control" }
-              = f.input :escola_id, as: :hidden, input_html: { value: params[:escola].present? ? params[:escola] : 1 }
           .form-group
             .col-xs-12
               = f.input :password, required: true, label: "Senha", input_html: { class: "form-control" }

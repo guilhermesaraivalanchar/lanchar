@@ -75,6 +75,8 @@ Rails.application.routes.draw do
   match "/escola_hist_transacao" => "escolas#escola_hist_transacao", as: :escola_hist_transacao, via: [:get, :post, :patch]
   match "/dash_vendas_entradas" => "escolas#dash_vendas_entradas", as: :dash_vendas_entradas, via: [:get, :post, :patch]
 
+  match "/mudar_cor_escola" => "escolas#mudar_cor_escola", as: :mudar_cor_escola, via: [:get, :post, :patch]
+
   # Filtros
   match "/salvar_filtro" => "filtros#salvar_filtro", as: :salvar_filtro, via: [:get, :post]
 

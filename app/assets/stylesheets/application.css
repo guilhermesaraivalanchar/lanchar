@@ -34,6 +34,7 @@
  *= require chartist-js/dist/chartist.min.css
  *= require chartist-js/dist/chartist-init.css
  *= require chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css
+ *= require spectrum.css
  */
 
 .menu_totem_selected{
