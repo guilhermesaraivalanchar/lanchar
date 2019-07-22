@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   
   
   devise_scope :user do
-    get '/IBS', to: 'devise/sessions#new', :escola => 1
+    get '/CBS', to: 'devise/sessions#new', :escola => 1
     get '/Bolinha', to: 'devise/sessions#new', :escola => 4
 		#get 'sign_in', to: 'devise/sessions#new'
 	end

@@ -25,7 +25,7 @@
               option value="#{tipo_user.id}"
                 = "#{tipo_user.nome}"
         br
-        = f.input :responsavel_ids, as: :hidden, input_html: { value: @user.tipos_users.map(&:tipo_user_id).join(',') }
+        = f.input :responsavel_ids, as: :hidden, input_html: { value: @user.responsavel_users.map(&:responsavel_id).join(',') }
         h5.m-t-20 Responsáveis
         select#select_responsavel_ids.select2.m-b-10.select2-multiple data-placeholder="Escolha" multiple="multiple" style=("width: 100%")
           - user_responsaveis = @user.responsavel_users.map(&:responsavel_id)
