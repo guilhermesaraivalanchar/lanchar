@@ -8,11 +8,9 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/CBS', to: 'devise/sessions#new', :escola => 1
     get '/cbs', to: 'devise/sessions#new', :escola => 1
-    get '/Bolinha', to: 'devise/sessions#new', :escola => 4
 		#get 'sign_in', to: 'devise/sessions#new'
 	end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-
 
   resources :users, path: "/controle_de_usuarios"
   resources :produtos
