@@ -67,7 +67,7 @@ class TransferenciaGeraisController < ApplicationController
       LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
       LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
       WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-      AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA')
+      AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA', 'AJUSTE')
       AND transferencia_gerais.created_at > ? 
       AND transferencia_gerais.created_at < ?
       ORDER BY transferencia_gerais.created_at DESC
@@ -94,7 +94,7 @@ class TransferenciaGeraisController < ApplicationController
         LEFT JOIN users AS usuario_movimentou ON usuario_movimentou.id = transferencia_gerais.user_movimentou_id
         LEFT JOIN users AS usuario_caixa ON usuario_caixa.id = transferencia_gerais.user_caixa_id
         WHERE transferencia_gerais.escola_id = #{current_user.escola_id}
-        AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA')
+        AND transferencia_gerais.tipo IN ('VENDA','VENDA_DIRETA','ENTRADA','SAIDA', 'AJUSTE')
         ORDER BY transferencia_gerais.created_at DESC
       }
 
@@ -106,16 +106,47 @@ class TransferenciaGeraisController < ApplicationController
       
   end
 
+  def show
+    @transferencia_geral = TransferenciaGeral.find(params[:id])
+    @can_cancelar = current_user.tem_permissao("cancelar_transacao")
+  end
+
   def cancelar_transferencia
     @transferencia_geral = TransferenciaGeral.find(params[:id])
     
+    saida = @transferencia_geral.tipo == "SAIDA"
+    venda = @transferencia_geral.tipo == "VENDA"
 
-    respond_to do |format|
-      if current_user.tem_permissao("cancelar_transacao") && @transferencia_geral.cancelar(current_user)
-        format.html { redirect_to(transferencia_gerais_path, :notice => "Transfenrecia cancelada com sucesso.") }
-      else
-        format.html { redirect_to(transferencia_gerais_path, :notice => "Ocorreu um erro ao apagar o produto.") }
-      end
+    caixa = current_user.caixa
+
+    if (!caixa || (caixa && caixa.valor < @transferencia_geral.valor.to_d)) && !saida && !venda
+      render json: { resultado: "CAIXA_SEM_VALOR_SUFICIENTE" }
+    elsif current_user.tem_permissao("cancelar_transacao") && @transferencia_geral.cancelar(current_user)
+      #format.html { redirect_to(transferencia_gerais_path, :notice => "Transfenrecia cancelada com sucesso.") }
+      render json: { resultado: "OK"}
+    else
+      #format.html { redirect_to(transferencia_gerais_path, :notice => "Ocorreu um erro ao apagar o produto.") }
+      render json: { resultado: "ERROR"}
     end
   end
+
+  def cancelar_transferencia_unica
+    transferencia = Transferencia.find(params[:id])
+
+    caixa = current_user.caixa
+    venda = transferencia.tipo == "VENDA"
+
+    puts ""
+
+    if (!caixa || (caixa && caixa.valor < transferencia.valor.to_d)) && !venda
+      render json: { resultado: "CAIXA_SEM_VALOR_SUFICIENTE" }
+    elsif current_user.tem_permissao("cancelar_transacao") && transferencia.cancelar(current_user)
+      #format.html { redirect_to(transferencia_geral_path(transferencia.transferencia_geral.id), :notice => "Transfenrecia cancelada com sucesso.") }
+      render json: { resultado: "OK"}
+    else
+      #format.html { redirect_to(transferencia_geral_path(transferencia.transferencia_geral.id), :notice => "Ocorreu um erro ao apagar o produto.") }
+      render json: { resultado: "ERROR"}
+    end
+  end
+
 end

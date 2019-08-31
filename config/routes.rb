@@ -43,7 +43,8 @@ Rails.application.routes.draw do
   match "/transferencia_gerais/transferencia_pdf/:id" => "transferencia_gerais#transferencia_pdf", as: :transferencia_pdf, via: [:get, :post]
   match "/transferencia_gerais/transferencia_completa_pdf/:id" => "transferencia_gerais#transferencia_completa_pdf", as: :transferencia_completa_pdf, via: [:get, :post]
   match "/pagina_sem_permissao" => "application#pagina_sem_permissao", as: :pagina_sem_permissao, via: [:get, :post]
-  match "/cancelar_transferencia/:id" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
+  match "/cancelar_transferencia" => "transferencia_gerais#cancelar_transferencia", as: :cancelar_transferencia, via: [:get, :post]
+  match "/cancelar_transferencia_unica" => "transferencia_gerais#cancelar_transferencia_unica", as: :cancelar_transferencia_unica, via: [:get, :post]
   match "/resetar_senha" => "users#resetar_senha", as: :resetar_senha, via: [:get, :post]
   match "/index_responsavel" => "users#index_responsavel", as: :index_responsavel, via: [:get, :post]
   match "/relatorio_transferencia" => "relatorios#relatorio_transferencia", as: :relatorio_transferencia, via: [:get, :post]
@@ -62,7 +63,8 @@ Rails.application.routes.draw do
   match "/transferir_saldo" => "users#transferir_saldo", as: :transferir_saldo, via: [:get, :post]
   match "/cardapio_pais" => "cardapios#cardapio_pais", as: :cardapio_pais, via: [:get, :post]
   match "/resumo_caixa" => "escolas#resumo_caixa", as: :resumo_caixa, via: [:get, :post]
-  
+  match "/ajuste_saldo" => "escolas#ajuste_saldo", as: :ajuste_saldo, via: [:get, :post]
+
   match "/preco_cardapio_produto" => "cardapios#preco_cardapio_produto", as: :preco_cardapio_produto, via: [:get, :post]
   match "/preco_cardapio_combo" => "cardapios#preco_cardapio_combo", as: :preco_cardapio_combo, via: [:get, :post]
   match "/ativo_cardapio_produto" => "cardapios#ativo_cardapio_produto", as: :ativo_cardapio_produto, via: [:get, :post]
@@ -82,5 +84,7 @@ Rails.application.routes.draw do
   # TOTEM
   match "/totem/login" => "totens#login", via: [:get, :post]
   match "/totem/g_p" => "totens#get_produtos", via: [:get, :post]
+
+  match "/resumo_escola" => "escolas#resumo_escola", as: :resumo_escola, via: [:get, :post]
 
 end

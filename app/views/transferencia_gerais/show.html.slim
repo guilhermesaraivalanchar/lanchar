@@ -1,0 +1,125 @@
+
+.row
+  .col-lg-12
+    .card class="#{@transferencia_geral.saida? ? 'card-outline-danger' : 'card-outline-info'}"
+      .card-header
+        h4.m-b-0.text-white
+          = "Transferência #{@transferencia_geral.id} (#{@transferencia_geral.tipo.humanize.upcase})"
+      .card-body
+        form.form-horizontal role="form" 
+          .form-body
+            h3.box-title Info
+            hr.m-t-0.m-b-40/
+            .row
+              .col-md-6 
+                .form-group.row
+                  label.control-label.text-right.col-md-3 ID:
+                  .col-md-9
+                    p.form-control-static = @transferencia_geral.id
+              .col-md-6
+                .form-group.row
+                  label.control-label.text-right.col-md-3 Tipo:
+                  .col-md-9
+                    p.form-control-static = @transferencia_geral.tipo
+              .col-md-6
+                .form-group.row
+                  label.control-label.text-right.col-md-3 Valor:
+                  .col-md-9
+                    p.form-control-static = ActionController::Base.helpers.number_to_currency(@transferencia_geral.valor)
+              .col-md-6
+                .form-group.row
+                  label.control-label.text-right.col-md-3 Data de Criação:
+                  .col-md-9
+                    p.form-control-static = @transferencia_geral.created_at.strftime("%d/%m/%Y %H:%M")
+              .col-md-6
+                .form-group.row
+                  label.control-label.text-right.col-md-3 Usuário que Realizou:
+                  .col-md-9
+                    p.form-control-static = (User.find(@transferencia_geral.user_movimentou_id).nome rescue "-")
+              .col-md-6
+                .form-group.row
+                  label.control-label.text-right.col-md-3 Usuário Beneficiado:
+                  .col-md-9
+                    p.form-control-static = (User.find(@transferencia_geral.user_id).nome rescue "-")
+              - if @transferencia_geral.cancelada
+                .col-md-6
+                  .form-group.row
+                    label.control-label.text-right.col-md-3 style="color:red" Data de Cancelada:
+                    .col-md-9
+                      p.form-control-static = (@transferencia_geral.data_cancelada.strftime("%d/%m/%Y %H:%M") rescue "-")
+                .col-md-6
+                  .form-group.row
+                    label.control-label.text-right.col-md-3 style="color:red" Usuário que candelou:
+                    .col-md-9
+                      p.form-control-static = (User.find(@transferencia_geral.user_cancelou_id).nome rescue "-")
+            - if @transferencia_geral.tipo == "VENDA" || @transferencia_geral.tipo == "VENDA_DIRETA"
+              h3.box-title Transferências
+              hr.m-t-0.m-b-40/
+              table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="30%"
+                col width="5%"
+                thead
+                  tr
+                    th ID
+                    th Tipo
+                    th Produto(s)
+                    th Valor
+                    th Data Cancelada
+                    th User Cancelou
+                    th Ação
+                tbody
+                  - @transferencia_geral.transferencias.each do |transferencia|
+                    tr 
+                      td style="#{'text-decoration: line-through' if transferencia.cancelada}"
+                        = transferencia.id
+                      td style="#{'text-decoration: line-through' if transferencia.cancelada}"
+                        = transferencia.produto_id ? "Produto" : transferencia.combo.nome
+                      td style="#{'text-decoration: line-through' if transferencia.cancelada}"
+                        - if transferencia.produto_id
+                          = transferencia.produto.nome
+                        - else
+                          - transferencia.transferencia_combos.each do |prod_combo|
+                            = prod_combo.produto.nome
+                            br
+                      td style="#{'text-decoration: line-through' if transferencia.cancelada}"
+                        = ActionController::Base.helpers.number_to_currency(transferencia.valor)
+                      td
+                        = (transferencia.data_cancelada.strftime("%d/%m/%Y %H:%M") rescue "-")
+                      td
+                        = (User.find(transferencia.user_cancelou_id).nome rescue "-")
+                      td
+                        - if @can_cancelar && !transferencia.cancelada
+                          button.botao_retirar_caixa_user.btn.btn-danger type="button" style="margin-left: 10px" onclick="cancelar_tf(#{transferencia.id})" Cancelar
+                        - elsif transferencia.cancelada
+                          = link_to "Cancelada", '', helper: "button", class: "btn waves-effect waves-light btn-secondary", style: "margin-right: 10px"
+javascript:
+  $('#example23').DataTable({
+      "ordering": false,
+      "displayLength": 15,
+      dom: 'Bfrtip',
+      buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+  });
+
+  function cancelar_tf(tf_id){
+    $.getJSON("/cancelar_transferencia_unica", { id: tf_id },function(d) {
+      if (d) {
+        console.log(d)
+        
+        if (d.resultado == "OK"){
+          location.reload()
+        }else if(d.resultado == "CAIXA_SEM_VALOR_SUFICIENTE"){
+          swal("Erro !", "Caixa sem valor suficiente.", "error"); 
+        }
+
+
+      } else {
+        
+      }
+    })
+
+  }

@@ -73,10 +73,12 @@
                   td
                     = ActionController::Base.helpers.number_to_currency(transferencia_geral[:valor])
                   td
-                    - if @can_cancelar && !transferencia_geral[:cancelada]
-                      = link_to "Cancelar", cancelar_transferencia_path(transferencia_geral[:id]), helper: "button", class: "btn waves-effect waves-light btn-danger", style: "margin-right: 10px"
+                    = link_to "Ver", transferencia_geral_path(transferencia_geral[:id]), helper: "button", class: "btn waves-effect waves-light btn-info", style: "margin-right: 10px"
+                    - if @can_cancelar && !transferencia_geral[:cancelada] && transferencia_geral[:tipo] != "AJUSTE"
+                      button.botao_retirar_caixa_user.btn.btn-danger type="button" style="margin-left: 10px" onclick="cancelar_tf(#{transferencia_geral[:id]})" Cancelar
                     - elsif transferencia_geral[:cancelada]
                       = link_to "Cancelada", '', helper: "button", class: "btn waves-effect waves-light btn-secondary", style: "margin-right: 10px"
+
 javascript:
     $('#example23').DataTable({
         "ordering": false,
@@ -114,3 +116,22 @@ javascript:
 
 
   })
+
+  function cancelar_tf(tf_id){
+    $.getJSON("/cancelar_transferencia", { id: tf_id },function(d) {
+      if (d) {
+        console.log(d)
+        
+        if (d.resultado == "OK"){
+          location.reload()
+        }else if(d.resultado == "CAIXA_SEM_VALOR_SUFICIENTE"){
+          swal("Erro !", "Caixa sem valor suficiente.", "error"); 
+        }
+
+
+      } else {
+        
+      }
+    })
+
+  }

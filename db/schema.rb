@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_14_161932) do
+ActiveRecord::Schema.define(version: 2019_08_13_125147) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -301,9 +301,12 @@ ActiveRecord::Schema.define(version: 2019_07_14_161932) do
     t.integer "user_transferencia_saldo"
     t.integer "caixa_id"
     t.integer "tipo_credito_id"
+    t.datetime "data_cancelada"
+    t.integer "user_cancelou_id"
     t.index ["caixa_id"], name: "index_transferencia_gerais_on_caixa_id"
     t.index ["escola_id"], name: "index_transferencia_gerais_on_escola_id"
     t.index ["tipo_credito_id"], name: "index_transferencia_gerais_on_tipo_credito_id"
+    t.index ["user_cancelou_id"], name: "index_transferencia_gerais_on_user_cancelou_id"
     t.index ["user_id"], name: "index_transferencia_gerais_on_user_id"
   end
 
@@ -320,10 +323,13 @@ ActiveRecord::Schema.define(version: 2019_07_14_161932) do
     t.boolean "cancelada"
     t.integer "user_caixa_id"
     t.decimal "saldo_anterior", precision: 10, scale: 2
+    t.datetime "data_cancelada"
+    t.integer "user_cancelou_id"
     t.index ["combo_id"], name: "index_transferencias_on_combo_id"
     t.index ["escola_id"], name: "index_transferencias_on_escola_id"
     t.index ["produto_id"], name: "index_transferencias_on_produto_id"
     t.index ["transferencia_geral_id"], name: "index_transferencias_on_transferencia_geral_id"
+    t.index ["user_cancelou_id"], name: "index_transferencias_on_user_cancelou_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -52,6 +52,7 @@
           | Funçoes
         br
         button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_editar_logo" data-toggle="modal" type="button" style="margin-left: 10px" Editar Logo
+        button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_ajuste" data-toggle="modal" type="button" style="margin-left: 10px" Ajuste de Saldo
     #historico_transacao_botao.card.card-inverse.card-info style="cursor: pointer"
       .card-body
         .d-flex
@@ -161,7 +162,26 @@
               | Enviar
             = link_to "Voltar", tipo_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
 
-
+       
+#modal_ajuste.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title Ajuste de Saldo
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        form
+          .form-group
+            label.control-label style="font-weight: bold" for="recipient-name" Valor:
+            input#quantidade_ajuste.form-control type="number"
+      .modal-footer
+        div#botoes_modal
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
+          button#botao_ajuste.btn.btn-danger type="button" Ajustar
+        div#spiner_modal
+          svg class="circular" viewBox="25 25 50 50"
+            circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
 
 javascript:
 
@@ -246,6 +266,26 @@ javascript:
     }
 
 
+  })
+
+  $("#botao_ajuste").click(function(){
+    $.getJSON("/ajuste_saldo", { valor: $("#quantidade_ajuste").val() },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          $("#modal_ajuste").modal('hide')
+          $("#quantidade_ajuste").val('')
+          swal("Sucesso !", "Ajsute Realizado.", "success")
+
+        }
+        else if(d.resultado == "CAIXA_SEM_VALOR_SUFICIENTE") {
+          $("#modal_ajuste").modal('hide')
+          $("#quantidade_ajuste").val('')
+          swal("Erro !", "Caixa sem valor suficiente.", "error"); 
+
+        }
+      } 
+    })
   })
   
   $(function() {

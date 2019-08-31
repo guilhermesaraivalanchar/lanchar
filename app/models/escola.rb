@@ -24,7 +24,7 @@ class Escola < ApplicationRecord
   end
 
   def faturamento_diario
-    self.transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 00:00:00", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 23:59:59").where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
+    self.transferencias.where("transferencias.created_at > ? AND transferencias.created_at < ? AND transferencias.valor > 0", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 00:00:00", "#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 23:59:59").where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
   end
 
   def faturamento_mensal
@@ -32,7 +32,7 @@ class Escola < ApplicationRecord
   end
 
   def saldo_em_caixa
-    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA']).sum(&:valor)
+    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA','AJUSTE']).sum(&:valor)
   end
 
   def self.criar_escola(nome)
@@ -41,7 +41,7 @@ class Escola < ApplicationRecord
     escola.tipo_users.new(nome: "Administrador", codigo: "admin", bloqueado: true)
     escola.tipo_users.new(nome: "Aluno", codigo: "aluno", bloqueado: true)
     escola.tipo_users.new(nome: "Responsável", codigo: "responsavel", bloqueado: true)
-    escola.users.new(nome: "SISTEMA", email:"sistema1@sistemacantinapro.com.br", codigo:"SISTEMA_____1", password: 123456, sistema: true)
+    escola.users.new(nome: "SISTEMA", email:"sistema_#{nome}@sistemacantinapro.com.br", codigo:"SISTEMA___#{nome}___1", password: 123456, sistema: true, saldo: 0)
     escola.users.new(nome: "Admin", email:"admin_#{nome}@sistemacantinapro.com.br", codigo:"admin", password: 123456, sistema: false, ativo: true, saldo: 0, admin: true)
     escola.tipo_produtos.new(nome: "Salgados")
     escola.tipo_produtos.new(nome: "Bebidas")
