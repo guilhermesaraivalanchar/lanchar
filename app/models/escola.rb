@@ -32,7 +32,7 @@ class Escola < ApplicationRecord
   end
 
   def saldo_em_caixa
-    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA','AJUSTE']).sum(&:valor)
+    self.transferencias.where(tipo: ['ENTRADA','SAIDA','VENDA_DIRETA','SAIDA CANCELADA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA','AJUSTE','REEMBOLSO_VENDA_DIRETA_PRODUTO']).sum(&:valor)
   end
 
   def self.criar_escola(nome)
