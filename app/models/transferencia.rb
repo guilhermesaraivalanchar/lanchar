@@ -5,6 +5,25 @@ class Transferencia < ApplicationRecord
   belongs_to :combo, optional: true
   has_many :transferencia_combos, :dependent => :destroy
 
+  after_save :att_caixa
+
+  def att_caixa
+    caixa = nil
+    
+    if ['REEMBOLSO_VENDA_DIRETA_PRODUTO'].include?(self.tipo)
+      caixa = Caixa.where(user_id: self.user_movimentou_id).first_or_initialize
+    end
+
+    if caixa
+      valor_caixa = caixa.new_record? ? self.valor : ( caixa.valor + self.valor )
+      caixa.valor = valor_caixa < 0 ? 0 : valor_caixa
+      caixa.save
+      self.update_column(:caixa_id, caixa.id)
+      LogCaixa.create(caixa_id: caixa.id, valor: caixa.valor, transferencia_geral_id: self.id)
+    end
+
+  end
+
 
   def cancelar(current_user)
 
@@ -50,7 +69,7 @@ class Transferencia < ApplicationRecord
       comprador = User.where(escola_id: self.escola_id, sistema: true).last
 
       tf = TransferenciaGeral.new(user_id: comprador.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo: "REEMBOLSO_VENDA_DIRETA_PRODUTO", user_movimentou_id: current_user.id)
-      tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"REEMBOLSO_VENDA_DIRETA_PRODUTO", saldo_anterior: 0)
+      tf.transferencias.new(user_movimentou_id: current_user.id, valor: self.valor.to_d*(-1), escola_id: current_user.escola_id, tipo:"REEMBOLSO_VENDA_DIRETA_PRODUTO", saldo_anterior: 0, user_movimentou_id: current_user.id )
       tf.save
 
       self.produto.update_attribute(:quantidade, self.produto.quantidade + 1) if self.produto
