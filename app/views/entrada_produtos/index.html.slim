@@ -25,17 +25,17 @@
               - @entradas.each do |entrada|
                 tr
                   td 
-                    = entrada.user.nome
+                    = entrada.user.nome rescue "-"
                   td 
-                    = entrada.produto.nome
+                    = entrada.produto.nome rescue "-"
                   td 
-                    = entrada.fornecedor.nome
+                    = entrada.fornecedor.nome rescue "-"
                   td 
-                    = entrada.created_at.strftime('%d/%m/%Y %H:%M')
+                    = entrada.created_at.strftime('%d/%m/%Y %H:%M') rescue "-"
                   td 
-                    = I18n.t(entrada.created_at.strftime("%B"))
+                    = I18n.t(entrada.created_at.strftime("%B")) rescue "-"
                   td 
-                    = ActionController::Base.helpers.number_to_currency((entrada.preco_custo.to_d / entrada.quantidade.to_d))
+                    = ActionController::Base.helpers.number_to_currency((entrada.preco_custo.to_d / entrada.quantidade.to_d)) rescue "-"
 javascript:
     $('#example23').DataTable({
         "displayLength": 15,
