@@ -3,17 +3,18 @@
   .col-12
     .card
       .card-body
-        h2.card-title Nova Entrada
-        h6.card-subtitle Criação de nova Entrada de produto
+        - if params[:tipo] == "SAIDA"
+          h2.card-title Nova Retirada
+        - else
+          h2.card-title Nova Entrada
         div.error_validate.alert.alert-danger style="display:none"
           span
         .form-body
           = simple_form_for @entrada_produto do |f|
-            h4.box-title.m-t-10
-              | Dados da Entrada
             hr
             .clear
             div.col-12
+              = f.hidden_field :tipo, value: (params[:tipo] == "SAIDA" ? "SAIDA" : "ENTRADA")
               = f.input :produto_id, as: :select, label: "Produtos", prompt: "Selecione" , collection: Produto.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
               / = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
               = f.input :preco_custo, label: "Preco (Opcional)", input_html: { nome_validacao: "Código" }
