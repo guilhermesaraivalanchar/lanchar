@@ -40,6 +40,11 @@ class User < ApplicationRecord
 
   after_save :att_bloqueio_produto, :salvar_tipo_users, :if => :enable_after_save
 
+  def self.teste_work(valor)
+    #TesteWorker.perform_async(valor)
+    TesteWorker.perform_in(1.minutes, valor)
+  end
+
   def check_credito
     self.credito = 0 if !self.credito
     #self.saldo = 0 if !self.saldo

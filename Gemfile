@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.4.0'
+ruby '2.5.1'
 
 gem 'slim-rails', '~> 3.1', '>= 3.1.2'
 gem 'will_paginate'
@@ -16,6 +16,10 @@ gem 'cocoon', '~> 1.2', '>= 1.2.11'
 gem 'wicked_pdf', '~> 1.1'
 gem 'wkhtmltopdf-binary', '~> 0.12.4'
 gem 'whenever', require: false
+gem 'sidekiq', '~> 6.0'
+
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'
@@ -66,6 +70,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.4'
   gem 'capistrano-passenger', '~> 0.2.0'
   gem 'capistrano-rvm', '~> 0.1.2'
+  gem 'capistrano-sidekiq', '~> 0.5.4'
 end
 
 # Reduces boot times through caching; required in config/boot.rb

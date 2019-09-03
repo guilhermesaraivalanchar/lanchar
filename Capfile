@@ -6,6 +6,8 @@ require "capistrano/deploy"
 
 require "whenever/capistrano"
 
+require 'capistrano/sidekiq'
+
 # Load the SCM plugin appropriate to your project:
 #
 # require "capistrano/scm/hg"
