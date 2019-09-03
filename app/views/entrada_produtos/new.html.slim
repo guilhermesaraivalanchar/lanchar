@@ -15,8 +15,8 @@
             .clear
             div.col-12
               = f.input :produto_id, as: :select, label: "Produtos", prompt: "Selecione" , collection: Produto.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
-              = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
-              = f.input :preco_custo, label: "Preco", input_html: { nome_validacao: "Código" }
+              / = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
+              = f.input :preco_custo, label: "Preco (Opcional)", input_html: { nome_validacao: "Código" }
               = f.input :quantidade, label: "Quantidade", input_html: { nome_validacao: "Código" }
               br
 

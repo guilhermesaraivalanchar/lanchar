@@ -19,8 +19,8 @@ class EntradaProdutosController < ApplicationController
     entrada_produtos_params[:user_id] = current_user.id
     respond_to do |format|
       if current_user.tem_permissao("dar_entrada_produto") && @entrada_produto.update_attributes(entrada_produtos_params)
-        @entrada_produto.produto.update_attribute(:quantidade,@entrada_produto.produto.quantidade + @entrada_produto.quantidade)
-        format.html { redirect_to(produtos_path, :notice => "Entrada realizada com sucesso.") }
+        @entrada_produto.produto.update_attribute(:quantidade, @entrada_produto.produto.quantidade + @entrada_produto.quantidade)
+        format.html { redirect_to(entrada_produtos_path, :notice => "Entrada realizada com sucesso.") }
       else
         format.html do
           render :action => "edit"

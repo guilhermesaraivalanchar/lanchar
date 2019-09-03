@@ -17,7 +17,7 @@
               tr
                 th Responsável
                 th Produto
-                th Fornecedor
+                th Quantidade
                 th Data
                 th Mês
                 th Preço/Unidade
@@ -29,7 +29,7 @@
                   td 
                     = entrada.produto.nome rescue "-"
                   td 
-                    = entrada.fornecedor.nome rescue "-"
+                    = entrada.quantidade rescue "-"
                   td 
                     = entrada.created_at.strftime('%d/%m/%Y %H:%M') rescue "-"
                   td 
