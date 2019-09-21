@@ -92,7 +92,7 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    capistrano-sidekiq (0.5.4)
+    capistrano-sidekiq (0.5.3)
       capistrano
       sidekiq (>= 3.4)
     capybara (3.7.2)
@@ -307,7 +307,7 @@ DEPENDENCIES
   capistrano-passenger (~> 0.2.0)
   capistrano-rails (~> 1.4)
   capistrano-rvm (~> 0.1.2)
-  capistrano-sidekiq (~> 0.5.4)
+  capistrano-sidekiq (~> 0.5.3)
   capybara (>= 2.15)
   chromedriver-helper
   cocoon (~> 1.2, >= 1.2.11)
