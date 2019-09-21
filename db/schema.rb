@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_182358) do
+ActiveRecord::Schema.define(version: 2019_09_19_195356) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -101,6 +101,15 @@ ActiveRecord::Schema.define(version: 2019_09_03_182358) do
     t.datetime "imagem_updated_at"
     t.integer "escola_id"
     t.index ["escola_id"], name: "index_combos_on_escola_id"
+  end
+
+  create_table "downloads", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "apagado"
+    t.index ["user_id"], name: "index_downloads_on_user_id"
   end
 
   create_table "entrada_produtos", force: :cascade do |t|
@@ -231,6 +240,26 @@ ActiveRecord::Schema.define(version: 2019_09_03_182358) do
     t.integer "tipo_produto_id"
     t.integer "escola_id"
     t.boolean "ativo"
+  end
+
+  create_table "relatorios", force: :cascade do |t|
+    t.string "nome"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "param_1"
+    t.text "param_2"
+    t.text "param_3"
+    t.text "param_4"
+    t.text "param_5"
+    t.text "param_6"
+    t.text "param_7"
+    t.text "param_8"
+    t.text "param_9"
+    t.text "param_10"
+    t.integer "escola_id"
+    t.index ["escola_id"], name: "index_relatorios_on_escola_id"
+    t.index ["user_id"], name: "index_relatorios_on_user_id"
   end
 
   create_table "responsavel_users", force: :cascade do |t|

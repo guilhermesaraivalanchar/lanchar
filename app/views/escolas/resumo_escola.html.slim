@@ -1,40 +1,113 @@
+.card.card-outline-info.div_filtro.card.m-t-10 style="" 
+  .card-header
+    h4.m-b-0.text-white Intervalo
+  .card-body
+    form#edit_filtro_3.simple_form.edit_filtro accept-charset="UTF-8" action="/filtros/3" method="post" novalidate="novalidate" 
+      input name="utf8" type="hidden" value="✓" /
+      input name="_method" type="hidden" value="patch" /
+      input name="authenticity_token" type="hidden" value="8mC59sc93b/o6dn7uXplitD6SI1jl7tHoCSWYYoW858XCezQGR1vEsvkPPCnqzCO4cBiTpq4cs0UsyC3ZDyIqA==" /
+      .row
+        .col-lg-4.col-md-3
+          .input.string.optional.data_inicio
+            label.string.optional for="data_inicio"  Data Inicio
+            input#data_inicio.string.optional.form-control.datetimepicker_range.input_filtro name="filtro[filtro_3]" type="text" value="#{Time.now.strftime("%d-%m-%Y 00:00")}"
+        .col-lg-4.col-md-3
+          .input.string.optional.data_fim
+            label.string.optional for="data_fim"  Data Fim
+            input#data_fim.string.optional.form-control.datetimepicker_range.input_filtro name="filtro[filtro_4]" type="text" value="#{Time.now.strftime("%d-%m-%Y 23:59")}"
+        .col-lg-4.col-md-3
+          button#botao_filtrar.btn.waves-effect.waves-light type="button" class="btn-info" style="width: 100%; margin-top: 30px; height: 47px" Filtrar
+
+
 .row
   .col-lg-12
     .card.card-outline-info
       .card-header
         h4.m-b-0.text-white
-          = "Transferência"
+          = "Finanças"
       .card-body
         form.form-horizontal role="form" 
           .form-body
-            h3.box-title Finanças
+            h3.box-title Dados
             hr.m-t-0.m-b-40/
-            .row
+            .row style='font-size: 17px'
               .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Caixas: "
-                = "R$ 100,2200"
+                div style="font-weight: bold"
+                  = "Faturamento:"
+                  font#faturamento
+                div.m-l-10
+                  = "Vendas Válidas:"
+                  font#vendas
+                  br
+                  = "Vendas Diretas Válidas:"
+                  font#vendas_diretas
+                  br
+                  = "Vendas Totais:"
+                  font#vendas_totais
+                  br
+                  = "Vendas Diretas Totais:"
+                  font#vendas_diretas_totais
+                  br
+                  = "Vendas Canceladas:"
+                  font#vendas_canceladas
+                  br
+                  = "Vendas Diretas Canceladas:"
+                  font#vendas_diretas_canceladas
+
               .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Vendas: "
-                = "R$ 100,2200"
+                div style="font-weight: bold"
+                  = "Sangrias:"
+                  font#saidas
+                div.m-l-10
+                  = "Sangrias Totais:"
+                  font#saidas_totais
+                  br
+                  = "Sangrias Canceladas:"
+                  font#saidas_canceladas
+
               .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Entradas: "
-                = "R$ 100,2200"
+                div style="font-weight: bold"
+                  = "Entradas:"
+                  font#entradas
+                div.m-l-10
+                  = "Entradas Totais:"
+                  font#entradas_totais
+                  br
+                  = "Entradas Canceladas:"
+                  font#entradas_canceladas
+
               .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Sangras: "
-                = "R$ 100,2200"
-              .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Vendas: "
-                = "R$ 100,2200"
-              .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Vendas Diretas: "
-                = "R$ 100,2200"
-              .col-md-3.col-sm-6.m-b-10
-                font
-                  = "Vendas Totais: "
-                = "R$ 100,2200"
+                div style="font-weight: bold"
+                  = "Ajuste:"
+                  font#ajustes_totais
+                div.m-l-10
+                  = "Ajustes Positivos:"
+                  font#ajustes_positivos
+                  br
+                  = "Ajustes Negativos:"
+                  font#ajustes_negativos
+
+
+javascript:
+
+
+  $("#botao_filtrar").click(function(){
+    
+    $.getJSON("/get_resumo_escola", { data_inicio: $("#data_inicio").val(), data_fim: $("#data_fim").val() },function(resultado) {
+      if (resultado) {
+        console.log(resultado)
+        for(i in resultado){
+          console.log(i)
+          console.log(resultado[i])
+          $("#"+i).html(" " + resultado[i])
+        }
+      } else {
+        console.log("NAO DEU");
+      }
+    })
+
+  })
+
+  $(document).ready(function() {
+    $("#botao_filtrar").click()
+  })

@@ -30,7 +30,7 @@ ul#sidebarnav.in
             = link_to("Resumo Caixa", resumo_caixa_path)
         - if current_user.tem_permissao("resumo_caixa")
           li
-            = link_to("Resumo", resumo_escola_path)
+            = link_to("Resumo Geral", resumo_escola_path)
 
   - if current_user.check_perms(['transferencia_de_saldo'])
     li

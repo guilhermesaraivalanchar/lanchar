@@ -298,15 +298,15 @@ class EscolasController < ApplicationController
   end
 
   def resumo_escola
+  end
 
-    ano = params[:ano].present? ? params[:ano] : DateTime.now.strftime("%Y")
-    mes = params[:mes].present? ? params[:mes] : DateTime.now.strftime("%m")
+  def get_resumo_escola
 
-    dia_ini = "#{ano}-#{mes}-02".to_time.beginning_of_month.strftime("%d")
-    dia_fim = "#{ano}-#{mes}-02".to_time.end_of_month.strftime("%d")
+    inicio = params[:data_inicio].present? ? params[:data_inicio].to_time : Time.now
+    fim = params[:data_fim].present? ? params[:data_fim].to_time : Time.now
 
-    data_inicio = "#{1990}-#{mes}-#{dia_ini} 00:00:00"
-    data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
+    data_inicio = "#{inicio.strftime("%Y-%m-%d %H:%M:00")}"
+    data_fim = "#{fim.strftime("%Y-%m-%d %H:%M:59")}"
 
     base = "producaos"
     if base == "producao"
@@ -315,15 +315,18 @@ class EscolasController < ApplicationController
                   date_part('month', created_at) AS "Month",
                   date_part('day', created_at) AS "Day",
                   COUNT(*) AS "transf",
-                  tipo
-        FROM      transferencia_gerais
-        WHERE transferencia_gerais.created_at > '#{data_inicio}'
-        AND transferencia_gerais.created_at < '#{data_fim}'
-        AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+                  SUM(transferencias.valor) AS "valor",
+                  tipo,
+                  cancelada
+        FROM      transferencias
+        WHERE transferencias.created_at > '#{data_inicio}'
+        AND transferencias.created_at < '#{data_fim}'
+        AND transferencias.escola_id = '#{current_user.escola_id}'
         GROUP BY  date_part('day', created_at),
                   date_part('month', created_at),
                   date_part('year', created_at),
-                  tipo
+                  tipo,
+                  cancelada
         ORDER BY  "Year",
                   "Month",
                   "Day"
@@ -336,16 +339,18 @@ class EscolasController < ApplicationController
                     strftime('%m', created_at) AS "Month",
                     strftime('%d', created_at) AS "Day",
                     COUNT(*) AS "transf",
-                    SUM(transferencia_gerais.valor) AS "valor",
-                    tipo
-          FROM      transferencia_gerais
-          WHERE transferencia_gerais.created_at > '#{data_inicio}'
-          AND transferencia_gerais.created_at < '#{data_fim}'
-          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+                    SUM(transferencias.valor) AS "valor",
+                    tipo,
+                    cancelada
+          FROM      transferencias
+          WHERE transferencias.created_at > '#{data_inicio}'
+          AND transferencias.created_at < '#{data_fim}'
+          AND transferencias.escola_id = '#{current_user.escola_id}'
           GROUP BY  strftime('%d', created_at),
                     strftime('%m', created_at),
                     strftime('%Y', created_at),
-                    tipo
+                    tipo,
+                    cancelada
           ORDER BY  "Year",
                     "Month",
                     "Day"
@@ -353,60 +358,156 @@ class EscolasController < ApplicationController
       }
     end
 
-    @dados = ActiveRecord::Base.connection.select_all(sql)
+    @dados2 = ActiveRecord::Base.connection.select_all(sql)
 
-    teste_val = 0
+    # @dados2.each do |object|
+    #   puts "
+    #       #{object["Year"]}
+    #       #{object["Month"]}
+    #       #{object["Day"]}
+    #       #{object["transf"]}
+    #       #{object["tipo"]}
+    #       #{object["cancelada"]}
+    #       #{object["valor"]}
+    #   "
 
-    @dados.each do |object|
-      puts "
-          #{object["Year"]}
-          #{object["Month"]}
-          #{object["Day"]}
-          #{object["transf"]}
-          #{object["tipo"]}
-          #{object["valor"]}
-      "
-      teste_val = teste_val + object["valor"].to_d
+    # end
 
+    entradas_totais = @dados2.select{|n| n["tipo"] == "ENTRADA"}
+    sum_entradas_totais = entradas_totais.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    end
-
-    entradas = @dados.select{|n| n["tipo"] == "ENTRADA"}
+    entradas = @dados2.select{|n| n["tipo"] == "ENTRADA" && !n["cancelada"].present?}
     sum_entradas = entradas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    vendas = @dados.select{|n| n["tipo"] == "VENDA"}
-    sum_vendas = @dados.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+    entradas_canceladas = @dados2.select{|n| n["tipo"] == "ENTRADA" && n["cancelada"].present?}
+    sum_entradas_canceladas = entradas_canceladas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    saidas = @dados.select{|n| n["tipo"] == "SAIDA"}
+
+
+    saidas_totais = @dados2.select{|n| n["tipo"] == "SAIDA"}
+    sum_saidas_totais = saidas_totais.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    saidas = @dados2.select{|n| n["tipo"] == "SAIDA" && !n["cancelada"].present?}
     sum_saidas = saidas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    venda_diretas = @dados.select{|n| n["tipo"] == "VENDA_DIRETA"}
+    saidas_canceladas = @dados2.select{|n| n["tipo"] == "SAIDA" && n["cancelada"].present?}
+    sum_saidas_canceladas = saidas_canceladas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+
+
+    ajustes_totais = @dados2.select{|n| (n["tipo"] == "AJUSTE" )}
+    sum_ajustes_totais = ajustes_totais.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    ajustes_positivos = @dados2.select{|n| (n["tipo"] == "AJUSTE" && n["valor"].to_d >= 0 )}
+    sum_ajustes_positivos = ajustes_positivos.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+    
+    ajustes_negativos = @dados2.select{|n| (n["tipo"] == "AJUSTE" && n["valor"].to_d < 0 )}
+    sum_ajustes_negativos = ajustes_negativos.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+    
+
+    vendas = @dados2.select{|n| n["tipo"] == "VENDA"}
+    sum_vendas = @dados2.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    venda_diretas = @dados2.select{|n| n["tipo"] == "VENDA_DIRETA"}
     sum_venda_diretas = venda_diretas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    venda_reembolso = @dados.select{|n| (n["tipo"] == "REEMBOLSO" || n["tipo"] == "REEMBOLSO_PRODUTO")}
+
+
+
+    vendas_totais = @dados2.select{|n| n["tipo"] == "VENDA"}
+    sum_vendas_totais = vendas_totais.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    vendas = @dados2.select{|n| n["tipo"] == "VENDA" && !n["cancelada"].present?}
+    sum_vendas = vendas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    vendas_canceladas = @dados2.select{|n| n["tipo"] == "VENDA" && n["cancelada"].present?}
+    sum_vendas_canceladas = vendas_canceladas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+
+
+    vendas_diretas_totais = @dados2.select{|n| n["tipo"] == "VENDA_DIRETA"}
+    sum_vendas_diretas_totais = vendas_diretas_totais.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    vendas_diretas = @dados2.select{|n| n["tipo"] == "VENDA_DIRETA" && !n["cancelada"].present?}
+    sum_vendas_diretas = vendas_diretas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+    vendas_diretas_canceladas = @dados2.select{|n| n["tipo"] == "VENDA_DIRETA" && n["cancelada"].present?}
+    sum_vendas_diretas_canceladas = vendas_diretas_canceladas.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
+
+
+
+
+
+
+
+    venda_reembolso = @dados2.select{|n| (n["tipo"] == "REEMBOLSO" || n["tipo"] == "REEMBOLSO_PRODUTO")}
     sum_reembolso = venda_reembolso.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
-    venda_reembolso_vd = @dados.select{|n| (n["tipo"] == "REEMBOLSO_VENDA_DIRETA" )}
+    venda_reembolso_vd = @dados2.select{|n| (n["tipo"] == "REEMBOLSO_VENDA_DIRETA" )}
     sum_venda_reembolso_vd = venda_reembolso_vd.inject(0) {|sum, hash| sum + hash["valor"].to_d} #=> 30
 
     puts "
 
-      entradas: #{entradas.count} - #{sum_entradas}
-      vendas: #{vendas.count} - #{sum_vendas}
-      saidas: #{saidas.count} - #{sum_saidas}
-      venda_diretas: #{venda_diretas.count} - #{sum_venda_diretas}
-      venda_reembolso: #{venda_reembolso.count} - #{sum_reembolso}
-      venda_reembolso_vd: #{venda_reembolso_vd.count} - #{sum_venda_reembolso_vd}
+      TRANSFERENCIAS
 
+      entradas: #{entradas.count} - #{sum_entradas}
+      entradas Totais: #{entradas_totais.count} - #{sum_entradas_totais}
+      entradas Canceladas: #{entradas_canceladas.count} - #{sum_entradas_canceladas}
+      entradas CONF: #{sum_entradas_totais - sum_entradas_canceladas}
+
+      saidas: #{saidas.count} - #{sum_saidas}
+      saidas Totais: #{saidas_totais.count} - #{sum_saidas_totais}
+      saidas Canceladas: #{saidas_canceladas.count} - #{sum_saidas_canceladas}
+      saidas CONF: #{sum_saidas_totais - sum_saidas_canceladas}
+
+      ajustes Totais: #{ajustes_totais.count} - #{sum_ajustes_totais}
+      ajustes Positivos: #{ajustes_positivos.count} - #{sum_ajustes_positivos}
+      ajustes Negativos: #{ajustes_negativos.count} - #{sum_ajustes_negativos}
+      ajustes CONF: #{sum_ajustes_positivos + sum_ajustes_negativos}
+
+
+
+      vendas: #{vendas.count} - #{sum_vendas}
+      vendas Totais: #{vendas_totais.count} - #{sum_vendas_totais}
+      vendas Canceladas: #{vendas_canceladas.count} - #{sum_vendas_canceladas}
+      vendas CONF: #{sum_vendas_totais - sum_vendas_canceladas}
+
+
+
+      vendas_diretas: #{vendas_diretas.count} - #{sum_vendas_diretas}
+      vendas_diretas Totais: #{vendas_diretas_totais.count} - #{sum_vendas_diretas_totais}
+      vendas_diretas Canceladas: #{vendas_diretas_canceladas.count} - #{sum_vendas_diretas_canceladas}
+      vendas_diretas CONF: #{sum_vendas_diretas_totais - sum_vendas_diretas_canceladas}
 
 
     "
 
+    #ActionController::Base.helpers.number_to_currency(transferencia_geral[:valor])
 
-    puts sum_vendas
-    puts teste_val
-    #puts @dados.inspect
-    puts vendas.inspect
+    str_sum_entradas = ActionController::Base.helpers.number_to_currency(sum_entradas)
+    str_sum_entradas_totais = ActionController::Base.helpers.number_to_currency(sum_entradas_totais)
+    str_sum_entradas_canceladas = ActionController::Base.helpers.number_to_currency(sum_entradas_canceladas)
+    str_sum_saidas = ActionController::Base.helpers.number_to_currency(sum_saidas*-1)
+    str_sum_saidas_totais = ActionController::Base.helpers.number_to_currency(sum_saidas_totais*-1)
+    str_sum_saidas_canceladas = ActionController::Base.helpers.number_to_currency(sum_saidas_canceladas*-1)
+    str_sum_ajustes_totais = ActionController::Base.helpers.number_to_currency(sum_ajustes_totais)
+    str_sum_ajustes_positivos = ActionController::Base.helpers.number_to_currency(sum_ajustes_positivos)
+    str_sum_ajustes_negativos = ActionController::Base.helpers.number_to_currency(sum_ajustes_negativos)
+    str_sum_vendas = ActionController::Base.helpers.number_to_currency(sum_vendas)
+    str_sum_vendas_totais = ActionController::Base.helpers.number_to_currency(sum_vendas_totais)
+    str_sum_vendas_canceladas = ActionController::Base.helpers.number_to_currency(sum_vendas_canceladas)
+    str_sum_vendas_diretas = ActionController::Base.helpers.number_to_currency(sum_vendas_diretas)
+    str_sum_vendas_diretas_totais = ActionController::Base.helpers.number_to_currency(sum_vendas_diretas_totais)
+    str_sum_vendas_diretas_canceladas = ActionController::Base.helpers.number_to_currency(sum_vendas_diretas_canceladas)
+    str_faturamento = ActionController::Base.helpers.number_to_currency(sum_vendas + sum_vendas_diretas)
+
+    render json: { 
+      entradas: str_sum_entradas, entradas_totais: str_sum_entradas_totais, entradas_canceladas: str_sum_entradas_canceladas, saidas: str_sum_saidas, saidas_totais: str_sum_saidas_totais, 
+      saidas_canceladas: str_sum_saidas_canceladas, ajustes_totais: str_sum_ajustes_totais, ajustes_positivos: str_sum_ajustes_positivos, ajustes_negativos: str_sum_ajustes_negativos,
+      vendas: str_sum_vendas, vendas_totais: str_sum_vendas_totais, vendas_canceladas: str_sum_vendas_canceladas, vendas_diretas: str_sum_vendas_diretas, vendas_diretas_totais: str_sum_vendas_diretas_totais, 
+      vendas_diretas_canceladas: str_sum_vendas_diretas_canceladas, faturamento: str_faturamento
+    }
+
 
   end
 

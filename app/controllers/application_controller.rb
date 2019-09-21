@@ -2,7 +2,8 @@ class ApplicationController < ActionController::Base
   
   before_action :active_user, :except => [:login, :get_produtos, :authenticate_totem, :aut_cross]
   
-
+  Sidekiq::Extensions.enable_delay!
+  
   def active_user
     #Não deixa logar se estiver desativado
     if current_user

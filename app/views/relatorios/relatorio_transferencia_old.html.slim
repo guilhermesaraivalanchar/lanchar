@@ -7,13 +7,30 @@
           .col-4
             h5.m-t-20 Tipos
             select#select_tipo.select2.m-b-10.select2-multiple data-placeholder="Escolha os tipos" multiple="multiple" style=("width: 100%") 
-                option value="VENDA" Venda
-                option value="ENTRADA" Entrada
-                option value="SAIDA" Saida
-                option value="VENDA_DIRETA" Venda Direta
-                option value="DEPOSITO CANCELADO" Deposito Cancelado
-                option value="SAIDA CANCELADA" Saida Cancelada
-                option value="AJUSTE" Ajuste
+              - if params[:tipo] && params[:tipo].split(",").include?('venda')
+                option selected="true" value="VENDA" Venda
+              - else
+                option value="venda" Venda
+              - if params[:tipo] && params[:tipo].split(",").include?('entrada')
+                option selected="true" value="ENTRADA" Entrada
+              - else
+                option value="entrada" Entrada
+              - if params[:tipo] && params[:tipo].split(",").include?('saida')
+                option selected="true" value="SAIDA" Saida
+              - else
+                option value="saida" Saida
+              - if params[:tipo] && params[:tipo].split(",").include?('venda_direta')
+                option selected="true" value="venda_direta" Venda Direta
+              - else
+                option value="venda_direta" Venda Direta
+              - if params[:tipo] && params[:tipo].split(",").include?('deposito cancelado')
+                option selected="true" value="deposito cancelado" Deposito Cancelado
+              - else
+                option value="deposito cancelado" Deposito Cancelado
+              - if params[:tipo] && params[:tipo].split(",").include?('saida cancelada')
+                option selected="true" value="saida cancelada" Saida Cancelada
+              - else
+                option value="saida cancelada" Saida Cancelada
 
           .col-4
             h5.m-t-20 Usuarios

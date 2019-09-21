@@ -2,6 +2,21 @@ class RelatoriosController < ApplicationController
   def index
   end
 
+
+
+  def criar_relatorio
+
+    Relatorio.create(nome: params[:nome], user_id: current_user.id, param_1: params[:param_1], param_2: params[:param_2], param_3: params[:param_3], param_4: params[:param_4], param_5: params[:param_5], param_6: params[:param_6], )
+  
+    render json: { resultado: "OK" }
+
+  end
+
+
+
+
+
+
   def relatorio_relacao_responsavel
 
     sql = %Q{
@@ -16,6 +31,11 @@ class RelatoriosController < ApplicationController
   end
 
   def relatorio_transferencia
+    @transferencia_gerais = []
+
+  end
+
+  def relatorio_transferencia_old
 
     if params[:busca] && params[:busca] == "false"
 

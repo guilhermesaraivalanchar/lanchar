@@ -90,4 +90,9 @@ Rails.application.routes.draw do
 
   match "/resumo_escola" => "escolas#resumo_escola", as: :resumo_escola, via: [:get, :post]
 
+  match "/criar_relatorio" => "relatorios#criar_relatorio", via: [:get, :post]
+
+  match "/get_resumo_escola" => "escolas#get_resumo_escola", via: [:get, :post]
+
+
 end
