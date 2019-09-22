@@ -308,7 +308,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{inicio.strftime("%Y-%m-%d %H:%M:00")}"
     data_fim = "#{fim.strftime("%Y-%m-%d %H:%M:59")}"
 
-    base = "producaos"
+    base = "producao"
     if base == "producao"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
