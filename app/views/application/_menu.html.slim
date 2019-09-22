@@ -3,7 +3,7 @@ ul#sidebarnav.in
   - if current_user.admin
     li
       a.has-arrow.waves-effect.waves-dark
-        i.mdi.mdi-arrow-down-box
+        i.mdi.mdi-hospital-building
         span.hide-menu
           | Escolas
       ul.collapse
@@ -12,12 +12,13 @@ ul#sidebarnav.in
 
   li
     a.waves-effect.waves-dark href="#{root_url}"
-      i.mdi.mdi-arrow-down-box
+      i.mdi.mdi-home
       span.hide-menu
         | Home
   - if current_user.check_perms(['ver_escola','ver_tipo_creditos'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-hospital-building
         span.hide-menu
           | Escola
       ul.collapse
@@ -37,6 +38,7 @@ ul#sidebarnav.in
   - if current_user.check_perms(['transferencia_de_saldo'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-settings
         span.hide-menu
           | Utilidades
       ul.collapse
@@ -47,6 +49,7 @@ ul#sidebarnav.in
   - if current_user.check_perms(['transferencia_de_saldo_pais','cardapio_pais'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-account-multiple
         span.hide-menu
           | Pais
       ul.collapse
@@ -60,6 +63,7 @@ ul#sidebarnav.in
   - if current_user.check_perms(['ver_usuarios','ver_tipo_usuarios','ver_produtos','ver_tipo_produtos','ver_combos'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-book-open
         span.hide-menu
           | Cadastro
       ul.collapse
@@ -94,11 +98,13 @@ ul#sidebarnav.in
   - if current_user.tem_permissao("comprar_sistema")
     li
       a.waves-effect.waves-dark href="#{compras_path}"
+        i.mdi.mdi-shopping
         span.hide-menu
           | Venda
   - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-store
         span.hide-menu
           | Estoque
       ul.collapse
@@ -113,17 +119,20 @@ ul#sidebarnav.in
   - if current_user.tem_permissao("ver_cardapio")
     li
       a.waves-effect.waves-dark href="#{cardapios_path}"
+        i.mdi.mdi-clipboard-text
         span.hide-menu
           | Cardápios
   - if current_user.tem_permissao("ver_transacoes")
     li
       a.waves-effect.waves-dark href="#{transferencia_gerais_path}"
+        i.mdi.mdi-swap-horizontal
         span.hide-menu
           | Transações
 
   - if current_user.check_perms(['ver_entrada_produto','ver_fornecedores','relatorio_relacao_usuarios'])
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-file-excel
         span.hide-menu
           | Relatórios
       ul.collapse
@@ -141,5 +150,6 @@ ul#sidebarnav.in
             = link_to("Produtos Vendidos", produtos_vendidos_path(busca: false))
   li
     a.waves-effect.waves-dark href="#{downloads_path}"
+      i.mdi.mdi-arrow-down-box
       span.hide-menu
         | Downloads
