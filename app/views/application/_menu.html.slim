@@ -3,6 +3,7 @@ ul#sidebarnav.in
   - if current_user.admin
     li
       a.has-arrow.waves-effect.waves-dark
+        i.mdi.mdi-arrow-down-box
         span.hide-menu
           | Escolas
       ul.collapse
@@ -11,6 +12,7 @@ ul#sidebarnav.in
 
   li
     a.waves-effect.waves-dark href="#{root_url}"
+      i.mdi.mdi-arrow-down-box
       span.hide-menu
         | Home
   - if current_user.check_perms(['ver_escola','ver_tipo_creditos'])
