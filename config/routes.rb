@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resources :equipamentos
   resources :filtro_totens
   resources :tipo_creditos
+  resources :downloads
 
 
   # Ajax

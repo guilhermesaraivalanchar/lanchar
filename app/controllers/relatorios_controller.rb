@@ -6,7 +6,7 @@ class RelatoriosController < ApplicationController
 
   def criar_relatorio
 
-    Relatorio.create(nome: params[:nome], user_id: current_user.id, param_1: params[:param_1], param_2: params[:param_2], param_3: params[:param_3], param_4: params[:param_4], param_5: params[:param_5], param_6: params[:param_6], )
+    Relatorio.create(escola_id: current_user.escola_id, nome_arquivo: params[:nome_arquivo], nome: params[:nome], user_id: current_user.id, param_1: params[:param_1], param_2: params[:param_2], param_3: params[:param_3], param_4: params[:param_4], param_5: params[:param_5], param_6: params[:param_6] )
   
     render json: { resultado: "OK" }
 

@@ -53,20 +53,9 @@
         br
         button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_editar_logo" data-toggle="modal" type="button" style="margin-left: 10px" Editar Logo
         button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_ajuste" data-toggle="modal" type="button" style="margin-left: 10px" Ajuste de Saldo
-    #historico_transacao_botao.card.card-inverse.card-info style="cursor: pointer"
-      .card-body
-        .d-flex
-          div style="color: white; font-size: 20px"
-            i.mdi.mdi-book-open.m-r-5
-            span
-              | Histórico de Transação
-    #dash_venda_entrada_botao.card.card-inverse.card-info style="cursor: pointer"
-      .card-body
-        .d-flex
-          div style="color: white; font-size: 20px"
-            i.mdi.mdi-book-open.m-r-5
-            span
-              | Dashboard Venda/Entrada (Em progresso...)
+
+    div.row
+
 
   .col-lg-4.col-md-6
     .card.card-inverse.card-info
@@ -89,7 +78,6 @@
                 = "#{ActionController::Base.helpers.number_to_currency(caixa.valor)}"
                 button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_creditar" user_caixa="#{caixa.user_id}" valor_caixa="#{caixa.valor}" data-toggle="modal" type="button" style="margin-left: 10px" Retirar
 
-  .col-lg-4.col-md-6
     .card.card-inverse.card-info
       .card-body
         .d-flex
@@ -110,17 +98,35 @@
         .d-flex
           div.font-light.text-white style="font-size: 20px;"
             = "#{ActionController::Base.helpers.number_to_currency(@escola.faturamento_mensal)}"
-    .card.card-inverse.card-danger
+  .col-lg-4.col-md-6
+    #historico_transacao_botao.card.card-inverse.card-primary style="cursor: pointer"
       .card-body
         .d-flex
-          div
-            h3.card-title Saldo Devedor
-            h6.card-subtitle
-              = "#{Date.today.strftime("%Y")}"
+          div style="color: white; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Histórico de Transação
+    #resumo_geral_botao.card.card-inverse.card-primary style="cursor: pointer" 
+      .card-body
         .d-flex
-          div.font-light.text-white style="font-size: 20px;"
-            = "#{ActionController::Base.helpers.number_to_currency(@escola.saldo_devedor)}"
-
+          div style="color: white; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Resumo Geral
+    #resumo_caixa_botao.card.card-inverse.card-primary style="cursor: pointer" 
+      .card-body
+        .d-flex
+          div style="color: white; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Resumo Caixa
+    #dash_venda_entrada_botao.card.card-inverse.card-primary style="cursor: pointer; display:none" 
+      .card-body
+        .d-flex
+          div style="color: white; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            span
+              | Dashboard Venda/Entrada (Em progresso...)
        
 #modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
   .modal-dialog role="document" 
@@ -294,4 +300,6 @@ javascript:
 
   $("#historico_transacao_botao").click(function(){    window.location = "/escola_hist_transacao"  })
   $("#dash_venda_entrada_botao").click(function(){    window.location = "/dash_vendas_entradas"  })
+  $("#resumo_geral_botao").click(function(){    window.location = "/resumo_escola"  })
+  $("#resumo_caixa_botao").click(function(){    window.location = "/resumo_caixa"  })
 

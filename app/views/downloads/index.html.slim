@@ -1,0 +1,30 @@
+.col-12
+  .card
+    .card-body
+      h4.card-title Downloads
+      - if @downloads.empty?
+        br
+        h6.card-subtitle
+          | Nenhum download encontrado.
+      - if !@downloads.empty?
+        .table-responsive
+          table.table.table-striped
+            thead
+              tr
+                th Nome
+                th Data
+                th style="color: red" Expira Em
+            tbody
+              - @downloads.each do |d|
+                tr onclick="baixar('#{d.path}')" style="cursor: pointer"
+                  td 
+                    i.mdi.mdi-arrow-down-box.m-r-10 style="font-size: 20px"
+                    = d.nome rescue "-"
+                  td = d.created_at.strftime("%d/%m/%Y %H:%M") rescue "-"
+                  td = d.created_at.advance(hours: 12).strftime("%d/%m/%Y %H:%M") rescue "-"
+            
+javascript:
+
+  function baixar(caminho){
+    window.location = "/relatorios/"+caminho
+  }

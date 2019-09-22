@@ -229,9 +229,10 @@ javascript:
     //console.log(string_busca)
 
 
-    $.getJSON("/criar_relatorio", { nome: "transferencias_gerais", param_1: data_inicio, param_2: data_fim, param_3: string_usuario, param_4: string_usuario, param_5: string_tipo, param_6: string_cancelada },function(resultado) {
+    $.getJSON("/criar_relatorio", { nome_arquivo: "Transferencia Geral", nome: "transferencias_gerais", param_1: data_inicio, param_2: data_fim, param_3: string_usuario, param_4: string_usuario, param_5: string_tipo, param_6: string_cancelada },function(resultado) {
       if (resultado) {
         console.log(resultado)
+        swal("Sucesso!","Relatório criado. Favor conferir na pagina de Downloads dentro de alguns segundos.","success")
       } else {
         console.log("NAO DEU");
       }
