@@ -133,6 +133,14 @@ javascript:
   $(document).on('keypress',function(e) {
     if(e.which == 13) {
       $("#check_teclado_login").click()
+      console.log("CLICK ENTER")
+
+      $.post("/check_login_cartao_sem_senha",{ c: usuario }, function(data, status){
+        console.log(data)
+        if(data.status == "OK"){
+          $("#entrar").click()
+        }
+      });
     }
   });
 
@@ -261,7 +269,6 @@ javascript:
     var url_string = window.location.href; //window.location.href
     var url = new URL(url_string);
     totem_token = url.searchParams.get("t");
-    console.log(t);
 
   })
 
@@ -322,6 +329,19 @@ javascript:
           $("#input_senha").hide()
           $("#check_teclado_login").show()
           $("#entrar").hide()
+          $("#erro_senha").html("Codigo ou senha incorreta.")
+          $("#erro_senha").show()
+          $("#user_pass").val("")
+          senha = []
+        }else if(data.status == "CARTAO_BLOQUEADO"){
+          $("#user_codigo").val("")
+          $("#teclado_login").show()
+          $("#teclado_senha").hide()
+          $("#input_usuario").show()
+          $("#input_senha").hide()
+          $("#check_teclado_login").show()
+          $("#entrar").hide()
+          $("#erro_senha").html("Cartão bloqueado.")
           $("#erro_senha").show()
           $("#user_pass").val("")
           senha = []

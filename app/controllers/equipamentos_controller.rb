@@ -1,6 +1,6 @@
 class EquipamentosController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, :only => [:login_equipamento, :login_totem, :finalizar_compra, :alt_senha_user]
+  skip_before_action :verify_authenticity_token, :only => [:login_equipamento, :login_totem, :finalizar_compra, :alt_senha_user, :check_login_cartao_sem_senha]
 
   #before_action :authenticate_totem
 
@@ -23,20 +23,36 @@ class EquipamentosController < ApplicationController
   def equipamento_page
   end
 
+  def check_login_cartao_sem_senha
+    u = User.where(cartao: params[:c]).last
+    if u && u.cartao_sem_senha
+      render json: { status: "OK" }
+    else
+      render json: { status: "ERRO" }
+    end
+  end
+
   def login_totem
 
     u = User.where(codigo: params[:c].to_i).last
-
     u = User.where(codigo: params[:c]).last if !u
     
-    u = User.where(cartao: params[:c]).last if !u
+    user_com_cartao = false
+    if !u
+      u = User.where(cartao: params[:c]).last
+      user_com_cartao = true if u
+    end
 
     if u 
 
       senhas_possiveis = gerar_possiveis_senhas(params[:p])
 
       if u.ativo
-        if senhas_possiveis.include?(u.senha_totem)
+        if user_com_cartao && u.bloqueio_cartao
+          render json: { status: "CARTAO_BLOQUEADO" }
+        elsif user_com_cartao && u.cartao_sem_senha
+          render json: usuario_info(u)
+        elsif senhas_possiveis.include?(u.senha_totem)
           render json: usuario_info(u)
         else
           render json: { status: "SENHA_INCORRETA" }

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   match "/login_equipamento" => "equipamentos#login_equipamento", as: :login_equipamento, via: [:get, :post]
   match "/equipamento_page" => "equipamentos#equipamento_page", as: :equipamento_page, via: [:get, :post]
   match "/login_totem" => "equipamentos#login_totem", as: :login_totem, via: [:get, :post]
+  match "/check_login_cartao_sem_senha" => "equipamentos#check_login_cartao_sem_senha", as: :check_login_cartao_sem_senha, via: [:get, :post]
   match "/finalizar_compra" => "equipamentos#finalizar_compra", as: :finalizar_compra, via: [:get, :post]
   match "/alt_senha_user" => "equipamentos#alt_senha_user", as: :alt_senha_user, via: [:get, :post]
   match "/resetar_senha_totem" => "users#resetar_senha_totem", as: :resetar_senha_totem, via: [:get, :post]
