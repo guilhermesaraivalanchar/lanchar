@@ -44,8 +44,8 @@ class EquipamentosController < ApplicationController
     end
 
     if u 
-
-      senhas_possiveis = gerar_possiveis_senhas(params[:p])
+      senhas_possiveis = []
+      senhas_possiveis = gerar_possiveis_senhas(params[:p]) if params[:p]
 
       if u.ativo
         if user_com_cartao && u.bloqueio_cartao
