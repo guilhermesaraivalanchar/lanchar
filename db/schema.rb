@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_02_213303) do
+ActiveRecord::Schema.define(version: 2019_10_04_175047) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -395,6 +395,7 @@ ActiveRecord::Schema.define(version: 2019_10_02_213303) do
     t.boolean "sistema"
     t.boolean "bloqueio_cartao"
     t.boolean "cartao_sem_senha"
+    t.bigint "user_criou"
     t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

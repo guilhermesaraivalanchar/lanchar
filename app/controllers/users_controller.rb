@@ -253,6 +253,7 @@ class UsersController < ApplicationController
     @user.ativo = true
     @user.senha_totem = "0000"
     @user.nome = @user.nome.upcase
+    @user.user_criou = current_user.id
     respond_to do |format|
       if current_user.tem_permissao("criar_usuarios") && @user.save
         format.html { redirect_to(users_path, :notice => "Usuário criado com sucesso.") }
