@@ -177,7 +177,7 @@ class EquipamentosController < ApplicationController
 
     usuario_compra = User.find(params[:user_id])
     saldo_ant = usuario_compra ? usuario_compra.saldo.to_d : 0
-    user_movimentou_id = current_user.id
+    user_movimentou_id = # DADGE
     transf_geral = TransferenciaGeral.new(user_id: usuario_compra.id, escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, saldo_anterior: saldo_ant.to_d)
     valor_transf = 0
     preco_total = 0
