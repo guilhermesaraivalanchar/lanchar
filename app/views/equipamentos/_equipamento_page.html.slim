@@ -783,12 +783,15 @@ javascript:
 
     if (total_compra <= user_saldo_disponivel){
 
-      var totem_token = "HD25512FVJEJHZX2558VGBKJE45"
+      var url_string = window.location.href
+      var url = new URL(url_string);
+      var totem_token = url.searchParams.get("t");
 
       $.post("/finalizar_compra",
       {
         user_id: user_id,
-        lista: lista
+        lista: lista,
+        t: totem_token
       },
       function(data, status){
 

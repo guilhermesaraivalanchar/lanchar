@@ -289,7 +289,9 @@ javascript:
 
   $("#entrar").click(function(){
 
-      var totem_token = "7D5Nt_e9qFD707n78DBoWA"
+      var url_string = window.location.href
+      var url = new URL(url_string);
+      var totem_token = url.searchParams.get("t");
 
       $.post("/login_totem",
       {

@@ -4,6 +4,7 @@ class TransferenciaGeral < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :caixa, optional: true
   belongs_to :tipo_credito, optional: true
+  belongs_to :equipamento, optional: true
   has_many :transferencias, :dependent => :destroy
 
   after_save :att_caixa

@@ -3,6 +3,7 @@ class Transferencia < ApplicationRecord
   belongs_to :transferencia_geral
   belongs_to :produto, optional: true
   belongs_to :combo, optional: true
+  belongs_to :equipamento, optional: true
   has_many :transferencia_combos, :dependent => :destroy
 
   after_save :att_caixa

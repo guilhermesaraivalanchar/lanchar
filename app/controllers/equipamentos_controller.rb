@@ -12,7 +12,6 @@ class EquipamentosController < ApplicationController
 
 
   def login_equipamento
-
   end
 
   def show
@@ -34,12 +33,16 @@ class EquipamentosController < ApplicationController
 
   def login_totem
 
-    u = User.where(codigo: params[:c].to_i).last
-    u = User.where(codigo: params[:c]).last if !u
+    equipamento = Equipamento.where(token: params[:t]).last
+
+    escola_busca_id = equipamento.present? ? equipamento.escola_id : 1
+
+    u = User.where(codigo: params[:c].to_i, escola_id: escola_busca_id).last
+    u = User.where(codigo: params[:c], escola_id: escola_busca_id).last if !u
     
     user_com_cartao = false
     if !u
-      u = User.where(cartao: params[:c]).last
+      u = User.where(cartao: params[:c], escola_id: escola_busca_id).last
       user_com_cartao = true if u
     end
 
@@ -177,8 +180,10 @@ class EquipamentosController < ApplicationController
 
     usuario_compra = User.find(params[:user_id])
     saldo_ant = usuario_compra ? usuario_compra.saldo.to_d : 0
-    user_movimentou_id = # DADGE
-    transf_geral = TransferenciaGeral.new(user_id: usuario_compra.id, escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, saldo_anterior: saldo_ant.to_d)
+    equipamento = Equipamento.where(token: params[:t]).last
+    equipamento_id = equipamento.present? ? equipamento.id : nil
+
+    transf_geral = TransferenciaGeral.new(user_id: usuario_compra.id, escola_id: usuario_compra.escola_id, equipamento_id: equipamento_id, tipo: "VENDA", saldo_anterior: saldo_ant.to_d)
     valor_transf = 0
     preco_total = 0
     
@@ -189,7 +194,7 @@ class EquipamentosController < ApplicationController
       if prod_combo[:produto_id]
         prod_preco = prod_combo[:preco].to_d
         valor_transf = valor_transf + prod_preco
-        transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, produto_id: prod_combo[:produto_id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
+        transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", equipamento_id: equipamento_id, produto_id: prod_combo[:produto_id], valor: prod_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         produto = Produto.find(prod_combo[:produto_id])
 
         if produto.quantidade > produtos_update.select{ |p| p[:id] == prod_combo[:produto_id].to_i }.count
@@ -214,7 +219,7 @@ class EquipamentosController < ApplicationController
       else
         combo_preco = prod_combo[:preco].to_d
         valor_transf = valor_transf + combo_preco
-        transf = transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", user_movimentou_id: user_movimentou_id, combo_id: prod_combo[:id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
+        transf = transf_geral.transferencias.new(escola_id: usuario_compra.escola_id, tipo: "VENDA", combo_id: prod_combo[:id], valor: combo_preco, saldo_anterior: saldo_ant.to_d - valor_transf)
         preco_total += combo_preco
 
         prod_combo[:produtos].each do |prod_id|

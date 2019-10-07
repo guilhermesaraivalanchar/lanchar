@@ -1,9 +1,11 @@
 class Equipamento < ApplicationRecord
 
-	belongs_to :escola
-	before_create :generate_token
+  belongs_to :escola
+  has_many :transferencia_gerais
+  has_many :transferencias
+  before_create :generate_token
 
-  protected
+protected
 
   def generate_token
     self.token = loop do

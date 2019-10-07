@@ -6,4 +6,19 @@
         h6.card-subtitle Criação de cardápio
         div.error_validate.alert.alert-danger style="display:none"
           span
-        = render "form"
+        = render :partial => "/partials/error_display", :locals => { :object => @cardapio }
+
+        .form-body
+          = simple_form_for @cardapio do |f|
+            h4.box-title.m-t-10
+              | Dados do Cardapio
+            hr
+            .clear
+            div.col-12
+              = f.input :nome, label: "Nome", input_html: { nome_validacao: "Nome" }
+              br
+
+            .clear
+            button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+              | Enviar
+            = link_to "Voltar", produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
