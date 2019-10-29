@@ -58,7 +58,7 @@
       div.col-12
         = f.input :bloqueio_cartao, :as => :boolean, label: "Bloquear Cartão", boolean_style: :inline, input_html: { class: "filled-in" }
         = f.input :cartao_sem_senha, :as => :boolean, label: "Cartão Sem Senha", boolean_style: :inline, input_html: { class: "filled-in" }
-        = f.input :credito, label: "Limite de Credito", input_html: { nome_validacao: "Credito" }
+        / = f.input :credito, label: "Limite de Credito", input_html: { nome_validacao: "Credito" }
         = f.input :saldo_diario, label: "Saldo Diário", input_html: { nome_validacao: "Saldo Diário" }
         br
 

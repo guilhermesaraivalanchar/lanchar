@@ -28,9 +28,9 @@ class TransferenciaGeral < ApplicationRecord
   def att_caixa
     caixa = nil
     if ['ENTRADA','VENDA_DIRETA','DEPOSITO CANCELADO','REEMBOLSO_VENDA_DIRETA', 'AJUSTE'].include?(self.tipo)
-      caixa = Caixa.where(user_id: self.user_movimentou_id).first_or_initialize
+      caixa = Caixa.where(user_id: self.user_movimentou_id, escola_id: self.escola_id).first_or_initialize
     elsif ['SAIDA','SAIDA CANCELADA'].include?(self.tipo)
-      caixa = Caixa.where(user_id: self.user_caixa_id).first_or_initialize
+      caixa = Caixa.where(user_id: self.user_caixa_id, escola_id: self.escola_id).first_or_initialize
     end
 
     if caixa
