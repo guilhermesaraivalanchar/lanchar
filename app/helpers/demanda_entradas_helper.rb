@@ -1,0 +1,2 @@
+module DemandaEntradasHelper
+end

@@ -4,8 +4,8 @@
       .card-body
         h2.card-title Registro de Entradas
         - if @can_dar_entrada_produto
-          = link_to "Nova Entrada", new_entrada_produto_path, class: "btn btn-info waves-effect waves-light m-r-10"
-          = link_to "Nova Retirada", new_entrada_produto_path(tipo: "SAIDA"), class: "btn btn-info waves-effect waves-light"
+          = link_to "Nova Entrada", new_demanda_entrada_path, class: "btn btn-info waves-effect waves-light m-r-10"
+          = link_to "Nova Retirada", new_demanda_entrada_path(tipo: "SAIDA"), class: "btn btn-info waves-effect waves-light"
         .table-responsive.m-t-40
           table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
             col width="30%"

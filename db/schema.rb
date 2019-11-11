@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_06_144530) do
+ActiveRecord::Schema.define(version: 2019_11_10_234558) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -103,6 +103,13 @@ ActiveRecord::Schema.define(version: 2019_10_06_144530) do
     t.index ["escola_id"], name: "index_combos_on_escola_id"
   end
 
+  create_table "demanda_entradas", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "escola_id"
+    t.index ["escola_id"], name: "index_demanda_entradas_on_escola_id"
+  end
+
   create_table "downloads", force: :cascade do |t|
     t.integer "user_id"
     t.string "path"
@@ -123,6 +130,8 @@ ActiveRecord::Schema.define(version: 2019_10_06_144530) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.string "tipo"
+    t.integer "demanda_entrada_id"
+    t.index ["demanda_entrada_id"], name: "index_entrada_produtos_on_demanda_entrada_id"
     t.index ["user_id"], name: "index_entrada_produtos_on_user_id"
   end
 

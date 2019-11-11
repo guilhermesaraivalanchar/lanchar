@@ -1,6 +1,7 @@
-.row
-  - if !current_user.user_tipo("responsavel")
-    .col-lg-4.col-md-6
+- if !current_user.user_tipo("responsavel")
+  - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
+  // .row
+    .col-12
       .card
         .card-body.little-profile
           div.text-center
@@ -8,27 +9,11 @@
               = "#{current_user.nome} #{'(DESATIVADO)' if !current_user.ativo}"
             p 
               = current_user.tipos rescue ""
-          .row
-            .col-lg-12.col-md-12
-              h4.box-title.m-t-10
-                | Meus Dados
-              hr
-              .clear
-              .row
-                div.col-lg-4.col-md-6
-                  div.show_input  
-                    = "Codigo de Acesso"
-                  = current_user.codigo
-                div.col-lg-4.col-md-6
-                  div.show_input  
-                    = "Tipo"
-                  = current_user.tipos rescue ""
-                div.col-lg-4.col-md-6
-                  div.show_input  
-                    = "Cartao"
-                  = current_user.cartao
-      - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
-      - if !dependentes.empty?
+
+
+
+    // - if !dependentes.empty?
+      .col-xl-4.col-md-6.col-sm-12
         .card.earning-widget
           .card-header
             .card-actions
@@ -52,101 +37,68 @@
                       span.label.label-light-info
                         = "R$#{dep.user.saldo}"
 
+  .row
+    - dependentes.each do |dep|
+      .col-lg-6.col-md-6.col-sm-12
+        .card
+          .card-header
+            table.table.v-middle.no-border
+              tbody
+                tr
+                  td style="width:40px" 
+                    img.img-circle alt="logo" src="#{dep.user.imagem.url != '/imagens/original/missing.png' ? dep.user.imagem.url : '../imagens/user.jpg'}" width="50" height="50" /
+                  td
+                    = link_to(dep.user.nome, user_path(dep.user.id))
 
-           
-    .col-lg-8.col-md-6
-      .row
-        .col-12
-          .card
-            .card-body
-              h4.card-title Histórico de transação
-              h6.card-subtitle Possível ser exportado em Copy, CSV, Excel, PDF and Print
-              button#botao_hoje.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{!params[:p] || params[:p] == "hoje" ? 'info' : 'success'}" Hoje
-              button#botao_semana.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "semana" ? 'info' : 'success'}" Semana
-              button#botao_mes.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "mes" ? 'info' : 'success'}" Mes
-              button#botao_ano.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "ano" ? 'info' : 'success'}" Ano
-              button#botao_todos.btn.waves-effect.waves-light.m-r-10 type="submit" class="btn-#{params[:p] == "todos" ? 'info' : 'success'}" Todos
-              .table-responsive.m-t-40
-                table#example23.display.nowrap.table.table-striped.table-bordered cellspacing="0" width="100%" 
-                  col width="30%"
-                  col width="30%"
-                  col width="30%"
-                  col width="30%"
-                  col width="5%"
-                  thead
-                    tr
-                      th Nome
-                      th Data
-                      th Mẽs
-                      th Valor
-                      th Saldo Atual
-                  tbody
-                    - @transferencias_gerais_user.each do |transferencia|
-                      - if transferencia[:produto_id]
-                        tr
-                          td
-                            = transferencia[:produto_nome]
-                          td 
-                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                          td.text-danger
-                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                            td class="text-green"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                          - else
-                            td class="text-danger"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                      - elsif transferencia[:combo_id]
-                        tr
-                          td
-                            = transferencia[:combo_nome]
-                          td 
-                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                          td.text-danger
-                            = "- #{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                            td class="text-green"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                          - else
-                            td class="text-danger"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                        - TransferenciaCombo.where(transferencia_id: transferencia[:transferencia_id]).each do |tranf_combo|
-                          tr
-                            td style="padding-left: 20px"
-                              = " #{tranf_combo.produto.nome} (#{transferencia[:combo_nome]})"
-                            td 
-                              = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                            td 
-                              = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                            td
-                              = 
-                            td
-                              = 
-                      - else
-                        tr
-                          td
-                            = transferencia[:tipo]
-                          td 
-                            = transferencia[:created_at].strftime('%d/%m/%Y %H:%M')
-                          td 
-                            = "#{I18n.t(transferencia[:created_at].strftime("%B"))}, #{transferencia[:created_at].strftime("%Y")}"
-                          td class="#{ (transferencia[:tipo] == 'ENTRADA' || transferencia[:tipo] == 'REEMBOLSO') ? 'text-green' : 'text-danger'}"
-                            = "#{ActionController::Base.helpers.number_to_currency(transferencia[:valor])}"
-                          - if transferencia[:saldo_anterior] && transferencia[:saldo_anterior] >= 0
-                            td class="text-green"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
-                          - else
-                            td class="text-danger"
-                              = "#{ActionController::Base.helpers.number_to_currency(transferencia[:saldo_anterior])}"
+          .card-body style="padding-top: 0px"
+            .row.m-b-10
+              .col-6
+                font.m-r-10 style="line-height: 22px; font-size: 18px; color: #455a64; font-family: 'Poppins', sans-serif; font-weight: 400;" Saldo Atual
+              .col-6 style="text-align: right"
+                p.card-text style="font-weight: 400; font-size: 15px; color: #{dep.user.saldo < 0 ? 'red' : 'green'} "
+                  = ActionController::Base.helpers.number_to_currency(dep.user.saldo)
+              br
+            .row.m-b-10
+              .col-6
+                font.m-r-10 style="line-height: 22px; font-size: 18px; color: #455a64; font-family: 'Poppins', sans-serif; font-weight: 400;" Credito
+              .col-6 style="text-align: right"
+                p.card-text
+                  font.m-r-10 id="font_credito_#{dep.user.id}"
+                    = ActionController::Base.helpers.number_to_currency(dep.user.credito)
+                  font id="editar_data_credito_#{dep.user.id}" style="color:blue; cursor: pointer" Editar
+                  input.form-control.validate_valid aria-invalid="false" type="text" style="display:none" id="edit_input_credito_#{dep.user.id}" value="#{dep.user.credito}"
+              br
+            .row.m-b-10
+              .col-6
+                font.m-r-10 style="line-height: 22px; font-size: 18px; color: #455a64; font-family: 'Poppins', sans-serif; font-weight: 400;" Limite Gasto Diario
+              .col-6 style="text-align: right"
+                p.card-text
+                  font.m-r-10 id="font_saldodiario_#{dep.user.id}"
+                    = dep.user.saldo_diario.present? ? ActionController::Base.helpers.number_to_currency(dep.user.saldo_diario) : "Não Definido"
+                  font id="editar_data_saldodiario_#{dep.user.id}" style="color:blue; cursor: pointer" Editar
+                  input.form-control.validate_valid aria-invalid="false" type="text" style="display:none" id="edit_input_saldodiario_#{dep.user.id}"  value="#{dep.user.saldo_diario}"
+            .row.m-b-10
+              .col-12
+                .input.boolean.optional.user_bloqueio_cartao
+                  input name="user[bloqueio_cartao]" type="hidden" value="0"
+                  - if dep.user.bloqueio_cartao
+                    input.boolean.optional.form-control.filled-in name="user[bloqueio_cartao]" type="checkbox" checked="checked" id="check_input_bloquearcartao_#{dep.user.id}" 
+                  - else
+                    input.boolean.optional.form-control.filled-in name="user[bloqueio_cartao]" type="checkbox" id="check_input_bloquearcartao_#{dep.user.id}" 
+                  label.boolean.optional for="check_input_bloquearcartao_#{dep.user.id}"  Bloquear Cartão
+            .row.m-b-10
+              .col-12
+                .input.boolean.optional.user_bloqueio_cartao
+                  input name="user[bloqueio_cartao]" type="hidden" value="0" /
+                  - if dep.user.cartao_sem_senha
+                    input.boolean.optional.form-control.filled-in name="user[bloqueio_cartao]" type="checkbox" checked="checked" id="check_input_cartaosemsenha_#{dep.user.id}" 
+                  - else
+                    input.boolean.optional.form-control.filled-in name="user[bloqueio_cartao]" type="checkbox" id="check_input_cartaosemsenha_#{dep.user.id}" 
+                  label.boolean.optional for="check_input_cartaosemsenha_#{dep.user.id}"  Cartão sem Senha
 
 
-
-
-  - else
+- else
+  .row
     .col-12
       - dependentes = ResponsavelUser.where(responsavel_id: current_user.id)
       - if !dependentes.empty?
@@ -259,5 +211,65 @@ javascript:
   $("#cardapio_pais").click(function(){
     
     window.location = "/cardapio_pais"
+
+  })
+
+  $('[id^=editar_data_]').click(function(){
+    id = this.id
+    tipo = id.split("_")[2]
+    user_id = id.split("_")[3]
+
+    $("#editar_data_"+tipo+"_"+user_id).hide()
+    $("#font_"+tipo+"_"+user_id).hide()
+    $("#edit_input_"+tipo+"_"+user_id).show()
+  })
+
+  $('[id^=edit_input_]').blur(function(){
+    var id = this.id
+    var tipo = id.split("_")[2]
+    var user_id = id.split("_")[3]
+
+    $.getJSON("/mudar_saldo_dependente", { valor: $(this).val(), tipo: tipo, user_id: user_id },function(resultado) {
+      if(resultado){
+        console.log(resultado)
+        if(resultado.status == "OK"){
+          swal("Sucesso!", "Valor Atualizado com sucesso.", 'success')
+          $("#font_"+tipo+"_"+user_id).html(resultado.saldo)
+
+        }else if(resultado.status == "ERRO_VALIDACAO_DEPENDENTE"){
+          swal("Erro!", "Erro ao atualizar. (Validação)", 'error')
+        }else{
+          swal("Erro!", "Erro ao atualizar.", 'error')
+        }
+      }
+    })
+
+    $("#editar_data_"+tipo+"_"+user_id).show()
+    $("#font_"+tipo+"_"+user_id).show()
+    $("#edit_input_"+tipo+"_"+user_id).hide()
+
+  })
+
+  $('[id^=check_input_]').click(function(){
+    var id = this.id
+    var tipo = id.split("_")[2]
+    var user_id = id.split("_")[3]
+
+    $.getJSON("/mudar_saldo_dependente", { valor: $(this).prop( "checked"), tipo: tipo, user_id: user_id },function(resultado) {
+      if(resultado){
+        console.log(resultado)
+        if(resultado.status == "OK"){
+          swal("Sucesso!", "Valor Atualizado com sucesso.", 'success')
+        }else if(resultado.status == "ERRO_VALIDACAO_DEPENDENTE"){
+          swal("Erro!", "Erro ao atualizar. (Validação)", 'error')
+        }else{
+          swal("Erro!", "Erro ao atualizar.", 'error')
+        }
+      }
+    })
+
+    $("#editar_data_"+tipo+"_"+user_id).show()
+    $("#font_"+tipo+"_"+user_id).show()
+    $("#edit_input_"+tipo+"_"+user_id).hide()
 
   })

@@ -349,6 +349,35 @@ class UsersController < ApplicationController
 
   end
 
+  def mudar_saldo_dependente
+
+    dependente = User.find(params[:user_id])
+    ResponsavelUser.where(responsavel_id: current_user.id)
+    validar_responsavel = dependente.responsavel_users.map(&:responsavel_id).include?(current_user.id)
+
+    if !validar_responsavel
+      render json:  { status: "ERRO_VALIDACAO_DEPENDENTE" }
+    elsif params[:tipo] == "credito"
+      dependente.update_attribute(:credito, params[:valor].to_d)
+      render json:  { status: "OK", saldo: ActionController::Base.helpers.number_to_currency(dependente.credito) }
+    elsif params[:tipo] == "saldodiario"
+      if !params[:valor].present?
+        dependente.update_attribute(:saldo_diario, nil)
+        render json:  { status: "OK", saldo: "Não Definido" }
+      else
+        dependente.update_attribute(:saldo_diario, params[:valor].to_d)
+        render json:  { status: "OK", saldo: ActionController::Base.helpers.number_to_currency(dependente.saldo_diario) }
+      end
+    elsif params[:tipo] == "bloquearcartao"
+      dependente.update_attribute(:bloqueio_cartao, params[:valor] == "true")
+      render json:  { status: "OK", saldo: dependente.bloqueio_cartao }
+    elsif params[:tipo] == "cartaosemsenha"
+      dependente.update_attribute(:cartao_sem_senha, params[:valor] == "true")
+      render json:  { status: "OK", saldo: dependente.cartao_sem_senha }
+    end
+
+  end
+
 private
   def user_params
     params.require(:user).permit!

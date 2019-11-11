@@ -1,0 +1,18 @@
+.nested-fields
+
+  = f.hidden_field :escola_id, value: current_user.escola_id
+  = f.hidden_field :user_id, value: current_user.id
+  = f.hidden_field :tipo, value: (params[:tipo] == "SAIDA" ? "SAIDA" : "ENTRADA")
+  = f.input :produto_id, as: :select, label: "Produtos", prompt: "Selecione" , collection: Produto.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
+  / = f.input :fornecedor_id, as: :select, label: "Fornecedores", prompt: "Selecione" , collection: Fornecedor.all.collect { |m| [m.nome, m.id] }, input_html: { nome_validacao: "Produto", class: "select2" }
+  = f.input :preco_custo, label: "Preco (Opcional)", input_html: { nome_validacao: "Código" }
+  = f.input :quantidade, label: "Quantidade", input_html: { nome_validacao: "Código" }
+  br
+
+  = link_to_remove_association "<button helper='button' class='btn-block btn btn-danger waves-effect waves-light'>Remover</button>".html_safe, f
+  .clear
+  br
+
+javascript:
+  $(".select2").select2();
+  $(".select2").select2();

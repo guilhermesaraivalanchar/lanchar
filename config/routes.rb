@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   resources :filtro_totens
   resources :tipo_creditos
   resources :downloads
+  resources :demanda_entradas
 
 
   # Ajax
@@ -96,5 +97,6 @@ Rails.application.routes.draw do
 
   match "/get_resumo_escola" => "escolas#get_resumo_escola", via: [:get, :post]
 
+  match "/mudar_saldo_dependente" => "users#mudar_saldo_dependente", via: [:get, :post]
 
 end

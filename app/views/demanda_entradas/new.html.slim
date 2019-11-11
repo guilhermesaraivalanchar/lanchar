@@ -1,0 +1,26 @@
+= render :partial => "/partials/error_display", :locals => { :object => @demanda_entrada }
+.row
+  .col-12
+    .card
+      .card-body
+        - if params[:tipo] == "SAIDA"
+          h2.card-title Nova Retirada
+        - else
+          h2.card-title Nova Entrada
+        div.error_validate.alert.alert-danger style="display:none"
+          span
+        .form-body
+          = simple_form_for @demanda_entrada do |f|
+            .row.m-b-20
+              .col-12
+                = f.simple_fields_for :entrada_produtos do |w|
+                  = render "entrada_produto_fields", { :f => w }
+                    .clear
+                div
+                  = link_to_add_association "<button class='btn btn-primary waves-effect waves-light' helper='button'>Adicionar Entrada</button>".html_safe, f, :entrada_produtos
+
+              .clear
+              br
+            button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
+              | Enviar
+            = link_to "Voltar", entrada_produtos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"
