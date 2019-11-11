@@ -2,7 +2,7 @@ class EntradaProdutosController < ApplicationController
   def index
     redirect_to pagina_sem_permissao_path if !current_user.tem_permissao("ver_entrada_produto")
     @can_dar_entrada_produto = current_user.tem_permissao("dar_entrada_produto") 
-    @entradas = EntradaProduto.all.order('created_at DESC')
+    @entradas = EntradaProduto.where(escola_id: current_user.escola_id).order('created_at DESC')
   end
 
   def new
