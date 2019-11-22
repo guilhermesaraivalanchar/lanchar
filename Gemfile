@@ -17,6 +17,7 @@ gem 'wicked_pdf', '~> 1.1'
 gem 'wkhtmltopdf-binary', '~> 0.12.4'
 gem 'whenever', require: false
 gem 'sidekiq', '~> 5.2.5'
+gem 'httparty'
 
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
