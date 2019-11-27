@@ -60,4 +60,25 @@ class Escola < ApplicationRecord
   def fim_dia
   end
 
+  def importar_sponte
+    nCodigoCliente = "45601"
+    sToken = "RN5RrWWf8Pzh"
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken,
+          sParametrosBusca: "Inadimplente=0"
+        }, timeout: 600})
+
+
+
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetItens", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken
+        }, timeout: 600})
+
+    envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].count
+  end
+
 end
