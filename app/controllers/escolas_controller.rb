@@ -217,27 +217,45 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-01-01 00:00:00"
     data_fim = "#{ano}-12-31 23:59:59"
 
-    base = "producaoa"
+    base = "producao"
     if base == "producao"
+      # sql = %Q{
+      #   SELECT    date_part('year', created_at) AS "Year",
+      #             date_part('month', created_at) AS "Month",
+      #             date_part('day', created_at) AS "Day",
+      #             COUNT(*) AS "transf",
+      #             tipo
+      #   FROM      transferencia_gerais
+      #   WHERE transferencia_gerais.created_at > '#{data_inicio}'
+      #   AND transferencia_gerais.created_at < '#{data_fim}'
+      #   AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+      #   GROUP BY  date_part('day', created_at),
+      #             date_part('month', created_at),
+      #             date_part('year', created_at),
+      #             tipo
+      #   ORDER BY  "Year",
+      #             "Month",
+      #             "Day"
+
+      # }
+
       sql = %Q{
-        SELECT    date_part('year', created_at) AS "Year",
-                  date_part('month', created_at) AS "Month",
-                  date_part('day', created_at) AS "Day",
-                  COUNT(*) AS "transf",
-                  tipo
-        FROM      transferencia_gerais
-        WHERE transferencia_gerais.created_at > '#{data_inicio}'
-        AND transferencia_gerais.created_at < '#{data_fim}'
-        AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
-        GROUP BY  date_part('day', created_at),
-                  date_part('month', created_at),
-                  date_part('year', created_at),
-                  tipo
-        ORDER BY  "Year",
-                  "Month",
-                  "Day"
+          SELECT    date_part('year', created_at) AS "Year",
+                    date_part('month', created_at) AS "Month",
+                    COUNT(*) AS "transf",
+                    tipo
+          FROM      transferencia_gerais
+          WHERE transferencia_gerais.created_at > '#{data_inicio}'
+          AND transferencia_gerais.created_at < '#{data_fim}'
+          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
+          GROUP BY  date_part('year', created_at),
+                    date_part('month', created_at),
+                    tipo
+          ORDER BY  "Year",
+                    "Month"
 
       }
+
     else
 
       sql = %Q{
@@ -246,6 +264,9 @@ class EscolasController < ApplicationController
                     COUNT(*) AS "transf",
                     tipo
           FROM      transferencia_gerais
+          WHERE transferencia_gerais.created_at > '#{data_inicio}'
+          AND transferencia_gerais.created_at < '#{data_fim}'
+          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
           GROUP BY  strftime('%m', created_at),
                     strftime('%Y', created_at),
                     tipo
