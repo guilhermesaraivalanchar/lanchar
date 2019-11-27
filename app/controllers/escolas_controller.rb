@@ -100,25 +100,40 @@ class EscolasController < ApplicationController
     dia_ini = "#{ano}-#{mes}-02".to_time.beginning_of_month
     dia_fim = "#{ano}-#{mes}-02".to_time.end_of_month
 
+    (1..12).each do |mes|
+      break if DateTime.now.strftime("%Y") == params[:ano] && mes > DateTime.now.strftime("%m").to_i
 
-    (dia_ini.to_date..dia_fim.to_date).each do |data|
-      @dados_dias << data.strftime("%d/%m")
+      valor_entrada = @dados_tipos.select{|n| n["Month"].to_i == mes && n["tipo"] == "ENTRADA"}.first["transf"] rescue 0
+      valor_saida = @dados_tipos.select{|n| n["Month"].to_i == mes && n["tipo"] == "SAIDA"}.first["transf"] rescue 0
+      valor_dia_venda_normal = @dados_tipos.select{|n| n["Month"].to_i == mes && n["tipo"] == "VENDA"}.first["transf"] rescue 0
+      valor_dia_venda_direta = @dados_tipos.select{|n| n["Month"].to_i == mes && n["tipo"] == "VENDA_DIRETA"}.first["transf"] rescue 0
 
-      valor_entrada = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "ENTRADA"}.first["transf"] rescue 0
-      valor_saida = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "SAIDA"}.first["transf"] rescue 0
-      valor_dia_venda_normal = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA"}.first["transf"] rescue 0
-      valor_dia_venda_direta = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA_DIRETA"}.first["transf"] rescue 0
-
+      @dados_dias << mes
       @dados_valor_entrada << valor_entrada
       @dados_valor_saida << valor_saida
       @dados_valor_venda << valor_dia_venda_normal + valor_dia_venda_direta
     end
+
+
+    # (dia_ini.to_date..dia_fim.to_date).each do |data|
+    #   @dados_dias << data.strftime("%d/%m")
+
+    #   valor_entrada = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "ENTRADA"}.first["transf"] rescue 0
+    #   valor_saida = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "SAIDA"}.first["transf"] rescue 0
+    #   valor_dia_venda_normal = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA"}.first["transf"] rescue 0
+    #   valor_dia_venda_direta = @dados_tipos.select{|n| n["Day"].to_i == data.strftime("%d").to_i && n["Month"].to_i == data.strftime("%m").to_i && n["tipo"] == "VENDA_DIRETA"}.first["transf"] rescue 0
+
+    #   @dados_valor_entrada << valor_entrada
+    #   @dados_valor_saida << valor_saida
+    #   @dados_valor_venda << valor_dia_venda_normal + valor_dia_venda_direta
+    # end
 
     puts "
 
 
     DADOS
 
+    #{@dados_tipos.inspect}
     #{@dados_dias.inspect}
     #{@dados_valor_entrada.inspect}
     #{@dados_valor_saida.inspect}
@@ -199,7 +214,10 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
     data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
 
-    base = "producao"
+    data_inicio = "#{ano}-01-01 00:00:00"
+    data_fim = "#{ano}-12-31 23:59:59"
+
+    base = "producaoa"
     if base == "producao"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
@@ -225,22 +243,20 @@ class EscolasController < ApplicationController
       sql = %Q{
           SELECT    strftime('%Y', created_at) AS "Year",
                     strftime('%m', created_at) AS "Month",
-                    strftime('%d', created_at) AS "Day",
                     COUNT(*) AS "transf",
                     tipo
           FROM      transferencia_gerais
-          WHERE transferencia_gerais.created_at > '#{data_inicio}'
-          AND transferencia_gerais.created_at < '#{data_fim}'
-          AND transferencia_gerais.escola_id = '#{current_user.escola_id}'
-          GROUP BY  strftime('%d', created_at),
-                    strftime('%m', created_at),
+          GROUP BY  strftime('%m', created_at),
                     strftime('%Y', created_at),
                     tipo
           ORDER BY  "Year",
-                    "Month",
-                    "Day"
+                    "Month"
 
       }
+
+
+
+
     end
 
     @dados = ActiveRecord::Base.connection.select_all(sql)

@@ -385,7 +385,7 @@ private
 
   def init_vars
     @tipo_users = TipoUser.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
-    @users = User.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
+    @users = User.where(escola_id: current_user.escola_id, sistema: [nil, false]).collect { |m| [m.nome, m.id] }
   end
 
   def init_new
