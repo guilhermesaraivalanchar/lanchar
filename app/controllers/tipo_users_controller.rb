@@ -24,6 +24,7 @@ class TipoUsersController < ApplicationController
   def create
     init_new
     tipo_user_params[:escola_id] = current_user.escola_id
+    tipo_user_params[:from_form] = true
     respond_to do |format|
       if current_user.tem_permissao("criar_tipo_usuarios") && @tipo_user.update_attributes(tipo_user_params)
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user criado com sucesso.") }
@@ -37,6 +38,7 @@ class TipoUsersController < ApplicationController
 
   def update
     init_current
+    tipo_user_params[:from_form] = true
     respond_to do |format|
       if current_user.tem_permissao("editar_tipo_usuarios") && @tipo_user.update_attributes(tipo_user_params)
         format.html { redirect_to(tipo_users_path, :notice => "tipo_user editado com sucesso.") }

@@ -86,11 +86,12 @@ Permissao.create(permissao_nome: "Deletar Tipo de Credito", permissao_codigo: "d
 # Configuração Pais
 Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo", permissao_grupo: "Sistema")
 Permissao.create(permissao_nome: "Transferência de Saldo", permissao_codigo: "transferencia_de_saldo_pais", permissao_grupo: "Configuração Pais")
+Permissao.create(permissao_nome: "Cardápio", permissao_codigo: "cardapio_pais", permissao_grupo: "Configuração Pais")
 
 ################################# NOVAS 
 
-Permissao.create(permissao_nome: "Cardápio", permissao_codigo: "cardapio_pais", permissao_grupo: "Configuração Pais")
-
+Permissao.create(permissao_nome: "Comprar", permissao_codigo: "user_comprar", permissao_grupo: "Venda")
+Permissao.create(permissao_nome: "Central Aluno", permissao_codigo: "central_aluno", permissao_grupo: "Escola")
 
 
 ################################# SUSPENSOS
