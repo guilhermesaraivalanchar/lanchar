@@ -70,6 +70,9 @@ Rails.application.routes.draw do
   match "/cardapio_pais" => "cardapios#cardapio_pais", as: :cardapio_pais, via: [:get, :post]
   match "/resumo_caixa" => "escolas#resumo_caixa", as: :resumo_caixa, via: [:get, :post]
   match "/ajuste_saldo" => "escolas#ajuste_saldo", as: :ajuste_saldo, via: [:get, :post]
+  match "/definir_integracao_sponte" => "escolas#definir_integracao_sponte", as: :definir_integracao_sponte, via: [:get, :post]
+  match "/integrar_alunos" => "escolas#integrar_alunos", as: :integrar_alunos, via: [:get, :post]
+  match "/central_aluno" => "users#central_aluno", as: :central_aluno, via: [:get, :post]
 
   match "/preco_cardapio_produto" => "cardapios#preco_cardapio_produto", as: :preco_cardapio_produto, via: [:get, :post]
   match "/preco_cardapio_combo" => "cardapios#preco_cardapio_combo", as: :preco_cardapio_combo, via: [:get, :post]
@@ -98,5 +101,10 @@ Rails.application.routes.draw do
   match "/get_resumo_escola" => "escolas#get_resumo_escola", via: [:get, :post]
 
   match "/mudar_saldo_dependente" => "users#mudar_saldo_dependente", via: [:get, :post]
+
+  match "/segunda_via" => "transferencia_gerais#segunda_via", via: [:get, :post]
+
+  match "/get_users" => "users#get_users", via: [:get,:post]
+  match "/get_user_central" => "users#get_user_central", via: [:get,:post]
 
 end

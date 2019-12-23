@@ -54,7 +54,41 @@
         button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_editar_logo" data-toggle="modal" type="button" style="margin-left: 10px" Editar Logo
         button.botao_retirar_caixa_user.btn.btn-sm.btn-youtube data-target="#modal_ajuste" data-toggle="modal" type="button" style="margin-left: 10px" Ajuste de Saldo
 
-    div.row
+    .card.card-inverse style="cursor: pointer"
+      .card-body.little-profile
+        div.col-12 style="padding-left: 15px; padding-right: 15px;"
+          div data-toggle="collapse" data-target="#importacao_sponte" aria-expanded="false" aria-controls="importacao_sponte" style="color: black; font-size: 20px"
+            i.mdi.mdi-book-open.m-r-5
+            | Importação Sponte
+
+          .collapse id="importacao_sponte" style="padding-top: 5px;"
+            div
+              .input.string.required.user_nome
+                label.string.required for="user_nome" Cliente ID
+                input#cliente_sponte.string.required.form-control type="text" value="#{@escola.cliente_sponte}"
+              .input.string.required.user_nome
+                label.string.required for="user_nome" Token
+                input#token_sponte.string.required.form-control type="text" value="#{@escola.token_sponte}"
+            br
+            button#botao_integracao_sponte.btn.btn-sm.btn-youtube type="button" style="width: 100%" Editar
+            br
+            br
+            button.btn.btn-sm.btn-info data-target="#danger-alert-modal" data-toggle="modal" type="button" style="width: 100%" Integrar Alunos
+            br
+            br
+            button#atualizar_alunos.btn.btn-sm.btn-info type="button" style="width: 100%" Atualizar Alunos
+            br
+            br
+            - if @escola.integracao_diaria_sponte
+              .checkbox.checkbox-success
+                input id="check_integracao_diaria_sponte" type="checkbox" checked="checked" onclick="mudar_booleans(#{@escola.id}, 'integracao_diaria_sponte')"
+                label for="check_integracao_diaria_sponte"
+                  | Integração Diária Sponte
+            - else
+              .checkbox.checkbox-success
+                input id="check_integracao_diaria_sponte" type="checkbox" onclick="mudar_booleans(#{@escola.id}, 'integracao_diaria_sponte')"
+                label for="check_integracao_diaria_sponte"
+                  | Integração Diária Sponte
 
 
   .col-lg-4.col-md-6
@@ -189,6 +223,19 @@
           svg class="circular" viewBox="25 25 50 50"
             circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
 
+#danger-alert-modal.modal.fade aria-hidden="true" role="dialog" tabindex="-1" 
+  .modal-dialog.modal-sm
+    .modal-content.modal-filled.bg-danger
+      .modal-body.p-4
+        .text-center
+          i.dripicons-wrong.h1
+          h1.mt-2.text-white Atenção !
+          p.text-white style="font-size: 17px;"
+            | Todos os dados dos alunos serão atualizados! Deseja continuar ?
+          button.btn.btn-light.my-2.m-r-10 data-dismiss="modal" type="button"  Sair
+          button#integrar_alunos.btn.btn-light.my-2 data-dismiss="modal" type="button" Continue
+
+
 javascript:
 
   $("#cor_padrao").change(function(){
@@ -209,6 +256,7 @@ javascript:
     if(tipo == "desabilitar_diario"){ ativo = $("#check_desabilitar_credito").prop( "checked")}
     if(tipo == "itens_separados"){ ativo = $("#check_itens_separados").prop( "checked")}
     if(tipo == "sem_credito"){ ativo = $("#check_sem_credito").prop( "checked")}
+    if(tipo == "integracao_diaria_sponte"){ ativo = $("#check_integracao_diaria_sponte").prop( "checked")}
 
 
     $.getJSON("/desabilitar_saldo_diario", { escola_id: escola_id, ativo: ativo, tipo: tipo },function(resultado) {
@@ -303,3 +351,50 @@ javascript:
   $("#resumo_geral_botao").click(function(){    window.location = "/resumo_escola"  })
   $("#resumo_caixa_botao").click(function(){    window.location = "/resumo_caixa"  })
 
+  $("#botao_integracao_sponte").click(function(){
+
+    $.getJSON("/definir_integracao_sponte", { cliente: $("#cliente_sponte").val(), token: $("#token_sponte").val() },function(d){
+      if (d) {
+        console.log(d);
+        if (d.status == 200){
+          swal("Sucesso !", "Integração realizada.", "success")
+        }
+        else {
+          swal("Erro !", d.erro, "error"); 
+        }
+      } 
+    })
+
+  })
+
+  $("#integrar_alunos").click(function(){
+
+    $.getJSON("/integrar_alunos", { atualizar: true },function(d){
+      if (d) {
+        console.log(d);
+        if (d.status == 200){
+          swal("Sucesso !", "Processo iniciado, em alguns minutos seu dados serão integrados.", "success")
+        }
+        else {
+          swal("Erro !", d.erro, "error"); 
+        }
+      } 
+    })
+
+  })
+
+  $("#atualizar_alunos").click(function(){
+
+    $.getJSON("/integrar_alunos", { atualizar: false },function(d){
+      if (d) {
+        console.log(d);
+        if (d.status == 200){
+          swal("Sucesso !", "Processo iniciado, em alguns minutos seu dados serão atualizados.", "success")
+        }
+        else {
+          swal("Erro !", d.erro, "error"); 
+        }
+      } 
+    })
+
+  })

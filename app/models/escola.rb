@@ -38,9 +38,9 @@ class Escola < ApplicationRecord
   def self.criar_escola(nome)
     escola = Escola.new(nome: nome, sem_credito: true)
 
-    escola.tipo_users.new(nome: "Administrador", codigo: "admin", bloqueado: true)
-    escola.tipo_users.new(nome: "Aluno", codigo: "aluno", bloqueado: true)
-    escola.tipo_users.new(nome: "Responsável", codigo: "responsavel", bloqueado: true)
+    escola.tipo_users.new(nome: "Administrador", codigo: "admin", bloqueado: true, admin: true, protegido: true)
+    escola.tipo_users.new(nome: "Aluno", codigo: "aluno", bloqueado: true, aluno: true, protegido: true)
+    escola.tipo_users.new(nome: "Responsável", codigo: "responsavel", bloqueado: true, responsavel: true, protegido: true)
     escola.users.new(nome: "SISTEMA", email:"sistema_#{nome}@sistemacantinapro.com.br", codigo:"SISTEMA___#{nome}___1", password: 123456, sistema: true, saldo: 0)
     escola.users.new(nome: "Admin", email:"admin_#{nome}@sistemacantinapro.com.br", codigo:"admin", password: 123456, sistema: false, ativo: true, saldo: 0, admin: true)
     escola.tipo_produtos.new(nome: "Salgados")
@@ -60,25 +60,262 @@ class Escola < ApplicationRecord
   def fim_dia
   end
 
-  def importar_sponte
+  def importar_alunos(atualizar)
+    grupo_aluno = TipoUser.where(escola_id: self.id, aluno: true).last
+    grupo_responsavel = TipoUser.where(escola_id: self.id, responsavel: true).last
+
+    nCodigoCliente = self.cliente_sponte
+    sToken = self.token_sponte
+    
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken,
+          sParametrosBusca: "Situacao=-1"
+        }, timeout: 600})
+
+    # envio.parsed_response["ArrayOfWsAluno"].count
+
+    erro = envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s rescue ""
+
+    if erro == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
+      return [500, "Cliente não possui token cadastrado para acesso"]
+    elsif erro == "25 - Token Inválido."
+      return [500, "Token Inválido"]
+    else
+      envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].each do |retorno|
+
+        puts "
+        ------------------------------------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------------------------------------
+        "
+
+        user = User.where(codigo: retorno["NumeroMatricula"], escola_id: self.id).last
+        if user
+          if atualizar
+            user.update_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
+          end
+        else
+          begin 
+            nao_salvar = false
+            u = User.new(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], 
+              turma: retorno["TurmaAtual"], sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+              aluno_id_sponte: retorno["AlunoID"] )
+            u.tipos_users.new(tipo_user_id: grupo_aluno.id)
+
+            multi_responsaveis = retorno["Responsaveis"]["wsResponsaveis"].first["Nome"] rescue nil
+
+            puts "
+
+              #{retorno.inspect}
+
+              #{retorno["Responsaveis"]["wsResponsaveis"].inspect}
+              #{retorno["Responsaveis"]["wsResponsaveis"].count}
+              #{multi_responsaveis.present?}
+
+            "
+
+            if multi_responsaveis.present?
+
+              retorno["Responsaveis"]["wsResponsaveis"].each do |responsavel|
+  
+                r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+
+                if !r
+                  r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
+                    sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+                    responsavel_sponte_id: responsavel["ResponsavelID"] )
+                  r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
+                  r.save
+
+                  nao_salvar = !r.errors.empty?
+                  puts "
+
+
+                  RESP ERRO
+
+
+                  #{r.errors.inspect}
+
+
+                  "
+                end
+
+                u.responsavel_users.new(responsavel_id: r.id)
+              end
+
+            else
+              responsavel = retorno["Responsaveis"]["wsResponsaveis"]
+              r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+              
+              if !r
+                r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
+                  sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+                  responsavel_sponte_id: responsavel["ResponsavelID"] )
+                r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
+                r.save
+                nao_salvar = !r.errors.empty?
+                puts "
+
+
+                RESP ERRO
+
+
+                #{r.errors.inspect}
+
+
+                "
+              end
+
+              u.responsavel_users.new(responsavel_id: r.id)
+            end
+
+
+            u.save if !nao_salvar
+
+            puts "
+
+
+
+
+            User ERRO
+
+
+
+            #{u.errors.inspect}
+
+
+
+
+            "
+          rescue Exception => error
+            raise ActiveRecord::Rollback
+          end
+        end
+      end
+
+      self.importar_responsaveis
+
+      return [200, "OK"]
+    end
+
+  end
+
+  def importar_responsaveis
+    
+    nCodigoCliente = self.cliente_sponte
+    sToken = self.token_sponte
+
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetResponsaveis", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken,
+          sParametrosBusca: "Nome="
+        }, timeout: 600})
+
+    # envio.parsed_response["ArrayOfWsResponsavel"]["wsResponsavel"].count
+
+    erro = envio.parsed_response["ArrayOfWsResponsavel"]["wsResponsavel"]["RetornoOperacao"].to_s rescue ""
+
+    if erro == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
+      return [500, "Cliente não possui token cadastrado para acesso"]
+    elsif erro == "25 - Token Inválido."
+      return [500, "Token Inválido"]
+    else
+      envio.parsed_response["ArrayOfWsResponsavel"]["wsResponsavel"].each do |retorno|
+        user = User.where(responsavel_sponte_id: retorno["ResponsavelID"], escola_id: self.id).last
+        user.update_attribute(:codigo, retorno["CPFCNPJ"].get_only_digits) if user && retorno["CPFCNPJ"].present?
+      end
+
+      return [200, "OK"]
+    end
+    
+  end
+
+
+  def teste_importacao_sponte
+
+    nCodigoCliente = self.cliente_sponte
+    sToken = self.token_sponte
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken,
+          sParametrosBusca: "Nome=1234567890123456789qwertyuiop"
+        }, timeout: 600})
+
+    if envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
+      return "Cliente não possui token cadastrado para acesso"
+    elsif envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "25 - Token Inválido."
+      return "Token Inválido"
+    else
+      return "OK"
+    end
+
+  end
+
+  def teste_importacao
+
     nCodigoCliente = "45601"
     sToken = "RN5RrWWf8Pzh"
     envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
       { body: { 
           nCodigoCliente: nCodigoCliente, 
           sToken: sToken,
-          sParametrosBusca: "Inadimplente=0"
+          sParametrosBusca: "Situacao=-1"
         }, timeout: 600})
 
+    envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].count
 
 
-    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetItens", 
+
+    nCodigoCliente = "45601"
+    sToken = "RN5RrWWf8Pzh"
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetResponsaveis", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken,
+          sParametrosBusca: "Nome="
+        }, timeout: 600})
+
+    envio.parsed_response["ArrayOfWsResponsavel"]["wsResponsavel"].count
+
+
+
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetSituacoesAlunos", 
       { body: { 
           nCodigoCliente: nCodigoCliente, 
           sToken: sToken
         }, timeout: 600})
 
     envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].count
+
+
+
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetCategorias", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken
+        }, timeout: 600})
+
+    envio.parsed_response["ArrayOfWsCategorias"]["wsCategorias"]["Categorias"]["Categorias"].count
+
+
+
+    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetFormasCobrancas", 
+      { body: { 
+          nCodigoCliente: nCodigoCliente, 
+          sToken: sToken
+        }, timeout: 600})
+
+    envio.parsed_response["ArrayOfWsFormasCobrancas"]["wsFormasCobrancas"]["FormasCobrancas"]["FormasCobrancas"].count
+
+  end
+
+  def self.atualizar_escolas
+    Escola.where(integracao_diaria_sponte: true).where("token_sponte is not null and cliente_sponte is not null").each do |escola|
+      escola.importar_alunos(true) if escola.teste_importacao_sponte == "OK"
+    end
   end
 
 end

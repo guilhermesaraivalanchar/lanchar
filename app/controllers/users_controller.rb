@@ -246,7 +246,7 @@ class UsersController < ApplicationController
     user_params[:escola_id] = current_user.escola_id
     @user.assign_attributes(user_params)
     @user.password = "123456"
-    @user.email = "none#{@user.codigo}#{rand(9999)}@none.com"
+    @user.email = "none#{@user.codigo}#{current_user.escola_id}@none.com"
     @user.saldo = 0
     @user.credito = 30
     @user.enable_after_save = true
@@ -309,7 +309,8 @@ class UsersController < ApplicationController
                 tipo: "ENTRADA",
                 saldo_anterior: saldo_ant.to_d + params[:valor].to_d
               })
-              transf_geral.save
+              save_transf = transf_geral.save
+              transf_geral.integrar_sponte(params[:data_integracao]) if save_transf.errors.empty?
             end
             render json:  { resultado: "OK", transf_id: transf_geral.id }
           else
@@ -375,6 +376,35 @@ class UsersController < ApplicationController
       dependente.update_attribute(:cartao_sem_senha, params[:valor] == "true")
       render json:  { status: "OK", saldo: dependente.cartao_sem_senha }
     end
+
+  end
+
+  def central_aluno
+  end
+
+  def get_users
+    resultados = []
+
+    users = User.where("users.nome LIKE '%#{params[:busca]}%' or users.codigo LIKE '%#{params[:busca]}%'").where(escola_id: current_user.escola_id)
+
+    users.each do |users|
+      resultados << { "id": users.id, "text": "#{users.codigo} - #{users.nome}" }
+    end
+    
+    render json: {result: resultados }
+  end
+
+  def get_user_central
+
+    user = User.find(params[:user_id])
+
+    puts "
+
+    #{user.inspect}
+
+    "
+
+    render json: { user_id: user.id, nome: user.nome, saldo: user.saldo, url: user.url, ativo: user.ativo, tipos: user.tipos }
 
   end
 

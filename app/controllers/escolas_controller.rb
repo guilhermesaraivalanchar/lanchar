@@ -305,21 +305,18 @@ class EscolasController < ApplicationController
     escola = Escola.find(params[:escola_id])
 
     if params[:tipo] == "desabilitar_diario"
-
       escola.update_attribute(:desabilitar_diario, !escola.desabilitar_diario)
-
       render json: {status: "OK", escola_des_diario: escola.desabilitar_diario}
     elsif params[:tipo] == "itens_separados"
-
       escola.update_attribute(:itens_separados, !escola.itens_separados)
-
       render json: {status: "OK", escola_itens_separados: escola.itens_separados}
     elsif params[:tipo] == "sem_credito"
-
       escola.users.update_all(credito: 0) if !escola.sem_credito
       escola.update_attribute(:sem_credito, !escola.sem_credito)
-
       render json: {status: "OK", escola_sem_credito: escola.sem_credito}
+    elsif params[:tipo] == "integracao_diaria_sponte"
+      escola.update_attribute(:integracao_diaria_sponte, !escola.integracao_diaria_sponte)
+      render json: {status: "OK", integracao_diaria_sponte: escola.integracao_diaria_sponte}
     end
       
   end
@@ -579,6 +576,37 @@ class EscolasController < ApplicationController
 
 
     "
+
+  end
+
+  def definir_integracao_sponte
+
+    escola = current_user.escola
+    escola.cliente_sponte = params[:cliente]
+    escola.token_sponte = params[:token]
+
+    teste_integracao = escola.teste_importacao_sponte
+
+    if teste_integracao == "OK"
+      current_user.escola.update_attributes(token_sponte: params[:token], cliente_sponte: params[:cliente])
+      render json: { status: 200 }
+    else
+      render json: { status: 500, erro: teste_integracao }
+    end
+
+  end
+
+  def integrar_alunos
+    #retorno = current_user.escola.importar_alunos(params[:atualizar] == "true")
+
+    teste_integracao = current_user.escola.teste_importacao_sponte
+
+    if teste_integracao == "OK"
+      IntegracaoSponteWorker.perform_async(current_user.escola_id, params[:atualizar] == "true")
+      render json: { status: 200 }
+    else
+      render json: { status: 500, erro: teste_integracao }
+    end
 
   end
 

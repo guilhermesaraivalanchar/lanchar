@@ -1,0 +1,216 @@
+.row
+  .col-12
+    .card
+      .card-body
+        h2.card-title Criar tipo de credito
+        div.error_validate.alert.alert-danger style="display:none"
+          span
+
+        .row
+	        .col-12
+	          label.select.required.form-control-label for="alunos" Usuários
+	          select.js-example-data-ajax.form-control id="alunos"
+            br
+            br
+            .col-sm-12.col-md-12.col-lg-6
+              .card-body
+                .mt-4.text-center
+                  img#user_image.rounded-circle src="/imagens/user.jpg" width="150" /
+                  h4#nome_aluno.card-title.mt-2 Hanna Gover
+                  h6#tipos_aluno.card-subtitle Accoubts Manager Amix corp
+                  .row.text-center.justify-content-md-center
+                    .col-6
+                      span.font-medium Saldo: R$ 254,00
+                    .col-6
+                      span.font-medium Ativo
+                  br
+                  - if current_user.tem_permissao("ver_usuario")
+                    a#ver_usuario.btn.waves-effect.waves-light.btn-info.hide helper="button" href="/controle_de_usuarios/0" style=("margin-right: 10px") Ver
+                  - if current_user.tem_permissao("editar_usuarios")
+                    a#editar_usuario.btn.waves-effect.waves-light.btn-info.hide helper="button" href="/controle_de_usuarios/0" style=("margin-right: 10px") Editar
+                  - if current_user.tem_permissao("creditar_usuarios_tabela")
+                    button.btn.btn-success.hide id="creditar" data-target="#modal_creditar" data-toggle="modal" type="button" style="margin-right: 10px" Creditar
+                  - if current_user.tem_permissao("ativar_desativar_usuarios")
+                    button#botao_ativar.btn.hide class="btn-primary" type="button" style="margin-right: 10px" Ativar
+                    button#botao_desativar.btn.hide class="btn-danger" type="button" style="margin-right: 10px" Desativar
+
+
+
+#modal_creditar.modal.fade aria-labelledby="exampleModalLabel1" role="dialog" tabindex="-1" 
+  .modal-dialog role="document" 
+    .modal-content
+      .modal-header
+        h4#exampleModalLabel1.modal-title New message
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          span aria-hidden="true"  &times;
+      .modal-body
+        form
+          .form-group
+            label.control-label style="font-weight: bold" for="recipient-name" Nome:
+            div#modal_nome
+            label.control-label style="font-weight: bold" for="recipient-name" Saldo Atual:
+            div#modal_saldo
+            label.control-label style="font-weight: bold" for="recipient-name" Quantidade:
+            input#quantidade_credito.form-control type="text"
+            label.control-label style="font-weight: bold" for="recipient-name" Tipo:
+            select#tipo_credito.select.form-control data-placeholder="Escolha um usuário" style=("width: 100%")
+              - TipoCredito.where(escola_id: current_user.escola_id).each do |tipo_credito|
+                option value="#{tipo_credito.tipo}" integracao_sponte="#{tipo_credito.integracao_sponte.present? ? 's' : 'n'}"
+                  = tipo_credito.tipo
+            div#int_sponte.hide
+              label.control-label style="font-weight: bold" for="recipient-name" Data Integração (Sponte):
+              input#input_data_integracao.string.form-control.datetimepicker_range type="text"
+
+        div#creditado_alerta class="alert alert-success" style="display:none" Aluno Creditado com sucesso.
+      .modal-footer
+        div#botoes_modal
+          button.btn.btn-default data-dismiss="modal" type="button" style="margin-right: 10px" Voltar
+          button#botao_creditar.btn.btn-primary type="button" Creditar
+        div#spiner_modal
+          svg class="circular" viewBox="25 25 50 50"
+            circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
+
+
+
+javascript:
+  var resposta = []
+  $(".js-example-data-ajax").select2({
+    ajax: {
+      url: "/get_users",
+      dataType: 'json',
+      delay: 250,
+      data: function (params) {
+        // console.log("aaaaaaaaaaaaaaa")
+        // console.log(params)
+
+        return {
+          busca: params.term, // search term
+          page: params.page
+        };
+      },
+      processResults: function (data, params) {
+        // console.log("eeeeeeeeeeeee")
+        // console.log(data)
+        // console.log(params)
+        // parse the results into the format expected by Select2
+        // since we are using custom formatting functions we do not need to
+        // alter the remote JSON data, except to indicate that infinite
+        // scrolling can be used
+        params.page = params.page || 1;
+
+
+        resposta = {
+          "results": data.result,
+          "pagination": {
+            "more": false
+          }
+        }
+
+
+        return resposta
+
+
+
+      },
+      cache: true
+    },
+    placeholder: 'Busque por nome ou código...',
+    minimumInputLength: 3,
+  });
+
+
+  var user_id = 0
+
+  $("#alunos").change(function(){
+    console.log($(this).val())
+    $.getJSON("/get_user_central", { user_id: $(this).val() },function(d) {
+      if (d) {
+        console.log(d)
+
+        user_id = d.user_id
+
+
+        $("#ver_usuario").attr("href", "/controle_de_usuarios/"+d.user_id)
+        $("#editar_usuario").attr("href", "/controle_de_usuarios/"+d.user_id+"/edit")
+        $("#user_image").attr("href", d.url)
+        $("#nome_aluno").html(d.nome);
+        $("#tipos_aluno").html(d.tipos);
+
+        $("#exampleModalLabel1").html("Creditar para "+d.nome);
+        $("#modal_nome").html(d.nome);
+        $("#modal_saldo").html("R$ " +d.saldo);
+
+        $("#ver_usuario").show()
+        $("#editar_usuario").show()
+        $("#creditar").show()
+        if(d.ativo){
+          $("#botao_desativar").show()
+          $("#botao_ativar").hide()
+        }
+        else{
+          $("#botao_ativar").show()
+          $("#botao_desativar").hide()
+        }
+
+      } else {
+        
+      }
+    })
+  })
+
+  $("#botao_creditar").click(function(){
+
+    $(this).prop( "disabled", true );
+    valor_credito = $("#quantidade_credito").val().replace("R$ ", "")
+    valor_credito = valor_credito.replace(/,/g, "");
+
+    $.getJSON("/creditar", { user_id: user_id, valor: valor_credito, tipo: $("#tipo_credito").val(), status: "caixa", data_integracao: $("#input_data_integracao").val() },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          $("#creditado_alerta").show();
+          setTimeout(function(){
+
+            $("#quantidade_credito").val("");
+            $("#creditado_alerta").hide();
+
+            window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf")
+
+            $("#botao_creditar").prop( "disabled", false );
+          }, 1000);
+        }
+      } else {
+
+      }
+    })
+
+  })
+
+  $("#botao_ativar, #botao_desativar").click(function(){
+    
+    $.getJSON("/desativar_ativar", { user_id: user_id },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "desativo"){
+          swal("Sucesso!","Usuário desativado.","success")
+          $("#botao_ativar").show()
+          $("#botao_desativar").hide()
+        }else if(d.resultado == "ativo"){
+          swal("Sucesso!","Usuário ativado.","success")
+          $("#botao_desativar").show()
+          $("#botao_ativar").hide()
+        }
+      }
+    })
+
+  })
+
+  $("#tipo_credito").change(function(){
+    integracao = $(this).children("option:selected").attr("integracao_sponte"); 
+    console.log($(this).children("option:selected").attr("integracao_sponte"));
+
+    if (integracao == "s"){
+      $("#int_sponte").show()
+    }
+  })
+

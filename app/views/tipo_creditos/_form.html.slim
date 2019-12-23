@@ -8,8 +8,18 @@
     .clear
     div.col-12
       = f.input :tipo, label: "Nome", input_html: { nome_validacao: "Nome" }
+    h4.box-title.m-t-10
+      | Integração Sponte
+    hr
+    .clear
+    div.col-12
+      = f.input :integracao_sponte, label: "Ativar Integração", :as => :boolean, boolean_style: :inline, input_html: { class: "filled-in checkbox inline" }
+      = f.input :categoria_sponte, as: :select, label: "Categoria", prompt: "Selecione" , collection: @categoria, input_html: { nome_validacao: "Tipo produto" }
+      = f.input :forma_pagamento_sponte, as: :select, label: "Forma de pagamento", prompt: "Selecione" , collection: @formas_pagamento, input_html: { nome_validacao: "Tipo produto" }
+      = f.input :tipo_plano_sponte, as: :select, label: "Tipo Plano", prompt: "Selecione" , collection: @tipos_planos, input_html: { nome_validacao: "Tipo produto" }
+
+
     br
     .clear
-    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit"
-      | Enviar
+    button.btn.btn-success.waves-effect.waves-light.m-r-10 type="submit" Enviar
     = link_to "Voltar", tipo_creditos_path, helper: "button", class: "btn btn-inverse waves-light waves-effect"

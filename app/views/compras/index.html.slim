@@ -12,7 +12,7 @@
                 option value="" Escolha um usuário
                 option id="option_usu_0" usuario_nome="Sem Usuário" usuario_saldo_disponivel="99999999999999999999999" value="0" produtos_bloqueados="" Venda Direta
                 - User.where(escola_id: current_user.escola_id, sem_compra: [nil,false], ativo: true).order(:nome).each do |user|
-                  option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" last_transf="#{user.transferencia_gerais.where(cancelada: [nil, false]).where(tipo: "VENDA").last.id rescue '0'}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario && !user.escola.desabilitar_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloqueio_produtos.map(&:produto_id).join(',')}" usuario_nome="#{user.nome}"
+                  option id="option_usu_#{user.id}" value="#{user.id}" usuario_saldo_total="#{user.saldo.to_d + user.credito.to_d}" usuario_saldo_disponivel="#{user.saldo_diario_atual}" usuario_credito="#{user.credito}"  usuario_saldo="#{user.saldo}" usuario_saldo_diario="#{user.saldo_diario}" usuario_saldo_gasto_hoje="#{user.saldo_gasto_hoje}" tem_saldo_diario="#{user.saldo_diario && !user.escola.desabilitar_diario ? user.saldo_diario : "n"}" produtos_bloqueados="#{user.bloq_produto.present? ? user.bloq_produto : ""}" usuario_nome="#{user.nome}"
                     = "#{user.nome}"
             #div_botao_lista.col-12
               br
@@ -99,7 +99,6 @@ javascript:
   var modo_lista = false
   var confirmacao = []; 
   var user_id_uni = 0
-  var last_transf = 0;
 
   produtos_all = []
   produtos_all_preco = []
@@ -209,7 +208,6 @@ javascript:
     user_saldo_diario = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_diario");
     user_saldo_gasto_hoje = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_gasto_hoje");
     user_saldo_total = document.getElementById("option_usu_"+user_id).getAttribute("usuario_saldo_total");
-    last_transf = document.getElementById("option_usu_"+user_id).getAttribute("last_transf");
     produtos_bloqueados_split = produtos_bloqueados.split(",")
     blod_string = ""
     if (produtos_bloqueados_split[0] != ""){
@@ -611,7 +609,22 @@ javascript:
   })
 
   $("#botao_segunda_via").click(function(){
-    if (last_transf != null && last_transf != 0){ window.open("/transferencia_gerais/transferencia_pdf/"+last_transf+".pdf?via=ok") }
+
+    $.getJSON("/segunda_via", { user_id: user_id_uni },function(d){
+      if (d) {
+        console.log(d);
+        if (d.resultado == "OK"){
+          if (d.transf_id != "0"){
+            window.open("/transferencia_gerais/transferencia_pdf/"+d.transf_id+".pdf?via=ok")
+          }else{
+            swal("Ops", "Não há segunda via para este usuário", "error")            
+          }
+        }
+      } else {
+
+      }
+    })
+
   })
 
   $(".voltar_pagina").click(function(){

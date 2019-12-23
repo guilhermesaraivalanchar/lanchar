@@ -34,6 +34,10 @@ ul#sidebarnav.in
         - if current_user.tem_permissao("resumo_caixa")
           li
             = link_to("Resumo Geral", resumo_escola_path)
+        - if current_user.tem_permissao("resumo_caixa")
+          li
+            = link_to("Central do Aluno", central_aluno_path)
+
 
   - if current_user.check_perms(['transferencia_de_saldo'])
     li

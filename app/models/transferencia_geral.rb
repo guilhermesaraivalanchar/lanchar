@@ -121,4 +121,38 @@ class TransferenciaGeral < ApplicationRecord
 
     end
   end
+
+  def integrar_sponte(data_integracao)
+
+    credito = self.tipo_credito
+
+    data_integracao = data_integracao.in_time_zone rescue nil
+
+    if self.user.aluno_id_sponte && credito.forma_pagamento_sponte.present? && credito.categoria_sponte.present? && credito.tipo_plano_sponte.present? && data_integracao
+      nCodigoCliente = self.cliente_sponte
+      sToken = self.token_sponte
+      envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+        { body: { 
+            nCodigoCliente: nCodigoCliente, 
+            sToken: sToken,
+            dDataPrimeiroVencimento: data_integracao.strftime("%Y/%m/%d"),
+            nNumeroParcelas: 1,
+            nValorParcelas: self.valor,
+            nFormaCobrancaID: credito.forma_pagamento_sponte.to_i,
+            nCategoriaID: credito.categoria_sponte.to_i,
+            nAlunoID: self.user.aluno_id_sponte,
+            nTipoPlano: credito.tipo_plano_sponte.to_i,
+          }, timeout: 600})
+
+      if envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
+        return "Cliente não possui token cadastrado para acesso"
+      elsif envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "25 - Token Inválido."
+        return "Token Inválido"
+      else
+        return "OK"
+      end
+    end
+
+
+  end
 end

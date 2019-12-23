@@ -75,16 +75,14 @@ class User < ApplicationRecord
     if produto_ids
       self.produto_ids.each do |produto_id|
         per = BloqueioProduto.create(user_id: self.id, produto_id: produto_id.to_i)
-        if per
-          puts " CRIO"
-
-        else
-          puts "nao"
-          puts per.errors.inspect
-
-        end
       end
     end
+
+    self.update_column(:bloq_produto, self.bloqueio_produtos.map(&:produto_id).join(',').to_s)
+
+    # User.all.each do |u|
+    #   u.update_column(:bloq_produto, u.bloqueio_produtos.map(&:produto_id).join(',').to_s)
+    # end
   end
 
   def salvar_tipo_users
@@ -154,5 +152,10 @@ class User < ApplicationRecord
 
   def saldo_gasto_hoje
     transferencia_gerais.where("transferencia_gerais.created_at > ? AND transferencia_gerais.created_at < ? AND transferencia_gerais.valor > 0", Time.now.beginning_of_day, Time.now.end_of_day).where(cancelada: [nil, false], tipo: ["VENDA", "VENDA_DIRETA"]).sum(:valor)
+  end
+
+  def url
+    return "/imagens/user.jpg" if self.imagem.url == "/imagens/original/missing.png"
+    return self.imagem.url
   end
 end

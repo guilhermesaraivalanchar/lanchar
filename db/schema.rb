@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_10_234558) do
+ActiveRecord::Schema.define(version: 2019_12_14_150350) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -156,6 +156,9 @@ ActiveRecord::Schema.define(version: 2019_11_10_234558) do
     t.boolean "desabilitar_diario"
     t.boolean "itens_separados"
     t.boolean "sem_credito"
+    t.string "token_sponte"
+    t.string "cliente_sponte"
+    t.boolean "integracao_diaria_sponte"
   end
 
   create_table "filtro_totem_produtos", force: :cascade do |t|
@@ -287,6 +290,10 @@ ActiveRecord::Schema.define(version: 2019_11_10_234558) do
     t.string "tipo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "categoria_sponte"
+    t.string "forma_pagamento_sponte"
+    t.string "tipo_plano_sponte"
+    t.boolean "integracao_sponte"
   end
 
   create_table "tipo_produtos", force: :cascade do |t|
@@ -305,6 +312,10 @@ ActiveRecord::Schema.define(version: 2019_11_10_234558) do
     t.integer "escola_id"
     t.string "codigo"
     t.boolean "bloqueado"
+    t.boolean "aluno"
+    t.boolean "responsavel"
+    t.boolean "admin"
+    t.boolean "protegido"
     t.index ["escola_id"], name: "index_tipo_users_on_escola_id"
   end
 
@@ -408,7 +419,11 @@ ActiveRecord::Schema.define(version: 2019_11_10_234558) do
     t.boolean "sistema"
     t.boolean "bloqueio_cartao"
     t.boolean "cartao_sem_senha"
-    t.bigint "user_criou"
+    t.integer "user_criou"
+    t.boolean "sponte"
+    t.string "aluno_id_sponte"
+    t.string "responsavel_sponte_id"
+    t.string "bloq_produto"
     t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

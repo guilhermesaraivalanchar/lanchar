@@ -149,4 +149,9 @@ class TransferenciaGeraisController < ApplicationController
     end
   end
 
+  def segunda_via
+    transf_id = User.find(params[:user_id]).transferencia_gerais.where(cancelada: [nil, false]).where(tipo: "VENDA").last.id rescue '0'
+    render json: {resultado: "OK", transf_id: transf_id}
+  end
+
 end
