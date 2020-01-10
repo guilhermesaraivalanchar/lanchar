@@ -157,8 +157,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-#{mes}-#{dia_ini} 00:00:00"
     data_fim = "#{ano}-#{mes}-#{dia_fim} 23:59:59"
 
-    base = "producao"
-    if base == "producao"
+    if bba_env == "PROD"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
                   date_part('month', created_at) AS "Month",
@@ -217,8 +216,8 @@ class EscolasController < ApplicationController
     data_inicio = "#{ano}-01-01 00:00:00"
     data_fim = "#{ano}-12-31 23:59:59"
 
-    base = "producao"
-    if base == "producao"
+    
+    if bba_env == "PROD"
       # sql = %Q{
       #   SELECT    date_part('year', created_at) AS "Year",
       #             date_part('month', created_at) AS "Month",
@@ -342,8 +341,7 @@ class EscolasController < ApplicationController
     data_inicio = "#{inicio.strftime("%Y-%m-%d %H:%M:00")}"
     data_fim = "#{fim.strftime("%Y-%m-%d %H:%M:59")}"
 
-    base = "producao"
-    if base == "producao"
+    if bba_env == "PROD"
       sql = %Q{
         SELECT    date_part('year', created_at) AS "Year",
                   date_part('month', created_at) AS "Month",

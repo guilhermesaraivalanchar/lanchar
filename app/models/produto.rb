@@ -30,5 +30,46 @@ class Produto < ApplicationRecord
     end
   end
 
+  def self.get_prod_vendidos(quantidade)
+
+    sql = %Q{
+      SELECT produto_transf.nome as produto_transf_nome, produto_combo_transf.nome as produto_combo_transf_nome
+      FROM transferencias 
+      LEFT JOIN transferencia_combos ON transferencia_combos.transferencia_id = transferencias.id
+      LEFT JOIN produtos AS produto_transf ON produto_transf.id = transferencias.produto_id
+      LEFT JOIN produtos AS produto_combo_transf ON produto_combo_transf.id = transferencia_combos.produto_id
+      WHERE (transferencias.tipo = 'VENDA' OR transferencias.tipo = 'VENDA_DIRETA') 
+      AND transferencias.cancelada IS NULL
+      AND transferencias.created_at > ? AND transferencias.created_at < ?
+
+    }
+
+    sql = %Q{
+        SELECT    strftime('%Y', created_at) AS "Year",
+                  strftime('%m', created_at) AS "Month",
+                  strftime('%d', created_at) AS "Day",
+                  COUNT(*) AS "transf",
+                  SUM(transferencias.valor) AS "valor",
+                  tipo,
+                  cancelada
+        FROM      transferencias
+        WHERE transferencias.created_at > '#{data_inicio}'
+        AND transferencias.created_at < '#{data_fim}'
+        AND transferencias.escola_id = '#{current_user.escola_id}'
+        GROUP BY  strftime('%d', created_at),
+                  strftime('%m', created_at),
+                  strftime('%Y', created_at),
+                  tipo,
+                  cancelada
+        ORDER BY  "Year",
+                  "Month",
+                  "Day"
+
+    }
+
+
+
+  end
+
 
 end

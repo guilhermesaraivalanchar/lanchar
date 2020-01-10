@@ -1,3 +1,15 @@
+# Sets the enviroment
+def bba_env
+	if Rails.env == "development"
+		"DEV"
+	else
+		"PROD"
+	end
+	#"DEV_BBA"
+	#"QAS"
+	#"PROD"
+end
+
 def inicio_dia
 	"#{Time.now.in_time_zone.strftime("%Y-%m-%d")} 00:00:00"
 end

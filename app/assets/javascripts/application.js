@@ -50,7 +50,12 @@
 //= require sweetalert/sweetalert.min
 //= require chartist-js/dist/chartist.min.js
 //= require chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.min.js
-
+//= require flot/excanvas.js
+//= require flot/jquery.flot.js
+//= require flot/jquery.flot.pie.js
+//= require flot.tooltip/js/jquery.flot.tooltip.min.js
+//= require vectormap/jquery-jvectormap-2.0.2.min.js
+//= require vectormap/jquery-jvectormap-us-aea-en.js
 
 function toggle_menu(){
   $("body").toggleClass("show-sidebar");
