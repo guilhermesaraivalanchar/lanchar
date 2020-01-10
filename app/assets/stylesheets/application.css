@@ -27,11 +27,8 @@
  *= require select2/dist/css/select2.min.css
  *= require multiselect/css/multi-select.css
  *= require bootstrap-select/bootstrap-select.min.css
- *= require icons/flag-icon-css/flag-icon.min.css
  *= require icons/font-awesome/css/font-awesome.min.css
  *= require icons/material-design-iconic-font/css/materialdesignicons.min
- *= require icons/flag-icon-css/flag-icon.min.css
- *= require icons/linea-icons/linea.css
  *= require daterangepicker/daterangepicker
  *= require sweetalert/sweetalert.css
  *= require chartist-js/dist/chartist.min.css
