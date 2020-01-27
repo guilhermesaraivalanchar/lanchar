@@ -1,6 +1,5 @@
 # Sets the enviroment
 def bba_env
-	return "PROD"
 	if Rails.env == "development"
 		"DEV"
 	else
