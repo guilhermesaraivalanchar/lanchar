@@ -385,7 +385,7 @@ class UsersController < ApplicationController
   def get_users
     resultados = []
 
-    users = User.where("users.nome LIKE '%#{params[:busca]}%' or users.codigo LIKE '%#{params[:busca]}%'").where(escola_id: current_user.escola_id)
+    users = User.where("users.nome LIKE '%#{params[:busca].upcase}%' or users.codigo LIKE '%#{params[:busca].upcase}%'").where(escola_id: current_user.escola_id)
 
     users.each do |users|
       resultados << { "id": users.id, "text": "#{users.codigo} - #{users.nome}" }

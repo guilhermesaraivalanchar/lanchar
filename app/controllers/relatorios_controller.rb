@@ -12,11 +12,6 @@ class RelatoriosController < ApplicationController
 
   end
 
-
-
-
-
-
   def relatorio_relacao_responsavel
 
     sql = %Q{
