@@ -12,17 +12,19 @@
 	          select.js-example-data-ajax.form-control id="alunos"
             br
             br
-            .col-sm-12.col-md-12.col-lg-6
+            #painel.col-sm-12.col-md-12.col-lg-6 style="display:none"
               .card-body
                 .mt-4.text-center
                   img#user_image.rounded-circle src="/imagens/user.jpg" width="150" /
                   h4#nome_aluno.card-title.mt-2 Hanna Gover
                   h6#tipos_aluno.card-subtitle Accoubts Manager Amix corp
                   .row.text-center.justify-content-md-center
-                    .col-6
-                      span.font-medium Saldo: R$ 254,00
-                    .col-6
-                      span.font-medium Ativo
+                    .col-4
+                      span#user_saldo.font-medium Saldo:
+                    .col-4
+                      span#user_credito.font-medium Crédito:
+                    .col-4
+                      span#user_ativo.font-medium Ativo
                   br
                   - if current_user.tem_permissao("ver_usuario")
                     a#ver_usuario.btn.waves-effect.waves-light.btn-info.hide helper="button" href="/controle_de_usuarios/0" style=("margin-right: 10px") Ver
@@ -125,7 +127,16 @@ javascript:
     console.log($(this).val())
     $.getJSON("/get_user_central", { user_id: $(this).val() },function(d) {
       if (d) {
+        $("#painel").show()
         console.log(d)
+
+        $("#user_saldo").html("Saldo: "+d.saldo)
+        $("#user_credito").html("Crédito: "+d.credito)
+        if(d.ativo) {
+          $("#user_ativo").html("Ativo")
+        }else{
+          $("#user_ativo").html("Inativo")
+        }
 
         user_id = d.user_id
 

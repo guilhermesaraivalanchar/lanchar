@@ -244,6 +244,10 @@ class Escola < ApplicationRecord
           sParametrosBusca: "Nome=1234567890123456789qwertyuiop"
         }, timeout: 600})
 
+    resposta = envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s rescue "ERRO"
+
+    return "FALSE" if resposta == "ERRO"
+
     if envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
       return "Cliente não possui token cadastrado para acesso"
     elsif envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s == "25 - Token Inválido."

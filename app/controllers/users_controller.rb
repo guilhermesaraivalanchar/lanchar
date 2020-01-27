@@ -310,7 +310,7 @@ class UsersController < ApplicationController
                 saldo_anterior: saldo_ant.to_d + params[:valor].to_d
               })
               save_transf = transf_geral.save
-              transf_geral.integrar_sponte(params[:data_integracao]) if save_transf.errors.empty?
+              transf_geral.integrar_sponte(params[:data_integracao]) if save_transf
             end
             render json:  { resultado: "OK", transf_id: transf_geral.id }
           else
@@ -404,7 +404,15 @@ class UsersController < ApplicationController
 
     "
 
-    render json: { user_id: user.id, nome: user.nome, saldo: user.saldo, url: user.url, ativo: user.ativo, tipos: user.tipos }
+    render json: { 
+      user_id: user.id, 
+      nome: user.nome, 
+      saldo: ActionController::Base.helpers.number_to_currency(user.saldo), 
+      credito: ActionController::Base.helpers.number_to_currency(user.credito), 
+      url: user.url, 
+      ativo: user.ativo, 
+      tipos: user.tipos 
+    }
 
   end
 
