@@ -197,7 +197,22 @@ class Escola < ApplicationRecord
 
 
             #{error.inspect}
+
+
+backtracebacktracebacktrace
+
+
+
+
+            #{error.backtrace}
+
+
+
+
+
+
             
+
 
             "
             raise ActiveRecord::Rollback
