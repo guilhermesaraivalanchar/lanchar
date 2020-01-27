@@ -5,7 +5,8 @@ class Relatorio < ApplicationRecord
 
   def gerar_relatorio
     #Relatorio.delay.gerar_relatorio_delay(self.id)
-    RelatorioWorker.perform_async(self.id)
+    RelatorioWorker.perform_in(5.seconds, self.id)
+    # RelatorioWorker.perform_async(self.id)
   end
 
   def transferencias_gerais
