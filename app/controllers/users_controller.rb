@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     @filtro = Filtro.where(user_id: current_user.id, local: "user_index").first
     @filtro ||= Filtro.new(user_id: current_user.id)
 
-    @tipo_users = TipoUser.all.collect{|n| [n.nome,n.id]}
+    @tipo_users = TipoUser.where(escola_id: current_user.escola_id).collect { |m| [m.nome, m.id] }
     
     where_nome_filtro = ""
     where_nome_filtro = "AND users.nome LIKE '%#{@filtro.filtro_1.upcase}%'" if @filtro.filtro_1.present?
