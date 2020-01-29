@@ -19,6 +19,10 @@
 
 # Learn more: http://github.com/javan/whenever
 
-# every 1.day, at: '00:00 am' do
-#   runner "Escola.delay.atualizar_escolas"
+# every 1.day, at: '03:00 am' do
+#   runner "Escola.atualizar_escolas"
 # end
+
+every 1.minutes do
+  runner "Escola.atualizar_escolas_teste"
+end

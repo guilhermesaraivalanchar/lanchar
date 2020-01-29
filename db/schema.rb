@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_14_150350) do
+ActiveRecord::Schema.define(version: 2020_01_29_150346) do
 
   create_table "bloqueio_produtos", force: :cascade do |t|
     t.integer "produto_id"
@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(version: 2019_12_14_150350) do
     t.string "token_sponte"
     t.string "cliente_sponte"
     t.boolean "integracao_diaria_sponte"
+    t.integer "teste_sc"
   end
 
   create_table "filtro_totem_produtos", force: :cascade do |t|
@@ -424,6 +425,8 @@ ActiveRecord::Schema.define(version: 2019_12_14_150350) do
     t.string "aluno_id_sponte"
     t.string "responsavel_sponte_id"
     t.string "bloq_produto"
+    t.boolean "responsavel"
+    t.boolean "aluno"
     t.index ["codigo"], name: "index_users_on_codigo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

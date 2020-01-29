@@ -56,9 +56,7 @@ class User < ApplicationRecord
   end
 
   def delete_relacao_dependentes
-    if self.sem_compra
-      ResponsavelUser.where(responsavel_id: self.id).destroy_all
-    end
+    ResponsavelUser.where(responsavel_id: self.id).destroy_all
   end
 
   def salvar_responsavel

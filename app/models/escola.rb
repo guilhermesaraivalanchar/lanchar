@@ -93,7 +93,9 @@ class Escola < ApplicationRecord
         user = User.where(codigo: retorno["NumeroMatricula"], escola_id: self.id).last
         if user
           if atualizar
-            user.update_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
+            user.assign_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
+            user = import_responsavel(user, retorno)
+            user.save
           end
         else
           begin 
@@ -103,118 +105,10 @@ class Escola < ApplicationRecord
               aluno_id_sponte: retorno["AlunoID"] )
             u.tipos_users.new(tipo_user_id: grupo_aluno.id)
 
-            multi_responsaveis = retorno["Responsaveis"]["wsResponsaveis"].first["Nome"] rescue nil
-
-            puts "
-
-              #{retorno.inspect}
-
-              #{retorno["Responsaveis"]["wsResponsaveis"].inspect}
-              #{retorno["Responsaveis"]["wsResponsaveis"].count}
-              #{multi_responsaveis.present?}
-
-            "
-
-            if multi_responsaveis.present?
-
-              retorno["Responsaveis"]["wsResponsaveis"].each do |responsavel|
-  
-                r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
-
-                if !r
-                  r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
-                    sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
-                    responsavel_sponte_id: responsavel["ResponsavelID"] )
-                  r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
-                  r.save
-
-                  nao_salvar = !r.errors.empty?
-                  puts "
-
-
-                  RESP ERRO
-
-
-                  #{r.errors.inspect}
-
-
-                  "
-                end
-
-                u.responsavel_users.new(responsavel_id: r.id)
-              end
-
-            else
-              responsavel = retorno["Responsaveis"]["wsResponsaveis"]
-              r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
-              
-              if !r
-                r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
-                  sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
-                  responsavel_sponte_id: responsavel["ResponsavelID"] )
-                r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
-                r.save
-                nao_salvar = !r.errors.empty?
-                puts "
-
-
-                RESP ERRO
-
-
-                #{r.errors.inspect}
-
-
-                "
-              end
-
-              u.responsavel_users.new(responsavel_id: r.id)
-            end
-
+            u = import_responsavel(u, retorno)
 
             u.save if !nao_salvar
-
-            puts "
-
-
-
-
-            User ERRO
-
-
-
-            #{u.errors.inspect}
-
-
-
-
-            "
           rescue Exception => error
-
-            puts "
-            -------------------------------------------EERRROOOO-----------------------------------------------------------------
-            ------------------------------------------------------------------------------------------------------------
-
-
-
-            #{error.inspect}
-
-
-backtracebacktracebacktrace
-
-
-
-
-            #{error.backtrace}
-
-
-
-
-
-
-            
-
-
-            "
             raise ActiveRecord::Rollback
           end
         end
@@ -258,6 +152,49 @@ backtracebacktracebacktrace
     
   end
 
+  def import_responsavel(u, retorno)
+
+    grupo_responsavel = TipoUser.where(escola_id: self.id, responsavel: true).last
+    multi_responsaveis = retorno["Responsaveis"]["wsResponsaveis"].first["Nome"] rescue nil
+
+    if multi_responsaveis.present?
+
+      retorno["Responsaveis"]["wsResponsaveis"].each do |responsavel|
+
+        r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+
+        if !r
+          r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
+            sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+            responsavel_sponte_id: responsavel["ResponsavelID"] )
+          r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
+          r.save
+
+          nao_salvar = !r.errors.empty?
+        end
+
+        u.responsavel_users.new(responsavel_id: r.id) if u.responsavel_users.where(responsavel_id: r.id).empty?
+      end
+
+    else
+      responsavel = retorno["Responsaveis"]["wsResponsaveis"]
+      r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+      
+      if !r
+        r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
+          sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+          responsavel_sponte_id: responsavel["ResponsavelID"] )
+        r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
+        r.save
+        nao_salvar = !r.errors.empty?
+      end
+
+      u.responsavel_users.new(responsavel_id: r.id) if u.responsavel_users.where(responsavel_id: r.id).empty?
+    end
+
+    return u
+
+  end
 
   def teste_importacao_sponte
 
@@ -344,8 +281,20 @@ backtracebacktracebacktrace
 
   def self.atualizar_escolas
     Escola.where(integracao_diaria_sponte: true).where("token_sponte is not null and cliente_sponte is not null").each do |escola|
-      escola.importar_alunos(true) if escola.teste_importacao_sponte == "OK"
+      IntegracaoSponteWorker.perform_async(escola.id, true) if escola.teste_importacao_sponte == "OK"
+      sleep 5
     end
   end
+
+  def self.atualizar_escolas_teste
+    Escola.all.each do |e|
+      if !e.teste_sc
+        e.update_attribute(:teste_sc, 0)
+      else
+        e.update_attribute(:teste_sc, e.teste_sc+1)
+      end
+    end
+  end
+
 
 end
