@@ -63,7 +63,7 @@ class Escola < ApplicationRecord
   def importar_alunos(atualizar)
     grupo_aluno = TipoUser.where(escola_id: self.id, aluno: true).last
     grupo_responsavel = TipoUser.where(escola_id: self.id, responsavel: true).last
-
+    alunos_ids = []
     nCodigoCliente = self.cliente_sponte
     sToken = self.token_sponte
     
@@ -85,13 +85,9 @@ class Escola < ApplicationRecord
     else
       envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].each do |retorno|
 
-        puts "
-        ------------------------------------------------------------------------------------------------------------
-        ------------------------------------------------------------------------------------------------------------
-        "
-
         user = User.where(codigo: retorno["NumeroMatricula"], escola_id: self.id).last
         if user
+          alunos_ids << user.id
           if atualizar
             user.assign_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
             user = import_responsavel(user, retorno)
@@ -115,6 +111,7 @@ class Escola < ApplicationRecord
       end
 
       self.importar_responsaveis
+      self.invalidar_alunos(alunos_ids)
 
       return [200, "OK"]
     end
@@ -194,6 +191,12 @@ class Escola < ApplicationRecord
 
     return u
 
+  end
+
+  def invalidar_alunos(alunos_ids)
+    ativos_atual = User.where(aluno: true, ativo: true, sponte: true).map(&:id)
+    ids_inativos = ativos_atual - alunos_ids
+    User.where(id: ids_inativos).update_all(ativo: false)
   end
 
   def teste_importacao_sponte

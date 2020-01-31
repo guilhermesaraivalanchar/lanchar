@@ -38,7 +38,7 @@ class User < ApplicationRecord
 
   before_save :check_credito
   after_save :salvar_responsavel, :if => :enable_after_save
-
+  before_save :atualizar_responsaveis_ativos
   after_save :att_bloqueio_produto, :salvar_tipo_users, :if => :enable_after_save
 
   def self.teste_work(valor)
@@ -127,9 +127,6 @@ class User < ApplicationRecord
     return false
   end
 
-  def user_responsavel(user)
-  end
-
   def user_tipo(tipo)
     return self.tipos_users.map(&:tipo_user).map(&:codigo).include?(tipo)
   end
@@ -155,5 +152,22 @@ class User < ApplicationRecord
   def url
     return "/imagens/user.jpg" if self.imagem.url == "/imagens/original/missing.png"
     return self.imagem.url
+  end
+
+  def atualizar_responsaveis_ativos
+    if self.ativo_changed?
+      if user.ativo
+        ResponsavelUser.where(user_id: user.id).map(&:responsavel_id).each do |responsavel_id|
+          responsavel = User.find(responsavel_id)
+          responsavel.update_attribute(:ativo, true) if responsavel
+        end
+      else
+        ResponsavelUser.where(user_id: user.id).map(&:responsavel_id).each do |responsavel_id|
+          responsavel = User.find(responsavel_id)
+          flag_ainda_ativo = ResponsavelUser.where(responsavel_id: responsavel_id).map(&:user).map(&:ativo).include?(true)
+          responsavel.update_attribute(:ativo, false) if responsavel && !flag_ainda_ativo
+        end
+      end
+    end
   end
 end

@@ -131,7 +131,7 @@ class TransferenciaGeral < ApplicationRecord
     if self.user.aluno_id_sponte && credito.forma_pagamento_sponte.present? && credito.categoria_sponte.present? && credito.tipo_plano_sponte.present? && data_integracao && self.escola.teste_importacao_sponte == "OK"
       nCodigoCliente = self.cliente_sponte
       sToken = self.token_sponte
-      envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+      envio = HTTParty.post("http://api.sponteeducacional.net.br/InsertPlano", 
         { body: { 
             nCodigoCliente: nCodigoCliente, 
             sToken: sToken,

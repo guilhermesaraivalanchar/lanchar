@@ -38,7 +38,6 @@
                 = "#{responsavel.nome}"
         br
         br
-        = f.input :sem_compra, label: "Sem Compra", :as => :boolean, boolean_style: :inline, input_html: { class: "filled-in checkbox inline" }
         - if current_user.tem_permissao("resetar_senha_usuario")
           br
           button#resetar_senha.btn.btn-danger.waves-effect.waves-light.m-r-10 type="button" Resetar Senha
