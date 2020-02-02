@@ -156,7 +156,7 @@ class User < ApplicationRecord
 
   def atualizar_responsaveis_ativos
     if self.ativo_changed?
-      if user.ativo
+      if self.ativo
         ResponsavelUser.where(user_id: user.id).map(&:responsavel_id).each do |responsavel_id|
           responsavel = User.find(responsavel_id)
           responsavel.update_attribute(:ativo, true) if responsavel
