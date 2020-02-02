@@ -105,6 +105,19 @@ class Escola < ApplicationRecord
 
             u.save if !nao_salvar
           rescue Exception => error
+            puts "
+
+
+
+            #{error}
+
+
+            #{error.backtrace}
+
+
+
+
+            "
             raise ActiveRecord::Rollback
           end
         end
