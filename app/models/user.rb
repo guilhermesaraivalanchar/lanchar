@@ -157,12 +157,12 @@ class User < ApplicationRecord
   def atualizar_responsaveis_ativos
     if self.ativo_changed?
       if self.ativo
-        ResponsavelUser.where(user_id: user.id).map(&:responsavel_id).each do |responsavel_id|
+        self.responsavel_users.map(&:responsavel_id).each do |responsavel_id|
           responsavel = User.find(responsavel_id)
           responsavel.update_attribute(:ativo, true) if responsavel
         end
       else
-        ResponsavelUser.where(user_id: user.id).map(&:responsavel_id).each do |responsavel_id|
+        self.responsavel_users.map(&:responsavel_id).each do |responsavel_id|
           responsavel = User.find(responsavel_id)
           flag_ainda_ativo = ResponsavelUser.where(responsavel_id: responsavel_id).map(&:user).map(&:ativo).include?(true)
           responsavel.update_attribute(:ativo, false) if responsavel && !flag_ainda_ativo
