@@ -61,72 +61,89 @@ class Escola < ApplicationRecord
   end
 
   def importar_alunos(atualizar)
-    grupo_aluno = TipoUser.where(escola_id: self.id, aluno: true).last
-    grupo_responsavel = TipoUser.where(escola_id: self.id, responsavel: true).last
-    alunos_ids = []
-    nCodigoCliente = self.cliente_sponte
-    sToken = self.token_sponte
-    
-    envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
-      { body: { 
-          nCodigoCliente: nCodigoCliente, 
-          sToken: sToken,
-          sParametrosBusca: "Situacao=-1"
-        }, timeout: 600})
+    begin 
+      grupo_aluno = TipoUser.where(escola_id: self.id, aluno: true).last
+      grupo_responsavel = TipoUser.where(escola_id: self.id, responsavel: true).last
+      alunos_ids = []
+      nCodigoCliente = self.cliente_sponte
+      sToken = self.token_sponte
+      
+      envio = HTTParty.post("http://api.sponteeducacional.net.br/WSAPIEdu.asmx/GetAlunos", 
+        { body: { 
+            nCodigoCliente: nCodigoCliente, 
+            sToken: sToken,
+            sParametrosBusca: "Situacao=-1"
+          }, timeout: 600})
 
-    # envio.parsed_response["ArrayOfWsAluno"].count
+      # envio.parsed_response["ArrayOfWsAluno"].count
 
-    erro = envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s rescue ""
+      erro = envio.parsed_response["ArrayOfWsAluno"]["wsAluno"]["RetornoOperacao"].to_s rescue ""
 
-    if erro == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
-      return [500, "Cliente não possui token cadastrado para acesso"]
-    elsif erro == "25 - Token Inválido."
-      return [500, "Token Inválido"]
-    else
-      envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].each do |retorno|
+      if erro == "23 - Cliente não possui token cadastrado para acesso a WSAPIEdu, entre em contato com o suporte."
+        return [500, "Cliente não possui token cadastrado para acesso"]
+      elsif erro == "25 - Token Inválido."
+        return [500, "Token Inválido"]
+      else
+        envio.parsed_response["ArrayOfWsAluno"]["wsAluno"].each do |retorno|
 
-        user = User.where(codigo: retorno["NumeroMatricula"], escola_id: self.id).last
-        if user
-          alunos_ids << user.id
-          if atualizar
-            user.assign_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
-            user = import_responsavel(user, retorno)
-            user.save
-          end
-        else
-          begin 
-            nao_salvar = false
-            u = User.new(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], 
-              turma: retorno["TurmaAtual"], sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
-              aluno_id_sponte: retorno["AlunoID"] )
-            u.tipos_users.new(tipo_user_id: grupo_aluno.id)
+          user = User.where(codigo: retorno["NumeroMatricula"], escola_id: self.id).last
+          if user
+            alunos_ids << user.id
+            if atualizar
+              user.assign_attributes(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], turma: retorno["TurmaAtual"], sponte: true, aluno_id_sponte: retorno["AlunoID"] )
+              user = import_responsavel(user, retorno)
+              user.save
+            end
+          else
+            begin 
+              nao_salvar = false
+              u = User.new(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], 
+                turma: retorno["TurmaAtual"], sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+                aluno_id_sponte: retorno["AlunoID"] )
+              u.tipos_users.new(tipo_user_id: grupo_aluno.id)
 
-            u = import_responsavel(u, retorno)
+              u = import_responsavel(u, retorno)
 
-            u.save if !nao_salvar
-          rescue Exception => error
-            puts "
-
-
-
-            #{error}
-
-
-            #{error.backtrace}
+              u.save if !nao_salvar
+            rescue Exception => error
+              puts "
 
 
 
+              #{error}
 
-            "
-            raise ActiveRecord::Rollback
+
+              #{error.backtrace}
+
+
+
+
+              "
+              raise ActiveRecord::Rollback
+            end
           end
         end
+
+        self.importar_responsaveis
+        self.invalidar_alunos(alunos_ids)
+
+        return [200, "OK"]
       end
+    rescue Exception => error
+      puts "
 
-      self.importar_responsaveis
-      self.invalidar_alunos(alunos_ids)
 
-      return [200, "OK"]
+
+      #{error}
+
+
+      #{error.backtrace}
+
+
+
+
+      "
+      raise ActiveRecord::Rollback
     end
 
   end
@@ -171,7 +188,7 @@ class Escola < ApplicationRecord
 
       retorno["Responsaveis"]["wsResponsaveis"].each do |responsavel|
 
-        r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+        r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"], escola_id: self.id).last
 
         if !r
           r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
@@ -188,7 +205,7 @@ class Escola < ApplicationRecord
 
     else
       responsavel = retorno["Responsaveis"]["wsResponsaveis"]
-      r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"]).last
+      r = User.where(responsavel_sponte_id: responsavel["ResponsavelID"], escola_id: self.id).last
       
       if !r
         r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
@@ -207,7 +224,7 @@ class Escola < ApplicationRecord
   end
 
   def invalidar_alunos(alunos_ids)
-    ativos_atual = User.where(aluno: true, ativo: true, sponte: true).map(&:id)
+    ativos_atual = User.where(aluno: true, ativo: true, sponte: true, escola_id: self.id).map(&:id)
     ids_inativos = ativos_atual - alunos_ids
     User.where(id: ids_inativos).update_all(ativo: false)
   end
