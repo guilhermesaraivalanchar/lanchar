@@ -76,7 +76,7 @@ class UsersController < ApplicationController
     remetente = User.find(params[:remetente_id])
     destinatario = User.find(params[:destinatario_id])
 
-    if remetente.saldo > params[:valor].to_d
+    if remetente.saldo >= params[:valor].to_d
 
       transf_geral_entrada = TransferenciaGeral.new(escola_id: current_user.escola_id, user_id: destinatario.id , user_transferencia_saldo: remetente.id , valor: (params[:valor].to_d), tipo: "TRANSFERÊNCIA ENTRADA", user_movimentou_id: current_user.id )
       transf_geral_entrada.transferencias.new({
