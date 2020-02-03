@@ -75,6 +75,11 @@
 
 
 javascript:
+
+  $(function() {
+    $('#quantidade_credito').maskMoney({'prefix': 'R$ '});
+  })
+  
   var resposta = []
   $(".js-example-data-ajax").select2({
     ajax: {
