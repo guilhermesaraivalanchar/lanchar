@@ -98,7 +98,7 @@ class Escola < ApplicationRecord
             begin 
               nao_salvar = false
               u = User.new(nome: retorno["Nome"], email: "#{retorno["AlunoID"]}#{self.id}@nome.com", codigo: retorno["NumeroMatricula"], 
-                turma: retorno["TurmaAtual"], sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+                turma: retorno["TurmaAtual"], sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 0, senha_totem: "0000", password: "123456", 
                 aluno_id_sponte: retorno["AlunoID"] )
               u.tipos_users.new(tipo_user_id: grupo_aluno.id)
 
@@ -192,7 +192,7 @@ class Escola < ApplicationRecord
 
         if !r
           r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
-            sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+            sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 0, senha_totem: "0000", password: "123456", 
             responsavel_sponte_id: responsavel["ResponsavelID"] )
           r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
           r.save
@@ -209,7 +209,7 @@ class Escola < ApplicationRecord
       
       if !r
         r = User.new(nome: responsavel["Nome"], email: "#{responsavel["ResponsavelID"]}#{self.id}r@nome.com", codigo: "#{responsavel["ResponsavelID"]}#{self.id}r", 
-          sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 30, senha_totem: "0000", password: "123456", 
+          sponte: true, saldo: 0, escola_id: self.id, ativo: true, credito: 0, senha_totem: "0000", password: "123456", 
           responsavel_sponte_id: responsavel["ResponsavelID"] )
         r.tipos_users.new(tipo_user_id: grupo_responsavel.id)
         r.save
