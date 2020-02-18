@@ -125,7 +125,7 @@ class Escola < ApplicationRecord
         end
 
         self.importar_responsaveis
-        self.invalidar_alunos(alunos_ids)
+        # self.invalidar_alunos(alunos_ids)
 
         return [200, "OK"]
       end
